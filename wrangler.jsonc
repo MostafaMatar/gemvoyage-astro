@@ -6,9 +6,8 @@
     "nodejs_compat"
   ],
   "assets": {
-    "directory": "dist",
-    "binding": "ASSETS",
-    "exclude": ["_worker.js"]
+    "directory": "dist/assets",
+    "binding": "ASSETS"
   },
 	"observability": {
     "enabled": true
