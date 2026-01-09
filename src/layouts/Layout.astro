@@ -53,8 +53,23 @@ const {
     <link rel="icon" href="/logo.png" type="image/png">
     <link rel="apple-touch-icon" href="/logo.png" type="image/png">
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JBBNLKXPYM" is:inline></script>
+    <script is:inline>
+      declare global {
+        interface Window {
+          dataLayer: any[];
+          gtag: (...args: any[]) => void;
+        }
+      }
+      window.dataLayer = window.dataLayer || [];
+      function gtag(...args: any[]) { window.dataLayer.push(args); }
+      gtag('js', new Date());
+      gtag('config', 'G-JBBNLKXPYM');
+    </script>
+
     <!-- Structured Data -->
-    <script type="application/ld+json">
+    <script type="application/ld+json" is:inline>
       {
           "@context": "https://schema.org",
           "@type": "Organization",
@@ -62,15 +77,6 @@ const {
           "url": "https://gemvoyage.net",
           "logo": "https://gemvoyage.net/images/icon.png"
       }
-    </script>
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JBBNLKXPYM"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-JBBNLKXPYM');
     </script>
   </head>
   
