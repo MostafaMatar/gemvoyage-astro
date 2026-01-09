@@ -1,16 +1,10 @@
 {
-	"main": "dist/_worker.js",
-	"name": "gemvoyage-astro",
+  "name": "gemvoyage-astro",
+  "main": "dist/_worker.js",
   "compatibility_date": "2026-01-03",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "global_fetch_strictly_public"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": "dist/assets",
+    "directory": "dist",
     "binding": "ASSETS"
-  },
-	"observability": {
-    "enabled": true
   }
 }
