@@ -6,6 +6,10 @@
     "nodejs_compat",
     "global_fetch_strictly_public"
   ],
+  "assets": {
+    "directory": "dist/assets",
+    "binding": "ASSETS"
+  },
 	"observability": {
     "enabled": true
   }
