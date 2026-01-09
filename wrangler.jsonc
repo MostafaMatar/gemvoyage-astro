@@ -7,7 +7,7 @@
     "global_fetch_strictly_public"
   ],
   "assets": {
-    "directory": "dist/assets",
+    "directory": "dist/_astro",
     "binding": "ASSETS"
   },
 	"observability": {
