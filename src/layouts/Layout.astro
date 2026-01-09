@@ -56,14 +56,8 @@ const {
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JBBNLKXPYM" is:inline></script>
     <script is:inline>
-      declare global {
-        interface Window {
-          dataLayer: any[];
-          gtag: (...args: any[]) => void;
-        }
-      }
       window.dataLayer = window.dataLayer || [];
-      function gtag(...args: any[]) { window.dataLayer.push(args); }
+      function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'G-JBBNLKXPYM');
     </script>
