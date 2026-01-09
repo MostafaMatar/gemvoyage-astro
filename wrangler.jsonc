@@ -6,7 +6,7 @@
     "nodejs_compat"
   ],
   "assets": {
-    "directory": "dist/assets",
+    "directory": "dist/_astro",
     "binding": "ASSETS"
   },
 	"observability": {
