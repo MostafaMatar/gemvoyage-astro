@@ -1,22 +1,80 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import '../styles/global.css';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+export interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogUrl?: string;
+}
+
+const {
+  title = "GemVoyage - Discover Hidden Gems Around the World",
+  description = "Discover and share hidden gems, secret spots, and unique destinations around the world. Join our community of travelers and explorers.",
+  keywords = "travel, hidden gems, cairo attractions, barcelona attractions, copenhagen attractions, malmo attractions, tokyo attractions, taiwan attractions, berlin attractions, paris attractions, caverna do maroaga, presidente figueiredo waterfalls, harry potter stairs, ceramic museum zamalek, barcelona magic foutain",
+  ogTitle = title,
+  ogDescription = description,
+  ogImage = "https://gemvoyage.net/hero.jpg",
+  ogUrl = "https://gemvoyage.net/"
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-1021036302020215">
+    
+    <!-- Primary meta tags -->
+    <title>{title}</title>
+    <meta name="description" content={description}>
+    <meta name="keywords" content={keywords}>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content={ogUrl}>
+    <meta property="og:title" content={ogTitle}>
+    <meta property="og:description" content={ogDescription}>
+    <meta property="og:image" content={ogImage}>
+    <meta property="og:site_name" content="GemVoyage">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content={ogUrl}>
+    <meta name="twitter:title" content={ogTitle}>
+    <meta name="twitter:description" content={ogDescription}>
+    <meta name="twitter:image" content={ogImage}>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="/logo.png" type="image/png">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "GemVoyage",
+          "url": "https://gemvoyage.net",
+          "logo": "https://gemvoyage.net/images/icon.png"
+      }
+    </script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JBBNLKXPYM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-JBBNLKXPYM');
+    </script>
+  </head>
+  
+  <body>
+    <slot />
+  </body>
+</html>
