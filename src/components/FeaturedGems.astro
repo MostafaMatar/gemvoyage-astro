@@ -72,7 +72,7 @@ function cn(...classes: (string | undefined)[]) {
     ) : (
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {gems.map((gem, index) => (
-          <GemCard gem={gem} size={index === 0 ? 'large' : 'default'} />
+          <GemCard gem={gem} />
         ))}
       </div>
     )}

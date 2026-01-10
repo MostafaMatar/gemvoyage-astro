@@ -4,11 +4,12 @@ import AuthorInfo from './AuthorInfo.astro';
 interface Props {
   gem: {
     id: string;
-    name: string;
+    title: string;
     description: string;
     image?: string;
-    city: string;
+    location: string;
     category: string;
+    slug: string;
     featured?: boolean;
     author?: {
       id: string;
@@ -41,7 +42,7 @@ function cn(...classes: (string | undefined)[]) {
       {gem.image ? (
         <img
           src={gem.image}
-          alt={gem.name}
+          alt={gem.title}
           class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
