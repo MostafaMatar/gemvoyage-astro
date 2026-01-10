@@ -2,10 +2,37 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import CityCarousel from '../components/CityCarousel.astro';
+import LatestGems from '../components/LatestGems.astro';
+import FeaturedGems from '../components/FeaturedGems.astro';
+import CategoriesSection from '../components/CategoriesSection.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
 ---
 
 <Layout>
+  <Navbar />
   <Hero />
   <CityCarousel />
+  <LatestGems />
+  <FeaturedGems />
+  <CategoriesSection />
+  
+  <!-- Sign-up section -->
+  <section class="py-16 bg-gradient-to-r from-primary/10 to-primary/20">
+    <div class="container px-4 mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4">Join Our Community of Travelers</h2>
+      <p class="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+        Share your own hidden gems, engage with fellow explorers, and create your personalized map of discoveries.
+      </p>
+      <a 
+        href="/register"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2"
+      >
+        Sign Up Now
+      </a>
+    </div>
+  </section>
+
+  <Footer />
 </Layout>
 

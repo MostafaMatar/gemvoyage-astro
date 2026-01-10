@@ -1,0 +1,255 @@
+---
+// filepath: /home/mostafa/Documents/Mostafa/Software/Projects/gemvoyage-astro/src/components/Navbar.astro
+import { API_BASE_URL } from '../lib/apiConfig';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+  <div class="container mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6">
+    <div class="flex items-center">
+      <a href="/" class="flex items-center gap-2 mr-6">
+        <img 
+          src="/logo.png" 
+          alt="GemVoyage Logo"
+          class="h-8 w-8"
+        />
+        <span class="font-bold text-2xl bg-gradient-to-r from-gem-300 to-gem-500 bg-clip-text">
+          GemVoyage
+        </span>
+      </a>
+      <nav class="hidden md:flex items-center space-x-4 lg:space-x-6">
+        <a 
+          href="/" 
+          class="text-sm font-medium transition-colors hover:text-primary"
+        >
+          Home
+        </a>
+        <a 
+          href="/browse" 
+          class="text-sm font-medium transition-colors hover:text-primary"
+        >
+          Browse Gems
+        </a>
+      </nav>
+    </div>
+    <div class="flex items-center space-x-4">
+      <div id="logged-in-buttons" class="hidden">
+        <button
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-gem-400 hover:bg-gem-500 text-white shadow-sm h-8 px-3 mr-2 hidden sm:flex"
+          id="create-gem-btn"
+        >
+          Create Gem
+        </button>
+        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9" id="profile-btn">
+          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+      </div>
+      <div class="flex items-center space-x-2 sm:flex" id="auth-buttons">
+        <!-- Auth buttons will be populated by JavaScript -->
+      </div>
+      <button 
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 md:hidden"
+        id="mobile-menu-toggle"
+        aria-label="Toggle mobile menu"
+      >
+        <svg class="h-5 w-5" id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" x2="20" y1="6" y2="6"></line>
+          <line x1="4" x2="20" y1="12" y2="12"></line>
+          <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+        <svg class="h-5 w-5 hidden" id="close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="md:hidden border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 hidden">
+    <nav class="container mx-auto max-w-7xl px-4 py-4 space-y-4">
+      <a 
+        href="/" 
+        class="block text-sm font-medium transition-colors hover:text-primary"
+      >
+        Home
+      </a>
+      <a 
+        href="/browse" 
+        class="block text-sm font-medium transition-colors hover:text-primary"
+      >
+        Browse Gems
+      </a>
+      
+      <!-- Mobile Auth Buttons -->
+      <div class="pt-2 border-t space-y-2" id="mobile-auth-buttons">
+        <!-- Mobile auth buttons will be populated by JavaScript -->
+      </div>
+    </nav>
+  </div>
+  
+  <div id="logout-error" class="text-red-600 text-sm text-center mt-2 hidden"></div>
+</header>
+
+<script define:vars={{ API_BASE_URL }}>
+  // State management
+  let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  let isMobileMenuOpen = false;
+
+  // DOM elements
+  const authButtons = document.getElementById('auth-buttons');
+  const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+  const loggedInButtons = document.getElementById('logged-in-buttons');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+  const logoutError = document.getElementById('logout-error');
+  const createGemBtn = document.getElementById('create-gem-btn');
+  const profileBtn = document.getElementById('profile-btn');
+
+  function showError(message) {
+    logoutError.textContent = message;
+    logoutError.classList.remove('hidden');
+    setTimeout(() => {
+      logoutError.classList.add('hidden');
+    }, 5000);
+  }
+
+  function updateAuthUI() {
+    if (!isLoggedIn) {
+      authButtons.innerHTML = `
+        <a href="/login">
+          <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 mr-2">
+            Sign In
+          </button>
+        </a>
+        <a href="/register">
+          <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-gem-300 hover:bg-gem-400 h-8 px-3">
+            Sign Up
+          </button>
+        </a>
+      `;
+      mobileAuthButtons.innerHTML = `
+        <a href="/login">
+          <button class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3">
+            Sign In
+          </button>
+        </a>
+        <a href="/register">
+          <button class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-gem-300 hover:bg-gem-400 h-8 px-3">
+            Sign Up
+          </button>
+        </a>
+      `;
+      loggedInButtons.classList.add('hidden');
+    } else {
+      authButtons.innerHTML = `
+        <button id="logout-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 h-8 px-3">
+          Log Out
+        </button>
+      `;
+      mobileAuthButtons.innerHTML = `
+        <button id="mobile-create-gem-btn" class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-gem-400 hover:bg-gem-500 text-white h-8 px-3">
+          Create Gem
+        </button>
+        <button id="mobile-logout-btn" class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 h-8 px-3">
+          Log Out
+        </button>
+      `;
+      loggedInButtons.classList.remove('hidden');
+      
+      // Add event listeners for new logout buttons
+      const logoutBtn = document.getElementById('logout-btn');
+      const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+      const mobileCreateBtn = document.getElementById('mobile-create-gem-btn');
+      
+      if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+      if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
+      if (mobileCreateBtn) mobileCreateBtn.addEventListener('click', () => {
+        window.location.href = '/create';
+      });
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': token } : {}),
+        },
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        if(errorText.includes('403') && errorText.includes('token is expired')) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('userId');
+          localStorage.setItem('isLoggedIn', 'false');
+          isLoggedIn = false;
+          showError('Your session has expired. Please log in again.');
+          updateAuthUI();
+          return;
+        }
+        showError(errorText);
+        return;
+      }
+      
+      localStorage.setItem('isLoggedIn', 'false');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('userId');
+      isLoggedIn = false;
+      closeMobileMenu();
+      updateAuthUI();
+    } catch (err) {
+      showError(err.message || 'Logout failed');
+    }
+  }
+
+  function toggleMobileMenu() {
+    isMobileMenuOpen = !isMobileMenuOpen;
+    if (isMobileMenuOpen) {
+      mobileMenu.classList.remove('hidden');
+      menuIcon.classList.add('hidden');
+      closeIcon.classList.remove('hidden');
+    } else {
+      mobileMenu.classList.add('hidden');
+      menuIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+    }
+  }
+
+  function closeMobileMenu() {
+    isMobileMenuOpen = false;
+    mobileMenu.classList.add('hidden');
+    menuIcon.classList.remove('hidden');
+    closeIcon.classList.add('hidden');
+  }
+
+  // Event listeners
+  mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+  
+  createGemBtn.addEventListener('click', () => {
+    window.location.href = '/create';
+  });
+  
+  profileBtn.addEventListener('click', () => {
+    window.location.href = '/edit-profile';
+  });
+
+  // Close mobile menu when clicking on links
+  const mobileLinks = mobileMenu.querySelectorAll('a');
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', closeMobileMenu);
+  });
+
+  // Initialize UI
+  updateAuthUI();
+</script>

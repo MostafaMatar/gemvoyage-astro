@@ -1,0 +1,104 @@
+---
+import AuthorInfo from './AuthorInfo.astro';
+
+interface Props {
+  gem: {
+    id: string;
+    name: string;
+    description: string;
+    image?: string;
+    city: string;
+    category: string;
+    featured?: boolean;
+    author?: {
+      id: string;
+      name: string;
+      avatar?: string;
+    };
+    createdAt: string;
+  };
+  size?: 'default' | 'large';
+  className?: string;
+}
+
+const { gem, size = 'default', className = '' } = Astro.props;
+
+function cn(...classes: (string | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
+}
+---
+
+<a href={`/gem/${gem.slug}`} class="block group">
+  <div class={cn(
+    "rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300",
+    size === 'large' && 'md:row-span-2',
+    className
+  )}>
+    <div class={cn(
+      "relative overflow-hidden",
+      size === 'large' ? 'h-64 md:h-80' : 'h-48'
+    )}>
+      {gem.image ? (
+        <img
+          src={gem.image}
+          alt={gem.name}
+          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
+      ) : (
+        <div class="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+          </svg>
+        </div>
+      )}
+      
+      <!-- Badges -->
+      <div class="absolute top-2 left-2 flex flex-col space-y-1">
+        {gem.featured && (
+          <span class="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-yellow-400 text-yellow-900 border-yellow-500 px-2.5 py-0.5 text-xs">
+            ⭐ Featured
+          </span>
+        )}
+      </div>
+      
+      <div class="absolute top-2 right-2">
+        <span class="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/80 px-2.5 py-0.5 text-xs">
+          {gem.category}
+        </span>
+      </div>
+    </div>
+    
+    <div class="p-6">
+      <div class="space-y-3">
+        <h3 class={cn(
+          "font-semibold line-clamp-2 group-hover:text-primary transition-colors",
+          size === 'large' ? 'text-2xl' : 'text-xl'
+        )}>
+          {gem.title}
+        </h3>
+        
+        <p class="text-sm text-muted-foreground flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          {gem.location}
+        </p>
+        
+        <p class={cn(
+          "text-muted-foreground line-clamp-3",
+          size === 'large' ? 'text-base' : 'text-sm'
+        )}>
+          {gem.description}
+        </p>
+        
+        {gem.author && (
+          <div class="pt-2 border-t">
+            <AuthorInfo author={gem.author} createdAt={gem.createdAt} />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</a>

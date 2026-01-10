@@ -1,0 +1,91 @@
+---
+import { API_BASE_URL } from '../lib/apiConfig';
+import GemCard from './GemCard.astro';
+
+interface Gem {
+  id: string;
+  name: string;
+  description: string;
+  image?: string;
+  city: string;
+  category: string;
+  createdAt: string;
+}
+
+// Fetch latest gems from API
+let gems: Gem[] = [];
+let error: string | null = null;
+
+try {
+  const response = await fetch(`${API_BASE_URL}/gem/latest`);
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch gems: ${response.status} ${response.statusText}`);
+  }
+  
+  const data = await response.json();
+  gems = data.gems || data || [];
+} catch (err) {
+  console.error('Error fetching latest gems:', err);
+  error = err instanceof Error ? err.message : 'Failed to fetch gems';
+  gems = [];
+}
+
+const { className = '' } = Astro.props;
+
+function cn(...classes: (string | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
+}
+---
+
+<section class={cn("py-12", className)}>
+  <div class="container mx-auto px-4">
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold">Latest Discoveries</h2>
+      <p class="text-muted-foreground mt-2">
+        Recently discovered hidden gems from our community.
+      </p>
+    </div>
+
+    {error ? (
+      <div class="flex items-center justify-center h-64">
+        <div class="text-center">
+          <p class="text-muted-foreground mb-4">
+            Unable to load latest gems at the moment.
+          </p>
+          <span class="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80 px-2.5 py-0.5 text-xs">
+            {error}
+          </span>
+        </div>
+      </div>
+    ) : gems.length === 0 ? (
+      <div class="flex items-center justify-center h-64">
+        <div class="text-center">
+          <svg class="mx-auto h-12 w-12 text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+          </svg>
+          <p class="text-muted-foreground">
+            No gems available at the moment.
+          </p>
+        </div>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {gems.map((gem) => (
+          <GemCard gem={gem} />
+        ))}
+      </div>
+    )}
+
+    {gems.length > 0 && (
+      <div class="mt-8 text-center">
+        <a 
+          href="/gems" 
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+        >
+          View All Gems
+        </a>
+      </div>
+    )}
+  </div>
+</section>

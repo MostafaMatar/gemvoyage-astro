@@ -1,0 +1,76 @@
+---
+const categories = [
+  {
+    name: "Nature",
+    icon: "🌿",
+    description: "Secret coves, secluded shores, marvelous scenery, and pristine beaches"
+  },
+  {
+    name: "History",
+    icon: "🏛️",
+    description: "Ancient ruins, hidden monuments, and forgotten places"
+  },
+  {
+    name: "Culture",
+    icon: "🎭",
+    description: "Carnevals, festivals, museums, and unmissable aspects of local culture"
+  },
+  {
+    name: "Food",
+    icon: "🍽️",
+    description: "Local eateries, hidden restaurants, and food experiences"
+  },
+  {
+    name: "Entertainment",
+    icon: "🎪",
+    description: "Live music, performances, and local events"
+  },
+  {
+    name: "Shopping",
+    icon: "🛍️",
+    description: "Unique boutiques, artisan shops, and local markets"
+  }
+];
+
+const { className = '' } = Astro.props;
+
+function cn(...classes: (string | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
+}
+---
+
+<section class={cn("py-12", className)}>
+  <div class="container mx-auto px-4">
+    <div class="mb-8 text-center">
+      <h2 class="text-3xl font-bold">Explore by Category</h2>
+      <p class="text-muted-foreground mt-2">
+        Find hidden gems that match your interests.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {categories.map((category) => (
+        <a href={`/category/${category.name.toLowerCase()}`} class="block group">
+          <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div class="text-center space-y-4">
+              <div class="text-4xl mb-3">
+                {category.icon}
+              </div>
+              <h3 class="text-xl font-semibold group-hover:text-primary transition-colors">
+                {category.name}
+              </h3>
+              <p class="text-sm text-muted-foreground">
+                {category.description}
+              </p>
+              <div class="pt-2">
+                <span class="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-secondary text-secondary-foreground hover:bg-secondary/80 px-2.5 py-0.5 text-xs">
+                  {category.count}
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

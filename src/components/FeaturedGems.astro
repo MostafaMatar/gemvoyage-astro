@@ -1,0 +1,80 @@
+---
+import { API_BASE_URL } from '../lib/apiConfig';
+import GemCard from './GemCard.astro';
+
+interface Gem {
+  id: string;
+  name: string;
+  description: string;
+  image?: string;
+  city: string;
+  category: string;
+  featured: boolean;
+}
+
+// Fetch featured gems from API
+let gems: Gem[] = [];
+let error: string | null = null;
+
+try {
+  const response = await fetch(`${API_BASE_URL}/gem/featured`);
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch featured gems: ${response.status} ${response.statusText}`);
+  }
+  
+  const data = await response.json();
+  gems = data.gems || data || [];
+} catch (err) {
+  console.error('Error fetching featured gems:', err);
+  error = err instanceof Error ? err.message : 'Failed to fetch featured gems';
+  gems = [];
+}
+
+const { className = '' } = Astro.props;
+
+function cn(...classes: (string | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
+}
+---
+
+<section class={cn("py-12 bg-muted/50", className)}>
+  <div class="container mx-auto px-4">
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold">Featured Gems</h2>
+      <p class="text-muted-foreground mt-2">
+        Handpicked extraordinary destinations you shouldn't miss.
+      </p>
+    </div>
+
+    {error ? (
+      <div class="flex items-center justify-center h-64">
+        <div class="text-center">
+          <p class="text-muted-foreground mb-4">
+            Unable to load featured gems at the moment.
+          </p>
+          <span class="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80 px-2.5 py-0.5 text-xs">
+            {error}
+          </span>
+        </div>
+      </div>
+    ) : gems.length === 0 ? (
+      <div class="flex items-center justify-center h-64">
+        <div class="text-center">
+          <svg class="mx-auto h-12 w-12 text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+          </svg>
+          <p class="text-muted-foreground">
+            No featured gems available at the moment.
+          </p>
+        </div>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {gems.map((gem, index) => (
+          <GemCard gem={gem} size={index === 0 ? 'large' : 'default'} />
+        ))}
+      </div>
+    )}
+  </div>
+</section>
