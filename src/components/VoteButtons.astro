@@ -1,0 +1,203 @@
+---
+// filepath: /home/mostafa/Documents/Mostafa/Software/Projects/gemvoyage-astro/src/components/VoteButtons.astro
+interface Props {
+  initialUpvotes: number;
+  initialDownvotes: number;
+  vertical?: boolean;
+  gemId?: string;
+  commentId?: string;
+}
+
+const { 
+  initialUpvotes, 
+  initialDownvotes, 
+  vertical = false, 
+  gemId, 
+  commentId 
+} = Astro.props;
+
+const score = initialUpvotes - initialDownvotes;
+const scoreColor = score > 0 ? 'text-green-500' : score < 0 ? 'text-red-500' : 'text-gray-500';
+const uniqueId = `vote-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div 
+  class={`vote-buttons flex ${vertical ? 'flex-col items-center' : 'items-center'} gap-1`}
+  data-initial-upvotes={initialUpvotes}
+  data-initial-downvotes={initialDownvotes}
+  data-gem-id={gemId}
+  data-comment-id={commentId}
+  data-unique-id={uniqueId}
+>
+  <button 
+    class="vote-button upvote-btn p-1 h-auto text-gray-500 hover:text-green-500 bg-transparent border-none cursor-pointer transition-colors rounded"
+    data-vote="up"
+  >
+    <svg class={`h-5 w-5`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <polyline points="18,15 12,9 6,15"></polyline>
+    </svg>
+  </button>
+  
+  <span class={`score text-sm font-medium ${scoreColor}`}>
+    {score}
+  </span>
+  
+  <button 
+    class="vote-button downvote-btn p-1 h-auto text-gray-500 hover:text-red-500 bg-transparent border-none cursor-pointer transition-colors rounded"
+    data-vote="down"
+  >
+    <svg class={`h-5 w-5`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <polyline points="6,9 12,15 18,9"></polyline>
+    </svg>
+  </button>
+</div>
+
+<script is:inline>
+  function initializeVoteButtons() {
+    class VoteButtons {
+      constructor(element) {
+        this.element = element;
+        this.upvotes = parseInt(element.dataset.initialUpvotes) || 0;
+        this.downvotes = parseInt(element.dataset.initialDownvotes) || 0;
+        this.userVote = null;
+        this.gemId = element.dataset.gemId;
+        this.commentId = element.dataset.commentId;
+        
+        this.scoreElement = element.querySelector('.score');
+        this.upvoteBtn = element.querySelector('.upvote-btn');
+        this.downvoteBtn = element.querySelector('.downvote-btn');
+        
+        if (this.scoreElement && this.upvoteBtn && this.downvoteBtn) {
+          this.init();
+        }
+      }
+      
+      init() {
+        this.upvoteBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.handleUpvote();
+        });
+        this.downvoteBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.handleDownvote();
+        });
+      }
+      
+      handleUpvote() {
+        if (this.userVote === 'up') {
+          this.upvotes--;
+          this.userVote = null;
+          this.upvoteBtn.classList.remove('text-green-500');
+          this.upvoteBtn.classList.add('text-gray-500');
+        } else {
+          this.upvotes++;
+          if (this.userVote === 'down') {
+            this.downvotes--;
+            this.downvoteBtn.classList.remove('text-red-500');
+            this.downvoteBtn.classList.add('text-gray-500');
+          }
+          this.userVote = 'up';
+          this.upvoteBtn.classList.add('text-green-500');
+          this.upvoteBtn.classList.remove('text-gray-500');
+          
+          this.showToast('Upvoted!', this.commentId ? "You've upvoted this comment." : "You've upvoted this gem.");
+        }
+        
+        this.updateScore();
+      }
+      
+      handleDownvote() {
+        if (this.userVote === 'down') {
+          this.downvotes--;
+          this.userVote = null;
+          this.downvoteBtn.classList.remove('text-red-500');
+          this.downvoteBtn.classList.add('text-gray-500');
+        } else {
+          this.downvotes++;
+          if (this.userVote === 'up') {
+            this.upvotes--;
+            this.upvoteBtn.classList.remove('text-green-500');
+            this.upvoteBtn.classList.add('text-gray-500');
+          }
+          this.userVote = 'down';
+          this.downvoteBtn.classList.add('text-red-500');
+          this.downvoteBtn.classList.remove('text-gray-500');
+          
+          this.showToast('Downvoted', this.commentId ? "You've downvoted this comment." : "You've downvoted this gem.", true);
+        }
+        
+        this.updateScore();
+      }
+      
+      updateScore() {
+        const score = this.upvotes - this.downvotes;
+        this.scoreElement.textContent = score;
+        
+        this.scoreElement.classList.remove('text-green-500', 'text-red-500', 'text-gray-500');
+        if (score > 0) {
+          this.scoreElement.classList.add('text-green-500');
+        } else if (score < 0) {
+          this.scoreElement.classList.add('text-red-500');
+        } else {
+          this.scoreElement.classList.add('text-gray-500');
+        }
+      }
+      
+      showToast(title, description, isDestructive = false) {
+        // Remove existing toasts
+        const existingToasts = document.querySelectorAll('.vote-toast');
+        existingToasts.forEach(toast => toast.remove());
+        
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `vote-toast fixed bottom-4 right-4 p-4 rounded-md shadow-lg z-50 transition-all duration-300 ${
+          isDestructive ? 'bg-red-600 text-white' : 'bg-green-600 text-white'
+        }`;
+        toast.innerHTML = `
+          <div class="font-medium">${title}</div>
+          <div class="text-sm opacity-90">${description}</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(100%)';
+          setTimeout(() => {
+            if (document.body.contains(toast)) {
+              document.body.removeChild(toast);
+            }
+          }, 300);
+        }, 3000);
+      }
+    }
+    
+    // Initialize all vote button components
+    const voteElements = document.querySelectorAll('.vote-buttons');
+    voteElements.forEach(element => {
+      if (!element.dataset.initialized) {
+        new VoteButtons(element);
+        element.dataset.initialized = 'true';
+      }
+    });
+  }
+  
+  // Initialize on DOM content loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeVoteButtons);
+  } else {
+    initializeVoteButtons();
+  }
+</script>
+
+<style>
+  .vote-button:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+  
+  .vote-button:active {
+    transform: scale(0.95);
+  }
+</style>

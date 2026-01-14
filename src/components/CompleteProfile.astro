@@ -1,0 +1,238 @@
+---
+import { API_BASE_URL } from '../lib/apiConfig';
+
+interface Props {
+  onComplete?: (data: any) => void;
+}
+
+const { onComplete } = Astro.props;
+
+const questions = [
+  { key: 'firstName', label: 'What is your first name?' },
+  { key: 'lastName', label: 'What is your last name?' },
+  { key: 'city', label: 'Which city do you live in?' },
+  { key: 'bio', label: 'Tell us a bit about yourself.' },
+];
+---
+
+<div class="max-w-2xl min-h-[60vh] mx-auto p-8 flex flex-col justify-center items-center" id="complete-profile">
+  <h2 class="text-3xl font-bold mb-8">Complete Your Profile</h2>
+  <form
+    id="profile-form"
+    class="w-full flex flex-col items-center"
+    style="max-width: 500px"
+  >
+    <div id="question-container" class="w-full transition-opacity duration-300">
+      <label id="question-label" class="block mb-4 text-2xl font-semibold text-center"></label>
+      <input
+        type="text"
+        id="question-input"
+        class="w-full text-lg border-2 border-primary rounded-xl p-4 mb-8 shadow focus:ring-2 focus:ring-primary"
+      />
+      <textarea
+        id="question-textarea"
+        class="w-full min-h-[120px] text-lg border-2 border-primary rounded-xl p-4 mb-8 shadow focus:ring-2 focus:ring-primary hidden"
+        rows="5"
+      ></textarea>
+    </div>
+    <div id="error-message" class="text-red-600 mb-4 text-lg font-medium hidden"></div>
+    <div class="flex justify-between w-full mt-8">
+      <button
+        type="button"
+        id="back-btn"
+        class="px-6 py-3 bg-gray-200 text-lg rounded-xl hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Back
+      </button>
+      <button
+        type="submit"
+        id="next-btn"
+        class="px-6 py-3 bg-primary text-white text-lg rounded-xl hover:bg-primary-dark transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Next
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Auth redirect check -->
+<div id="auth-redirect" class="hidden">
+  <script>
+    if (!(localStorage.getItem('isLoggedIn') === 'true' && 
+          localStorage.getItem('access_token') !== null && 
+          localStorage.getItem('userId') !== null)) {
+      window.location.href = '/login';
+    }
+  </script>
+</div>
+
+<script define:vars={{ API_BASE_URL, questions }}>
+  // State management
+  let step = 0;
+  let profile = {
+    firstName: '',
+    lastName: '',
+    city: '',
+    bio: '',
+    profilePicture: null,
+  };
+  let transitioning = false;
+  let questionKey = 0;
+
+  // DOM elements
+  const form = document.getElementById('profile-form');
+  const questionContainer = document.getElementById('question-container');
+  const questionLabel = document.getElementById('question-label');
+  const questionInput = document.getElementById('question-input');
+  const questionTextarea = document.getElementById('question-textarea');
+  const errorMessage = document.getElementById('error-message');
+  const backBtn = document.getElementById('back-btn');
+  const nextBtn = document.getElementById('next-btn');
+
+  function showToast(title, description, variant = 'default') {
+    // Simple toast implementation - you can integrate with your toast system
+    console.log(`${title}: ${description}`);
+    if (variant === 'destructive') {
+      showError(description);
+    }
+  }
+
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.remove('hidden');
+    setTimeout(() => {
+      errorMessage.classList.add('hidden');
+    }, 5000);
+  }
+
+  function hideError() {
+    errorMessage.classList.add('hidden');
+  }
+
+  function updateQuestion() {
+    const question = questions[step];
+    questionLabel.textContent = question.label;
+    
+    if (step === 3) { // Bio question
+      questionInput.classList.add('hidden');
+      questionTextarea.classList.remove('hidden');
+      questionTextarea.value = profile.bio;
+      questionTextarea.focus();
+    } else {
+      questionTextarea.classList.add('hidden');
+      questionInput.classList.remove('hidden');
+      questionInput.name = question.key;
+      questionInput.value = profile[question.key] || '';
+      questionInput.focus();
+    }
+
+    // Update button states
+    backBtn.disabled = step === 0 || transitioning;
+    nextBtn.textContent = step === questions.length - 1 ? 'Finish' : 'Next';
+    nextBtn.disabled = transitioning;
+  }
+
+  function getCurrentValue() {
+    if (step === 3) {
+      return questionTextarea.value;
+    }
+    return questionInput.value;
+  }
+
+  function setCurrentValue(value) {
+    const key = questions[step].key;
+    profile[key] = value;
+  }
+
+  async function handleNext() {
+    hideError();
+    setTransitioning(true);
+    
+    // Get current input value
+    const currentValue = getCurrentValue();
+    setCurrentValue(currentValue);
+
+    setTimeout(async () => {
+      setTransitioning(false);
+      
+      if (step === questions.length - 1) {
+        // Submit profile
+        try {
+          const res = await fetch(`${API_BASE_URL}/user_profiles`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              firstName: profile.firstName,
+              lastName: profile.lastName,
+              city: profile.city,
+              bio: profile.bio,
+              userId: localStorage.getItem('userId'),
+            }),
+          });
+          
+          if (!res.ok) {
+            showToast('Error', 'Failed to create profile', 'destructive');
+            throw new Error('Failed to create profile');
+          }
+          
+          showToast('Success', 'Profile created successfully!', 'default');
+          window.location.href = '/';
+        } catch (err) {
+          showToast('Error', 'Failed to create profile.', 'destructive');
+        }
+        return;
+      }
+      
+      step++;
+      questionKey++;
+      updateQuestion();
+    }, 250);
+  }
+
+  function handleBack() {
+    hideError();
+    setTransitioning(true);
+    
+    setTimeout(() => {
+      setTransitioning(false);
+      step = Math.max(0, step - 1);
+      questionKey++;
+      updateQuestion();
+    }, 250);
+  }
+
+  function setTransitioning(isTransitioning) {
+    transitioning = isTransitioning;
+    if (isTransitioning) {
+      questionContainer.classList.add('opacity-0');
+      questionContainer.classList.remove('opacity-100');
+    } else {
+      questionContainer.classList.remove('opacity-0');
+      questionContainer.classList.add('opacity-100');
+    }
+    
+    backBtn.disabled = step === 0 || transitioning;
+    nextBtn.disabled = transitioning;
+  }
+
+  // Event listeners
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    handleNext();
+  });
+
+  backBtn.addEventListener('click', handleBack);
+
+  questionInput.addEventListener('input', (e) => {
+    setCurrentValue(e.target.value);
+  });
+
+  questionTextarea.addEventListener('input', (e) => {
+    setCurrentValue(e.target.value);
+  });
+
+  // Initialize
+  updateQuestion();
+</script>
