@@ -3,10 +3,9 @@ interface Props {
   author: {
     id: string;
     name: string;
-    avatar?: string;
   };
   createdAt: string;
-  className?: string;
+  className: string;
 }
 
 const { author, createdAt, className = '' } = Astro.props;
@@ -30,21 +29,8 @@ function formatDate(dateString: string) {
 
 <div class={cn("flex items-center space-x-2", className)}>
   <div class="flex items-center space-x-2">
-    {author.avatar ? (
-      <img
-        src={author.avatar}
-        alt={author.name}
-        class="w-6 h-6 rounded-full object-cover"
-        loading="lazy"
-      />
-    ) : (
-      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-        <span class="text-xs font-medium text-white">
-          {author.name.charAt(0).toUpperCase()}
-        </span>
-      </div>
-    )}
-    <span class="text-sm text-muted-foreground">{author.name}</span>
+    <span class="text-sm text-muted-foreground">{author ? <p>{author.name}</p> : <p>Unknown author</p>}
+</span>
   </div>
   <span class="text-sm text-muted-foreground">•</span>
   <span class="text-sm text-muted-foreground">{formatDate(createdAt)}</span>

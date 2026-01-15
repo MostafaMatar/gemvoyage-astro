@@ -1,0 +1,296 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GemCard from '../components/GemCard.astro';
+import { API_BASE_URL } from '../lib/apiConfig';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+const categories = [
+  'All',
+  'Culture',
+  'History',
+  'Nature',
+  'Shopping',
+  'Food',
+  'Entertainment',
+];
+
+// Get parameters from URL
+const url = Astro.url;
+const searchQuery = url.searchParams.get('search') || '';
+const selectedCategory = url.searchParams.get('category') || 'All';
+const currentPage = parseInt(url.searchParams.get('page') || '1');
+const gemsPerPage = 9;
+
+interface Gem {
+  id: string;
+  title: string;
+  description: string;
+  image?: string;
+  location: string;
+  category: string;
+  createdAt: string;
+  slug: string;
+  featured?: boolean;
+  author: {
+    id: string;
+    name: string;
+  };
+  upvotes: number;
+  downvotes: number;
+}
+
+// Fetch and filter gems
+let allGems: Gem[] = [];
+let filteredGems: Gem[] = [];
+let error: string | null = null;
+
+try {
+  const response = await fetch(`${API_BASE_URL}/gem`);
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch gems: ${response.status} ${response.statusText}`);
+  }
+  
+  const data = await response.json();
+  allGems = data.gems || data || [];
+
+  // Apply filters server-side
+  filteredGems = allGems.filter(gem => {
+    const matchesCategory = selectedCategory === 'All' || gem.category === selectedCategory;
+    const matchesSearch = !searchQuery.trim() || 
+      gem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      gem.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      gem.location.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesCategory && matchesSearch;
+  });
+} catch (err) {
+  console.error('Error fetching gems:', err);
+  error = err instanceof Error ? err.message : 'Failed to fetch gems';
+  allGems = [];
+  filteredGems = [];
+}
+
+// Pagination calculations
+const totalGems = filteredGems.length;
+const totalPages = Math.ceil(totalGems / gemsPerPage);
+const startIndex = (currentPage - 1) * gemsPerPage;
+const endIndex = startIndex + gemsPerPage;
+const displayGems = filteredGems.slice(startIndex, endIndex);
+
+// Helper function for building URLs
+function buildURL(params: Record<string, string | number | null>) {
+  const newURL = new URL(url);
+  
+  // Clear existing search params
+  newURL.search = '';
+  
+  // Add non-null params
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== null && value !== '' && !(key === 'category' && value === 'All') && !(key === 'page' && value === 1)) {
+      newURL.searchParams.set(key, value.toString());
+    }
+  });
+  
+  return newURL.pathname + newURL.search;
+}
+
+// Pre-compute pagination data
+const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i) => {
+  const pageNum = i + 1;
+  return {
+    pageNum,
+    isActive: pageNum === currentPage,
+    href: buildURL({ search: searchQuery, category: selectedCategory, page: pageNum })
+  };
+}) : [];
+---
+
+<Layout title="Explore Hidden Gems & Secret Destinations | GemVoyage">
+<Navbar />
+  <section>
+    <div class="py-8">
+      <div class="container mx-auto px-4">
+        <div class="mb-8">
+          <h1 class="text-3xl font-bold mb-2">Explore Hidden Gems</h1>
+          <p class="text-gray-600">
+            Discover extraordinary places shared by our community of travelers
+          </p>
+        </div>
+        
+        <div class="flex flex-col md:flex-row gap-6 mb-8">
+          <div class="md:w-2/3">
+            <form id="search-form" class="relative" method="GET">
+              <input 
+                id="search-input"
+                name="search"
+                type="text"
+                value={searchQuery}
+                placeholder="Search by name, description, or location" 
+                class="pl-5 w-full text-lg border-2 rounded-xl p-3 mb-4 shadow focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              />
+              <input type="hidden" name="category" value={selectedCategory} />
+            </form>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row gap-4 md:w-1/3">
+            <select 
+              id="category-select"
+              name="category"
+              class="w-full text-lg border-2 rounded-xl p-3 mb-4 shadow focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            >
+              {categories.map(category => (
+                <option value={category} selected={category === selectedCategory}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
+        <!-- Results Info -->
+        {totalGems > 0 && (
+          <div id="results-info" class="mb-6 text-gray-600">
+            {(() => {
+              const hasFilters = searchQuery.trim() || selectedCategory !== 'All';
+              const startGemIndex = startIndex + 1;
+              const endGemIndex = Math.min(endIndex, totalGems);
+              
+              return hasFilters 
+                ? `Found ${totalGems} ${totalGems === 1 ? 'gem' : 'gems'} • Page ${currentPage} of ${totalPages}`
+                : `Showing ${endGemIndex - startGemIndex + 1} gems • Page ${currentPage} of ${totalPages}`;
+            })()}
+          </div>
+        )}
+        
+        <!-- Gems Grid -->
+        <div id="gems-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {error ? (
+            <div class="col-span-full flex items-center justify-center h-64">
+              <div class="text-center">
+                <p class="text-muted-foreground mb-4">
+                  Unable to load gems at the moment.
+                </p>
+                <span class="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80 px-2.5 py-0.5 text-xs">
+                  {error}
+                </span>
+              </div>
+            </div>
+          ) : displayGems.length === 0 ? (
+            <div class="col-span-full text-center py-16">
+              <h3 class="text-xl font-semibold mb-2">No gems found</h3>
+              <p class="text-gray-600 mb-6">
+                Try adjusting your filters or search query
+              </p>
+              <a 
+                href="/browse"
+                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Clear Filters
+              </a>
+            </div>
+          ) : (
+            displayGems.map((gem) => (
+              <GemCard gem={gem} />
+            ))
+          )}
+        </div>
+
+        <!-- Pagination -->
+        {totalPages > 1 && (
+          <div id="pagination" class="flex justify-center items-center gap-2 mt-8">
+            {currentPage > 1 && (
+              <a 
+                href={buildURL({ search: searchQuery, category: selectedCategory, page: currentPage - 1 })}
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Prev
+              </a>
+            )}
+            
+            <div id="page-numbers" class="flex gap-1">
+              {totalPages <= 10 ? (
+                pageNumbers.map((page) => (
+                  <a 
+                    href={page.href}
+                    class={`px-3 py-1 text-sm rounded transition-colors ${page.isActive 
+                      ? 'bg-blue-600 text-white' 
+                      : 'border border-gray-300 hover:bg-gray-50'}`}
+                  >
+                    {page.pageNum}
+                  </a>
+                ))
+              ) : (
+                <span class="px-4 py-2 text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+              )}
+            </div>
+            
+            {currentPage < totalPages && (
+              <a 
+                href={buildURL({ search: searchQuery, category: selectedCategory, page: currentPage + 1 })}
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Next
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+  <Footer />
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Handle search form submission
+      const searchForm = document.getElementById('search-form');
+      if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const searchInput = document.getElementById('search-input');
+          const categorySelect = document.getElementById('category-select');
+          
+          const params = new URLSearchParams();
+          
+          if (searchInput.value.trim()) {
+            params.set('search', searchInput.value.trim());
+          }
+          
+          if (categorySelect.value !== 'All') {
+            params.set('category', categorySelect.value);
+          }
+          
+          // Reset to page 1 when searching
+          const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+          window.location.href = newURL;
+        });
+      }
+
+      // Handle category change
+      const categorySelect = document.getElementById('category-select');
+      if (categorySelect) {
+        categorySelect.addEventListener('change', function() {
+          const searchInput = document.getElementById('search-input');
+          
+          const params = new URLSearchParams();
+          
+          if (searchInput.value.trim()) {
+            params.set('search', searchInput.value.trim());
+          }
+          
+          if (categorySelect.value !== 'All') {
+            params.set('category', categorySelect.value);
+          }
+          
+          // Reset to page 1 when changing category
+          const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+          window.location.href = newURL;
+        });
+      }
+    });
+  </script>
+</Layout>
