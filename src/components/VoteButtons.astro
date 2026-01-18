@@ -18,7 +18,9 @@ const {
 
 const score = initialUpvotes - initialDownvotes;
 const scoreColor = score > 0 ? 'text-green-500' : score < 0 ? 'text-red-500' : 'text-gray-500';
-const uniqueId = `vote-${Math.random().toString(36).substr(2, 9)}`;
+
+// Generate unique ID for this component instance
+const uniqueId = `vote-${Math.random().toString(36).substring(2, 9)}`;
 ---
 
 <div 

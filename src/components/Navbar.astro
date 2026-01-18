@@ -95,7 +95,7 @@ const currentPath = Astro.url.pathname;
   <div id="logout-error" class="text-red-600 text-sm text-center mt-2 hidden"></div>
 </header>
 
-<script define:vars={{ API_BASE_URL }}>
+<script is:inline define:vars={{ API_BASE_URL }}>
   // State management
   let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   let isMobileMenuOpen = false;

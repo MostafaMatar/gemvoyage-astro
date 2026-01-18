@@ -234,7 +234,7 @@ const markdownToHtml = (markdown: string) => {
     <meta name="geo.placename" content={gemLocation} />
     
     <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
     
     <!-- Preload critical image -->
     <link rel="preload" as="image" href={gemImage} />
@@ -356,7 +356,7 @@ const markdownToHtml = (markdown: string) => {
   </div>
   <Footer />
 
-  <script define:vars={{ gemId, API_BASE_URL }}>
+  <script is:inline define:vars={{ gemId, API_BASE_URL }}>
     let currentVotes = [];
 
     // Toast notification function

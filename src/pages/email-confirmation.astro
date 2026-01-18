@@ -28,7 +28,7 @@ import Footer from '../components/Footer.astro';
   </div>
   <Footer />
 
-  <script>
+  <script is:inline>
     const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
     
     const emailDisplay = document.getElementById('email-display');
@@ -37,11 +37,13 @@ import Footer from '../components/Footer.astro';
 
     const email = localStorage.getItem('pending_verification_email');
     
-    if (email) {
+    if (email && emailDisplay) {
       emailDisplay.textContent = email;
     }
 
-    function showToast(title, message, type = 'success') {
+    function showToast(title, message, type) {
+      if (!toastContainer) return;
+      
       const toast = document.createElement('div');
       const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
       
@@ -62,6 +64,8 @@ import Footer from '../components/Footer.astro';
     }
 
     const handleResend = async () => {
+      if (!resendButton) return;
+      
       const button = resendButton;
       button.disabled = true;
       button.textContent = 'Resending...';
@@ -85,16 +89,21 @@ import Footer from '../components/Footer.astro';
           }
           showToast('Error', errorMessage, 'error');
         } else {
-          showToast('Success', 'Verification email resent! Please check your inbox.');
+          showToast('Success', 'Verification email resent! Please check your inbox.', 'success');
         }
       } catch (err) {
-        showToast('Error', err.message || 'Failed to resend verification email.', 'error');
+        const errorMessage = err instanceof Error ? err.message : 'Failed to resend verification email.';
+        showToast('Error', errorMessage, 'error');
       } finally {
-        button.disabled = false;
-        button.textContent = 'Resend Verification Email';
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Resend Verification Email';
+        }
       }
     };
 
-    resendButton.addEventListener('click', handleResend);
+    if (resendButton) {
+      resendButton.addEventListener('click', handleResend);
+    }
   </script>
 </Layout>

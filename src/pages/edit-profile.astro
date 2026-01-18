@@ -66,7 +66,7 @@ import Footer from '../components/Footer.astro';
   </div>
   <Footer />
 
-  <script>
+  <script is:inline>
     const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
     
     // Check authentication
@@ -83,14 +83,14 @@ import Footer from '../components/Footer.astro';
     const submitButton = document.getElementById('submit-button');
 
     // Show loading
-    loadingDiv.classList.remove('hidden');
+    if (loadingDiv) loadingDiv.classList.remove('hidden');
 
     // Fetch user profile
     const userId = localStorage.getItem('userId');
     
     if (!userId) {
       showError('User ID not found.');
-      loadingDiv.classList.add('hidden');
+      if (loadingDiv) loadingDiv.classList.add('hidden');
     } else {
       fetch(`${API_BASE_URL}/user_profiles/${userId}`)
         .then(async (res) => {
@@ -98,80 +98,93 @@ import Footer from '../components/Footer.astro';
           return res.json();
         })
         .then((data) => {
-          document.getElementById('firstName').value = data.firstName || '';
-          document.getElementById('lastName').value = data.lastName || '';
-          document.getElementById('city').value = data.city || '';
-          document.getElementById('bio').value = data.bio || '';
+          const firstNameEl = document.getElementById('firstName');
+          const lastNameEl = document.getElementById('lastName');
+          const cityEl = document.getElementById('city');
+          const bioEl = document.getElementById('bio');
           
-          loadingDiv.classList.add('hidden');
-          profileForm.classList.remove('hidden');
+          if (firstNameEl) firstNameEl.value = data.firstName || '';
+          if (lastNameEl) lastNameEl.value = data.lastName || '';
+          if (cityEl) cityEl.value = data.city || '';
+          if (bioEl) bioEl.value = data.bio || '';
+          
+          if (loadingDiv) loadingDiv.classList.add('hidden');
+          if (profileForm) profileForm.classList.remove('hidden');
         })
         .catch(() => {
           showError('Failed to fetch user profile.');
-          loadingDiv.classList.add('hidden');
+          if (loadingDiv) loadingDiv.classList.add('hidden');
         });
     }
 
     // Handle form submission
-    profileForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      hideMessages();
-      setLoading(true);
-      
-      const formData = new FormData(profileForm);
-      const profile = {
-        firstName: formData.get('firstName'),
-        lastName: formData.get('lastName'),
-        city: formData.get('city'),
-        bio: formData.get('bio'),
-      };
-
-      try {
-        const res = await fetch(`${API_BASE_URL}/user_profiles`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(profile),
-        });
+    if (profileForm) {
+      profileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        if (!res.ok) {
-          const text = await res.text();
-          showError('Failed to update profile: ' + text);
-        } else {
-          showSuccess('Profile updated successfully!');
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 1200);
+        hideMessages();
+        setLoading(true);
+        
+        const formData = new FormData(profileForm);
+        const profile = {
+          firstName: formData.get('firstName'),
+          lastName: formData.get('lastName'),
+          city: formData.get('city'),
+          bio: formData.get('bio'),
+        };
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/user_profiles`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(profile),
+          });
+          
+          if (!res.ok) {
+            const text = await res.text();
+            showError('Failed to update profile: ' + text);
+          } else {
+            showSuccess('Profile updated successfully!');
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 1200);
+          }
+        } catch (err) {
+          showError('Failed to update profile.');
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        showError('Failed to update profile.');
-      } finally {
-        setLoading(false);
-      }
-    });
+      });
+    }
 
     function showError(message) {
-      errorMessage.textContent = message;
-      errorMessage.classList.remove('hidden');
-      successMessage.classList.add('hidden');
+      if (errorMessage) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('hidden');
+      }
+      if (successMessage) successMessage.classList.add('hidden');
     }
 
     function showSuccess(message) {
-      successMessage.textContent = message;
-      successMessage.classList.remove('hidden');
-      errorMessage.classList.add('hidden');
+      if (successMessage) {
+        successMessage.textContent = message;
+        successMessage.classList.remove('hidden');
+      }
+      if (errorMessage) errorMessage.classList.add('hidden');
     }
 
     function hideMessages() {
-      errorMessage.classList.add('hidden');
-      successMessage.classList.add('hidden');
+      if (errorMessage) errorMessage.classList.add('hidden');
+      if (successMessage) successMessage.classList.add('hidden');
     }
 
     function setLoading(loading) {
-      submitButton.textContent = loading ? 'Saving...' : 'Save';
-      submitButton.disabled = loading;
+      if (submitButton) {
+        submitButton.textContent = loading ? 'Saving...' : 'Save';
+        submitButton.disabled = loading;
+      }
     }
   </script>
 </Layout>

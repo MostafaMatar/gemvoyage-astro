@@ -89,7 +89,7 @@ import Footer from '../components/Footer.astro';
   </div>
   <Footer />
 
-  <script>
+  <script is:inline>
     const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
     
     const registerForm = document.getElementById('register-form');
@@ -97,77 +97,88 @@ import Footer from '../components/Footer.astro';
     const submitButton = document.getElementById('submit-button');
 
     function showError(message) {
-      errorMessage.textContent = message;
-      errorMessage.classList.remove('hidden');
+      if (errorMessage) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('hidden');
+      }
     }
 
     function hideError() {
-      errorMessage.classList.add('hidden');
+      if (errorMessage) {
+        errorMessage.classList.add('hidden');
+      }
     }
 
     function setLoading(loading) {
-      submitButton.textContent = loading ? 'Registering...' : 'Register';
-      submitButton.disabled = loading;
+      if (submitButton) {
+        submitButton.textContent = loading ? 'Registering...' : 'Register';
+        submitButton.disabled = loading;
+      }
     }
 
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      hideError();
-      setLoading(true);
+    if (registerForm) {
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideError();
+        setLoading(true);
 
-      const formData = new FormData(registerForm);
-      const email = formData.get('email');
-      const password = formData.get('password');
-      const confirmPassword = formData.get('confirmPassword');
-      const acceptPrivacy = formData.get('privacy');
-      const acceptTerms = formData.get('terms');
+        const formData = new FormData(registerForm);
+        const email = formData.get('email');
+        const password = formData.get('password');
+        const confirmPassword = formData.get('confirmPassword');
+        const acceptPrivacy = formData.get('privacy');
+        const acceptTerms = formData.get('terms');
 
-      // Basic validation
-      if (password !== confirmPassword) {
-        showError('Passwords do not match');
-        setLoading(false);
-        return;
-      }
-
-      if (!acceptPrivacy || !acceptTerms) {
-        showError('You must accept both privacy policy and terms of service');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/auth/register`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          let errorMsg;
-          try {
-            errorMsg = JSON.parse(errorText).msg || 'Registration failed';
-          } catch {
-            errorMsg = 'Registration failed';
-          }
-          showError(errorMsg);
+        // Basic validation
+        if (password !== confirmPassword) {
+          showError('Passwords do not match');
           setLoading(false);
           return;
         }
 
-        const data = await response.json();
-        if (data.access_token) {
-          localStorage.setItem('access_token', data.access_token);
+        if (!acceptPrivacy || !acceptTerms) {
+          showError('You must accept both privacy policy and terms of service');
+          setLoading(false);
+          return;
         }
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('pending_verification_email', email);
-        window.location.href = '/email-confirmation';
-      } catch (err) {
-        showError(err.message || 'Registration failed');
-        setLoading(false);
-      }
-    });
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/auth/register`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            let errorMsg;
+            try {
+              errorMsg = JSON.parse(errorText).msg || 'Registration failed';
+            } catch {
+              errorMsg = 'Registration failed';
+            }
+            showError(errorMsg);
+            setLoading(false);
+            return;
+          }
+
+          const data = await response.json();
+          if (data.access_token) {
+            localStorage.setItem('access_token', data.access_token);
+          }
+          localStorage.setItem('isLoggedIn', 'true');
+          if (email) {
+            localStorage.setItem('pending_verification_email', email.toString());
+          }
+          window.location.href = '/email-confirmation';
+        } catch (err) {
+          const errorMessage = err instanceof Error ? err.message : 'Registration failed';
+          showError(errorMessage);
+          setLoading(false);
+        }
+      });
+    }
   </script>
 </Layout>
