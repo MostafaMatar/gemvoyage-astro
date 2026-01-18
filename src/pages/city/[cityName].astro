@@ -1,0 +1,195 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GemCard from '../../components/GemCard.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { API_BASE_URL } from '../../lib/apiConfig';
+
+interface Gem {
+  id: string;
+  title: string;
+  description: string;
+  image?: string;
+  location: string;
+  category: string;
+  createdAt: string;
+  slug: string;
+  featured?: boolean;
+  author: {
+    id: string;
+    name: string;
+  };
+  upvotes: number;
+  downvotes: number;
+}
+
+interface City {
+  id: string;
+  name: string;
+  description?: string;
+  image?: string;
+}
+
+const { cityName } = Astro.params;
+
+if (!cityName) {
+  return Astro.redirect('/404');
+}
+
+// Format city name for display (decode URI and format)
+const displayCityName = decodeURIComponent(cityName).replace(/-/g, ' ');
+
+// Convert URL-friendly city name back to proper format for API
+const apiCityName = decodeURIComponent(cityName)
+  .split('-')
+  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+  .join(' ');
+
+let gems: Gem[] = [];
+let cityData: City | null = null;
+let error: string | null = null;
+let totalGems = 0;
+
+try {
+  // First, fetch all cities to find the matching city data
+  const citiesResponse = await fetch(`${API_BASE_URL}/city`);
+  if (citiesResponse.ok) {
+    const cities: City[] = await citiesResponse.json();
+    const matchingCity = cities.find(city => 
+      city.name.toLowerCase() === apiCityName.toLowerCase()
+    );
+    if (matchingCity) {
+      cityData = matchingCity;
+    }
+  }
+  
+  // Then fetch gems for this city
+  const apiUrl = `${API_BASE_URL}/city/${encodeURIComponent(apiCityName)}/gems`;        
+  const response = await fetch(apiUrl);
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch gems for ${apiCityName}: ${response.status} ${response.statusText}`);
+  }
+  
+  const gemsData = await response.json();
+  gems = gemsData.data || [];
+  totalGems = gems.length;
+} catch (err) {
+  console.error('Error fetching city gems:', err);
+  error = err instanceof Error ? err.message : 'Failed to fetch city gems';
+  gems = [];
+}
+
+// Use city data if available, otherwise fall back to formatted URL
+const actualCityName = cityData?.name || apiCityName;
+const actualCityDescription = cityData?.description || `Discover the hidden gems and local treasures that make ${actualCityName} special. Explore unique places recommended by travelers and locals.`;
+---
+
+<Layout 
+  title={`${actualCityName} - Discover Hidden Gems`}
+  description={`Explore the best hidden gems and local recommendations in ${actualCityName}. Find unique places, restaurants, and attractions discovered by our community.`}
+>
+  <Navbar />
+  <div class="min-h-screen bg-white">
+    <!-- Header Section -->
+    <div class="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-800 text-white">
+      <!-- Background Image -->
+      {cityData?.image && (
+        <div
+          class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={`background-image: url(${cityData.image})`}
+        />
+      )}
+      
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/20"></div>
+      
+      <div class="relative container mx-auto px-4 py-16">
+        <div class="max-w-4xl">
+          <!-- Back Button -->
+          <button
+            onclick="history.back()"
+            class="mb-6 text-white hover:bg-white/20 hover:text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+          >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back
+          </button>
+
+          <!-- City Info -->
+          <div class="space-y-4">                
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              {actualCityName}
+            </h1>
+            
+            <p class="text-lg md:text-xl text-white/90 leading-relaxed max-w-3xl">
+              {actualCityDescription}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="container mx-auto px-4 py-12">
+      {error ? (
+        <div class="flex items-center justify-center h-64">
+          <div class="text-center">
+            <p class="text-gray-600 mb-4">
+              Unable to load gems for {actualCityName} at the moment.
+            </p>
+            <span class="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-red-500 text-white hover:bg-red-600 px-2.5 py-0.5 text-xs">
+              {error}
+            </span>
+          </div>
+        </div>
+      ) : !gems || gems.length === 0 ? (
+        <div class="flex items-center justify-center h-64">
+          <div class="text-center">
+            <h3 class="text-lg font-semibold mb-2">No gems found in {actualCityName}</h3>
+            <p class="text-gray-600 mb-4">
+              Be the first to discover and share hidden gems in this city!
+            </p>
+            <a 
+              href="/create"
+              class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-block"
+            >
+              Add a Gem
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-2">Hidden Gems in {actualCityName}</h2>
+            <p class="text-gray-600">
+              {totalGems} amazing {totalGems === 1 ? 'place' : 'places'} discovered by our community
+            </p>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {gems.map((gem) => (
+              <GemCard gem={gem} />
+            ))}
+          </div>
+
+          <!-- Load More Section (placeholder for future pagination) -->
+          {gems && totalGems > gems.length && (
+            <div class="flex justify-center mt-12">
+              <p class="text-gray-600">
+                Showing {gems.length} of {totalGems} gems
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+  <Footer />
+</Layout>
+
+<script>
+  // Any client-side JavaScript can go here if needed
+  console.log('City detail page loaded');
+</script>

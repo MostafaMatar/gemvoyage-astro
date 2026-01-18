@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout 
+  title="Verify Your Email | GemVoyage"
+  description="Complete your GemVoyage account setup by verifying your email address."
+  noIndex={true}
+>
+  <Navbar />
+  <div class="max-w-md mx-auto p-4 text-center min-h-[60vh] flex flex-col justify-center">
+    <h1 class="text-2xl font-bold mb-4">Verify Your Email</h1>
+    <p class="mb-4">
+      We have sent a verification email to <span id="email-display" class="font-semibold"></span>. 
+      Please check your inbox and verify your email before you can start using the app.
+    </p>
+    <button
+      id="resend-button"
+      class="py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Resend Verification Email
+    </button>
+    
+    <!-- Toast notification area -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+  </div>
+  <Footer />
+
+  <script>
+    const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
+    
+    const emailDisplay = document.getElementById('email-display');
+    const resendButton = document.getElementById('resend-button');
+    const toastContainer = document.getElementById('toast-container');
+
+    const email = localStorage.getItem('pending_verification_email');
+    
+    if (email) {
+      emailDisplay.textContent = email;
+    }
+
+    function showToast(title, message, type = 'success') {
+      const toast = document.createElement('div');
+      const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+      
+      toast.className = `${bgColor} text-white p-4 rounded-lg shadow-lg mb-2 max-w-sm`;
+      toast.innerHTML = `
+        <div class="font-semibold">${title}</div>
+        <div class="text-sm">${message}</div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 5000);
+    }
+
+    const handleResend = async () => {
+      const button = resendButton;
+      button.disabled = true;
+      button.textContent = 'Resending...';
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          let errorMessage;
+          try {
+            errorMessage = JSON.parse(errorText).msg || 'Failed to resend verification email.';
+          } catch {
+            errorMessage = 'Failed to resend verification email.';
+          }
+          showToast('Error', errorMessage, 'error');
+        } else {
+          showToast('Success', 'Verification email resent! Please check your inbox.');
+        }
+      } catch (err) {
+        showToast('Error', err.message || 'Failed to resend verification email.', 'error');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Resend Verification Email';
+      }
+    };
+
+    resendButton.addEventListener('click', handleResend);
+  </script>
+</Layout>

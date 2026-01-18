@@ -1,104 +1,96 @@
 ---
-// filepath: /home/mostafa/Documents/Mostafa/Software/Projects/gemvoyage-astro/src/components/TermsOfService.astro
-const terms = [
+import Navbar from './Navbar.astro';
+import Footer from './Footer.astro';
+
+const termsSections = [
   {
     title: "1. Acceptance of Terms",
     content: [
-      "By accessing and using GemVoyage, you agree to be bound by these Terms of Use and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using the service."
+      "By accessing and using GemVoyage, you accept and agree to be bound by the terms and provision of this agreement.",
+      "If you do not agree to abide by the above, please do not use this service."
     ]
   },
   {
     title: "2. Use License",
     content: [
-      "Permission is granted to temporarily access GemVoyage for personal, non-commercial use. This license does not include:",
-      "Modifying or copying materials",
-      "Using materials for commercial purposes",
-      "Attempting to decompile or reverse engineer software",
-      "Removing any copyright or proprietary notations",
-      "Transferring materials to another person"
+      "Permission is granted to temporarily download one copy of GemVoyage for personal, non-commercial transitory viewing only.",
+      "This is the grant of a license, not a transfer of title, and under this license you may not:",
+      "modify or copy the materials",
+      "use the materials for any commercial purpose or for any public display",
+      "attempt to reverse engineer any software contained on GemVoyage's website",
+      "remove any copyright or other proprietary notations from the materials"
     ]
   },
   {
     title: "3. User Content",
     content: [
-      "When you submit content to GemVoyage, you:",
-      "Retain your ownership rights",
-      "Grant us a worldwide, non-exclusive license to use your content",
-      "Warrant that you have the right to share the content",
-      "Agree not to post harmful or illegal content"
+      "Users are responsible for all content they post on GemVoyage.",
+      "You retain ownership of your content but grant us a license to use it.",
+      "Content must not be illegal, harmful, or infringe on others' rights.",
+      "We reserve the right to remove content that violates these terms."
     ]
   },
   {
-    title: "4. Prohibited Activities",
+    title: "4. Privacy Policy",
     content: [
-      "You must not:",
-      "Use the service for unlawful purposes",
-      "Post false or misleading information",
-      "Impersonate others",
-      "Attempt to access unauthorized areas",
-      "Interfere with the service's functionality"
+      "Your privacy is important to us. Please review our Privacy Policy.",
+      "By using our service, you agree to the collection and use of information in accordance with our Privacy Policy."
     ]
   },
   {
-    title: "5. Travel Information Disclaimer",
+    title: "5. Prohibited Uses",
     content: [
-      "While we strive for accuracy:",
-      "Travel information may change without notice",
-      "Users should verify details independently",
-      "We're not responsible for travel outcomes",
-      "Local regulations and conditions may vary"
+      "You may not use our service:",
+      "For any unlawful purpose or to solicit others to act unlawfully",
+      "To violate any international, federal, provincial, or state regulations, rules, laws, or local ordinances",
+      "To infringe upon or violate our intellectual property rights or the intellectual property rights of others",
+      "To harass, abuse, insult, harm, defame, slander, disparage, intimidate, or discriminate",
+      "To submit false or misleading information"
     ]
   },
   {
-    title: "6. Limitation of Liability",
+    title: "6. Termination",
     content: [
-      "GemVoyage and its suppliers shall not be liable for:",
-      "Direct, indirect, or consequential damages",
-      "Lost profits or data",
-      "Business interruption",
-      "Personal injury related to use of service"
+      "We may terminate or suspend your account and bar access to the service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms."
     ]
   },
   {
-    title: "7. Termination",
+    title: "7. Disclaimer",
     content: [
-      "We may terminate or suspend access to our service immediately, without prior notice, for:",
-      "Breach of Terms",
-      "Harmful behavior",
-      "Legal requirements",
-      "Service discontinuation"
-    ]
-  },
-  {
-    title: "8. Governing Law",
-    content: [
-      "These terms shall be governed by and construed in accordance with the laws of [Jurisdiction], without regard to its conflict of law provisions."
-    ]
-  },
-  {
-    title: "9. Changes to Terms",
-    content: [
-      "We reserve the right to modify these terms at any time. We will notify users of any material changes via:",
-      "Email notification",
-      "Site announcement",
-      "Terms page update"
+      "The information on this website is provided on an 'as is' basis.",
+      "To the fullest extent permitted by law, this Company excludes all representations, warranties, conditions and terms relating to our website and the use of this website."
     ]
   }
 ];
 ---
 
+<Navbar />
 <div class="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-md my-12">
   <h1 class="text-3xl font-bold mb-8 text-center">Terms of Service</h1>
   <div class="space-y-8">
-    {terms.map((section, idx) => (
+    {termsSections.map((section) => (
       <section>
         <h2 class="text-xl font-semibold mb-2">{section.title}</h2>
         <ul class="list-disc ml-6 space-y-1">
-          {section.content.map((line, i) => (
+          {section.content.map((line) => (
             <li class="text-base text-gray-600">{line}</li>
           ))}
         </ul>
       </section>
     ))}
   </div>
+  
+  <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+    <p class="text-sm text-gray-600">
+      <strong>Last updated:</strong> {new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })}
+    </p>
+    <p class="text-sm text-gray-600 mt-2">
+      If you have any questions about these Terms of Service, please contact us.
+    </p>
+  </div>
 </div>
+<Footer />

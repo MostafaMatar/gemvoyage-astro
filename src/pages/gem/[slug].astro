@@ -1,0 +1,479 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { API_BASE_URL } from '../../lib/apiConfig';
+
+interface Gem {
+  id: string;
+  title: string;
+  description: string;
+  image?: string;
+  imageUrl?: string;
+  location: string;
+  category: string;
+  createdAt: string;
+  slug: string;
+  featured?: boolean;
+  owner?: string;
+  ownerId?: string;
+  author?: {
+    id: string;
+    name: string;
+  };
+  upvotes: number;
+  downvotes: number;
+}
+
+interface Vote {
+  positive: boolean;
+  ownerId?: string;
+  id?: string;
+  createdAt?: string;
+}
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/browse');
+}
+
+let gem: Gem | null = null;
+let votes: Vote[] = [];
+let error: string | null = null;
+let loading = false;
+
+try {
+  // Fetch gem data using slug
+  const res = await fetch(`${API_BASE_URL}/gem/${slug}`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch gem details.');
+  }
+  gem = await res.json();
+
+  // Fetch votes using gem ID
+  if (gem?.id) {
+    try {
+      const votesRes = await fetch(`${API_BASE_URL}/vote/gem/${gem.id}`);
+      if (votesRes.ok) {
+        votes = await votesRes.json();
+      }
+    } catch {
+      votes = [];
+    }
+  }
+} catch (err) {
+  console.error('Error fetching gem:', err);
+  error = err instanceof Error ? err.message : 'Failed to fetch gem details.';
+  return Astro.redirect('/browse');
+}
+
+if (!gem) {
+  return Astro.redirect('/browse');
+}
+
+// Helper function to extract plain text from markdown and limit to 100 characters
+const getDescriptionForSEO = (markdownText: string): string => {
+  if (!markdownText || typeof markdownText !== 'string') {
+    return 'Discover this hidden gem on GemVoyage.';
+  }
+  
+  // Remove markdown syntax and get plain text
+  const plainText = markdownText
+    .replace(/#{1,6}\s/g, '') // Remove headers
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+    .replace(/\*(.*?)\*/g, '$1') // Remove italic
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links, keep text
+    .replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
+    .replace(/`(.*?)`/g, '$1') // Remove code blocks
+    .replace(/\n/g, ' ') // Replace newlines with spaces
+    .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+    .trim();
+  
+  // Limit to 100 characters and add ellipsis if truncated
+  return plainText.length > 100 ? plainText.substring(0, 100) + '...' : plainText;
+};
+
+// Add safety checks for gem properties
+const gemTitle = gem.title || 'Untitled Gem';
+const gemLocation = gem.location || 'Unknown Location';
+const gemCategory = gem.category || 'Uncategorized';
+const gemDescription = gem.description || 'No description available';
+const gemImage = gem.image || gem.imageUrl || 'https://gemvoyage.net/hero.jpg';
+const gemId = gem.id;
+const gemSlug = gem.slug || slug;
+
+// Generate better keywords
+const generateKeywords = () => {
+  const baseKeywords = [gemTitle, gemLocation, gemCategory, 'hidden gem', 'travel destination'];
+  // Add some words from the title (but not all)
+  const titleWords = gemTitle.split(' ').filter(word => word.length > 3);
+  baseKeywords.push(...titleWords.slice(0, 3)); // Add first 3 meaningful words
+  
+  return baseKeywords.join(', ');
+};
+
+const upvotes = votes.filter(v => v.positive === true).length;
+const downvotes = votes.filter(v => v.positive === false).length;
+const voteScore = upvotes - downvotes;
+
+// Format date
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+// Enhanced markdown to HTML conversion
+const markdownToHtml = (markdown: string) => {
+  return markdown
+    // Headers
+    .replace(/^### (.*$)/gim, '<h3 class="text-xl font-semibold mt-6 mb-3">$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-semibold mt-8 mb-4">$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mt-8 mb-4">$1</h1>')
+    // Bold and italic
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">$1</a>')
+    // Code blocks
+    .replace(/`([^`]+)`/g, '<code class="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">$1</code>')
+    // Lists (simple implementation)
+    .replace(/^\* (.+)$/gim, '<li class="ml-4 list-disc">$1</li>')
+    .replace(/^- (.+)$/gim, '<li class="ml-4 list-disc">$1</li>')
+    .replace(/^\d+\. (.+)$/gim, '<li class="ml-4 list-decimal">$1</li>')
+    // Line breaks and paragraphs
+    .replace(/\n\n+/g, '</p><p class="mb-4">')
+    .replace(/\n/g, '<br>')
+    // Wrap in paragraph tags
+    .replace(/^(.+)/, '<p class="mb-4">$1')
+    .replace(/(.+)$/, '$1</p>')
+    // Clean up list items
+    .replace(/<p class="mb-4">(<li)/g, '<ul class="mb-4 ml-4">$1')
+    .replace(/(<\/li>)<\/p>/g, '$1</ul>');
+};
+---
+
+<Layout 
+  title={`${gemTitle} - ${gemLocation} | GemVoyage`}
+  description={getDescriptionForSEO(gemDescription)}
+>
+  <Navbar />
+  <div class="py-8">
+    <div class="container mx-auto px-4">
+      <button
+        onclick="history.back()"
+        class="flex items-center mb-6 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+      >
+        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back
+      </button>
+
+      <div class="mb-6">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 mb-3">
+          {gemCategory}
+        </span>
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">{gemTitle}</h1>
+
+        <div class="flex items-center flex-wrap gap-4">
+          <div class="flex items-center text-gray-600">
+            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{gemLocation}</span>
+          </div>
+
+          <div class="flex items-center text-gray-600">
+            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>Shared on {formatDate(gem.createdAt)}</span>
+          </div>
+
+          <div class="flex items-center text-gray-600">
+            <span class="ml-2" id="author-info">
+              Loading author...
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative rounded-xl overflow-hidden mb-8">
+        <img
+          src={gemImage}
+          alt={gemTitle}
+          class="w-full h-[400px] md:h-[500px] object-cover"
+          loading="lazy"
+          style="background: #f3f3f3;"
+        />
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-2/3">
+          <div class="prose prose-lg max-w-none prose-headings:font-semibold prose-p:text-gray-700 prose-strong:font-semibold prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">
+            <div 
+              class="text-lg leading-relaxed mb-8 formatted-content"
+              set:html={markdownToHtml(gemDescription)}
+            />
+          </div>
+          <hr class="my-8 border-gray-200" />
+        </div>
+
+        <div class="md:w-1/3">
+          <div class="bg-gray-50 p-4 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold mb-2">Votes</h2>
+            <div class="flex items-center space-x-4 mb-4">
+              <div class="flex items-center space-x-1">
+                <button 
+                  id="upvote-btn"
+                  class="text-gray-600 hover:text-green-500 transition-colors p-1"
+                  data-positive="true"
+                >
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                  </svg>
+                </button>
+                <span 
+                  id="vote-score"
+                  class={`text-xs font-medium ${voteScore > 0 ? 'text-green-500' : voteScore < 0 ? 'text-red-500' : 'text-gray-600'}`}
+                >
+                  {voteScore}
+                </span>
+                <button 
+                  id="downvote-btn"
+                  class="text-gray-600 hover:text-red-500 transition-colors p-1"
+                  data-positive="false"
+                >
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div id="comments-section" class="mt-8">
+        <h2 class="text-xl font-semibold mb-4">Comments</h2>
+        <div id="comments-container">
+          Loading comments...
+        </div>
+      </div>
+
+      <!-- Toast notifications -->
+      <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+    </div>
+  </div>
+  <Footer />
+
+  <script define:vars={{ gemId, API_BASE_URL }}>
+    let currentVotes = [];
+
+    // Toast notification function
+    function showToast(title, message, type = 'success') {
+      const toastContainer = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+      
+      toast.className = `${bgColor} text-white p-4 rounded-lg shadow-lg mb-2 max-w-sm`;
+      toast.innerHTML = `
+        <div class="font-semibold">${title}</div>
+        <div class="text-sm">${message}</div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 5000);
+    }
+
+    // Fetch author info
+    async function fetchAuthorInfo() {
+      const authorElement = document.getElementById('author-info');
+      const ownerId = '{gem.owner || gem.ownerId || ""}';
+      
+      if (!ownerId) {
+        authorElement.textContent = 'Unknown author';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/user_profiles/${ownerId}`);
+        if (response.ok) {
+          const author = await response.json();
+          authorElement.innerHTML = `
+            <span class="flex items-center">
+              <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs mr-2">
+                ${(author.firstName?.[0] || '?').toUpperCase()}
+              </div>
+              ${author.firstName || 'Unknown'} ${author.lastName || ''}
+            </span>
+          `;
+        } else {
+          authorElement.textContent = 'Unknown author';
+        }
+      } catch (error) {
+        authorElement.textContent = 'Unknown author';
+      }
+    }
+
+    // Handle voting
+    async function handleVote(positive) {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        showToast('Error', 'You must be logged in to vote.', 'error');
+        return;
+      }
+      
+      try {
+        // Check if user has already voted
+        const existingVote = currentVotes.find(v => v.ownerId === userId);
+        const votePayload = {
+          gemId: gemId,
+          ownerId: userId,
+          positive,
+          id: existingVote ? existingVote.id : crypto.randomUUID(),
+          createdAt: existingVote ? existingVote.createdAt : new Date().toISOString(),
+        };
+        
+        const method = existingVote ? 'PUT' : 'POST';
+        const url = existingVote ? `${API_BASE_URL}/vote/${existingVote.id}` : `${API_BASE_URL}/vote`;
+        
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(votePayload),
+        });
+        
+        if (!res.ok) {
+          throw new Error('Failed to submit vote');
+        }
+        
+        // Refresh votes
+        await fetchVotes();
+        showToast('Success', 'Vote submitted!');
+      } catch (error) {
+        showToast('Error', 'Failed to submit vote.', 'error');
+      }
+    }
+
+    // Fetch votes
+    async function fetchVotes() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/vote/gem/${gemId}`);
+        if (res.ok) {
+          currentVotes = await res.json();
+          updateVoteDisplay();
+        }
+      } catch (error) {
+        console.error('Failed to fetch votes:', error);
+      }
+    }
+
+    // Update vote display
+    function updateVoteDisplay() {
+      const upvotes = currentVotes.filter(v => v.positive === true).length;
+      const downvotes = currentVotes.filter(v => v.positive === false).length;
+      const voteScore = upvotes - downvotes;
+      
+      const scoreElement = document.getElementById('vote-score');
+      scoreElement.textContent = voteScore;
+      scoreElement.className = `text-xs font-medium ${
+        voteScore > 0 ? 'text-green-500' : 
+        voteScore < 0 ? 'text-red-500' : 
+        'text-gray-600'
+      }`;
+    }
+
+    // Fetch comments (simplified)
+    async function fetchComments() {
+      const commentsContainer = document.getElementById('comments-container');
+      try {
+        const response = await fetch(`${API_BASE_URL}/comment/gem/${gemId}`);
+        if (response.ok) {
+          const comments = await response.json();
+          if (comments.length === 0) {
+            commentsContainer.innerHTML = '<p class="text-gray-600">No comments yet. Be the first to comment!</p>';
+          } else {
+            commentsContainer.innerHTML = comments.map(comment => `
+              <div class="border-b border-gray-200 pb-4 mb-4">
+                <p class="text-gray-800">${comment.text}</p>
+                <p class="text-sm text-gray-500 mt-2">
+                  By ${comment.author?.firstName || 'Unknown'} on 
+                  ${new Date(comment.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            `).join('');
+          }
+        } else {
+          commentsContainer.innerHTML = '<p class="text-gray-600">Unable to load comments.</p>';
+        }
+      } catch (error) {
+        commentsContainer.innerHTML = '<p class="text-gray-600">Unable to load comments.</p>';
+      }
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchAuthorInfo();
+      fetchVotes();
+      fetchComments();
+      
+      // Add event listeners for voting
+      document.getElementById('upvote-btn').addEventListener('click', () => handleVote(true));
+      document.getElementById('downvote-btn').addEventListener('click', () => handleVote(false));
+    });
+  </script>
+
+  <style>
+    .formatted-content {
+      line-height: 1.7;
+    }
+    
+    .formatted-content h1,
+    .formatted-content h2,
+    .formatted-content h3 {
+      color: #1f2937;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .formatted-content p {
+      margin-bottom: 1rem;
+      color: #374151;
+    }
+    
+    .formatted-content ul,
+    .formatted-content ol {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+    
+    .formatted-content li {
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+    
+    .formatted-content a {
+      transition: color 0.2s ease;
+    }
+    
+    .formatted-content code {
+      font-family: 'Courier New', monospace;
+    }
+    
+    .formatted-content strong {
+      color: #111827;
+    }
+  </style>
+</Layout>

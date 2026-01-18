@@ -1,0 +1,91 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+const privacySections = [
+  {
+    title: "1. Information We Collect",
+    content: [
+      "When you use GemVoyage, we collect:",
+      "Account information (name, email)",
+      "Usage data (how you interact with our service)",
+      "Device information (browser type, IP address)",
+      "Location data (when shared)"
+    ]
+  },
+  {
+    title: "2. How We Use Your Information",
+    content: [
+      "We use your information to:",
+      "Provide and improve our services",
+      "Send updates about hidden travel destinations",
+      "Ensure platform security",
+      "Analyze service usage"
+    ]
+  },
+  {
+    title: "3. Information Sharing",
+    content: [
+      "We don't sell your personal information. We share information:",
+      "With your consent",
+      "With service providers who assist our operations",
+      "When required by law",
+      "To protect our rights and safety"
+    ]
+  },
+  {
+    title: "4. Data Security",
+    content: [
+      "We implement various security measures:",
+      "Encryption of personal data",
+      "Secure database operations",
+      "Regular security audits",
+      "Access controls and monitoring"
+    ]
+  },
+  {
+    title: "5. Your Rights",
+    content: [
+      "You have the right to:",
+      "Access your personal data",
+      "Correct inaccurate data",
+      "Request data deletion",
+      "Opt-out of marketing communications"
+    ]
+  },
+  {
+    title: "6. Cookies",
+    content: [
+      "We use cookies to:",
+      "Remember your preferences",
+      "Analyze site traffic",
+      "Enhance site security",
+      "Improve user experience"
+    ]
+  }
+];
+---
+
+<Layout 
+  title="Privacy Policy | GemVoyage"
+  description="Learn about how GemVoyage protects your privacy and handles your personal data. Read our comprehensive privacy policy for hidden gem discovery platform."
+>
+  <Navbar />
+  <div class="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-md my-12">
+    <h1 class="text-3xl font-bold mb-8 text-center">Privacy Policy</h1>
+    <div class="space-y-8">
+      {privacySections.map((section) => (
+        <section>
+          <h2 class="text-xl font-semibold mb-2">{section.title}</h2>
+          <ul class="list-disc ml-6 space-y-1">
+            {section.content.map((line) => (
+              <li class="text-base text-gray-600">{line}</li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </div>
+  <Footer />
+</Layout>

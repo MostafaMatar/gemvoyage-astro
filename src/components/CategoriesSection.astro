@@ -50,7 +50,7 @@ function cn(...classes: (string | undefined)[]) {
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {categories.map((category) => (
-        <a href={`/category/${category.name.toLowerCase()}`} class="block group">
+        <a href={`/browse?category=${category.name}`} class="block group">
           <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 hover:shadow-lg transition-all duration-300 hover:scale-105">
             <div class="text-center space-y-4">
               <div class="text-4xl mb-3">

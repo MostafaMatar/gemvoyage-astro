@@ -1,0 +1,373 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout 
+  title="Share a Hidden Gem | GemVoyage"
+  description="Share your discovery of a unique travel destination with the GemVoyage community. Upload photos, write descriptions, and help fellow travelers discover amazing hidden gems."
+  noIndex={true}
+>
+  <Navbar />
+  <div class="p-4 max-w-4xl mx-auto">
+    <div id="auth-check" class="hidden">
+      <div class="text-center py-16">
+        <p class="text-lg mb-4">Please log in to create a gem.</p>
+        <a href="/login" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          Login
+        </a>
+      </div>
+    </div>
+    
+    <form id="gem-form" class="space-y-6">
+      <div>
+        <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+        <input 
+          class="w-full text-lg border-2 border-blue-600 rounded-xl p-2 shadow focus:ring-2 focus:ring-blue-600 focus:outline-none" 
+          type="text" 
+          id="subject" 
+          name="subject"
+          required 
+        />
+      </div>
+
+      <div>
+        <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Image (Will be compressed automatically)</label>
+        <input
+          class="w-full text-lg border-2 border-blue-600 rounded-xl p-2 shadow focus:ring-2 focus:ring-blue-600 focus:outline-none"
+          type="file"
+          id="image"
+          name="image"
+          accept="image/*"
+          required
+        />
+        <div id="compression-status" class="mt-2 text-blue-600 text-sm hidden">
+          🔄 Compressing image, please wait...
+        </div>
+        <div id="file-info" class="mt-2 text-sm text-gray-600 hidden"></div>
+        <div id="image-preview" class="mt-2 hidden">
+          <img id="preview-img" class="max-w-full h-32 object-cover rounded-lg border" alt="Preview" />
+        </div>
+      </div>
+
+      <div>
+        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+        <input 
+          class="w-full text-lg border-2 border-blue-600 rounded-xl p-2 shadow focus:ring-2 focus:ring-blue-600 focus:outline-none" 
+          type="text" 
+          id="location" 
+          name="location"
+          required 
+        />
+      </div>
+
+      <div>
+        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+        <select 
+          class="w-full text-lg border-2 border-blue-600 rounded-xl p-2 shadow focus:ring-2 focus:ring-blue-600 focus:outline-none" 
+          id="category" 
+          name="category"
+          required
+        >
+          <option value="" disabled selected>Select a category</option>
+          <option value="Culture">Culture</option>
+          <option value="History">History</option>
+          <option value="Nature">Nature</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Food">Food</option>
+          <option value="Entertainment">Entertainment</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Description (Markdown supported)</label>
+        <div class="border-2 border-blue-600 rounded-xl overflow-hidden">
+          <div class="bg-gray-50 border-b border-gray-200 p-2 flex gap-2">
+            <button type="button" id="bold-btn" class="px-2 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded"><b>B</b></button>
+            <button type="button" id="italic-btn" class="px-2 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded"><i>I</i></button>
+            <button type="button" id="link-btn" class="px-2 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded">Link</button>
+          </div>
+          <div class="flex">
+            <div class="w-1/2 border-r border-gray-200">
+              <textarea
+                id="content"
+                name="content"
+                class="w-full h-96 p-4 resize-none focus:outline-none"
+                placeholder="Write your gem description here... You can use markdown formatting like **bold**, *italic*, and [links](url)"
+                required
+              ></textarea>
+            </div>
+            <div class="w-1/2 p-4 bg-gray-50">
+              <div class="text-sm text-gray-600 mb-2">Preview:</div>
+              <div id="markdown-preview" class="prose prose-sm max-w-none">
+                <p class="text-gray-400">Start typing to see preview...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button 
+        type="submit"
+        id="submit-btn"
+        class="py-2 px-4 bg-blue-600 text-white font-bold w-full rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" 
+      >
+        Create Gem
+      </button>
+      
+      <div id="error-message" class="text-red-600 text-center hidden"></div>
+      <div id="success-message" class="text-green-600 text-center hidden"></div>
+    </form>
+
+    <!-- Toast notifications -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+  </div>
+  <Footer />
+
+  <script>
+    import { compress } from 'browser-image-compression';
+    
+    const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
+    
+    // Check authentication
+    const isLoggedIn = (localStorage.getItem('isLoggedIn') === 'true' && localStorage.getItem('access_token') !== null && localStorage.getItem('userId') !== null);
+    
+    const authCheck = document.getElementById('auth-check');
+    const gemForm = document.getElementById('gem-form');
+    
+    if (!isLoggedIn) {
+      authCheck.classList.remove('hidden');
+      gemForm.classList.add('hidden');
+    }
+
+    let imageFile = null;
+    let originalImageFile = null;
+    let isCompressing = false;
+    let isUploading = false;
+
+    // Toast notification function
+    function showToast(title, message, type = 'success') {
+      const toastContainer = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+      
+      toast.className = `${bgColor} text-white p-4 rounded-lg shadow-lg mb-2 max-w-sm`;
+      toast.innerHTML = `
+        <div class="font-semibold">${title}</div>
+        <div class="text-sm">${message}</div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 5000);
+    }
+
+    // Simple markdown to HTML conversion for preview
+    function markdownToHtml(markdown) {
+      return markdown
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-600 underline">$1</a>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/^(.+)/, '<p>$1')
+        .replace(/(.+)$/, '$1</p>');
+    }
+
+    // Markdown preview functionality
+    const contentTextarea = document.getElementById('content');
+    const markdownPreview = document.getElementById('markdown-preview');
+    
+    contentTextarea.addEventListener('input', () => {
+      const markdown = contentTextarea.value;
+      if (markdown.trim()) {
+        markdownPreview.innerHTML = markdownToHtml(markdown);
+      } else {
+        markdownPreview.innerHTML = '<p class="text-gray-400">Start typing to see preview...</p>';
+      }
+    });
+
+    // Markdown toolbar buttons
+    document.getElementById('bold-btn').addEventListener('click', () => {
+      insertMarkdown('**', '**');
+    });
+
+    document.getElementById('italic-btn').addEventListener('click', () => {
+      insertMarkdown('*', '*');
+    });
+
+    document.getElementById('link-btn').addEventListener('click', () => {
+      const url = prompt('Enter URL:');
+      if (url) {
+        insertMarkdown('[', `](${url})`);
+      }
+    });
+
+    function insertMarkdown(before, after) {
+      const textarea = contentTextarea;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      const replacement = before + selectedText + after;
+      
+      textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+      textarea.focus();
+      textarea.setSelectionRange(start + before.length, start + before.length + selectedText.length);
+      
+      // Trigger input event to update preview
+      textarea.dispatchEvent(new Event('input'));
+    }
+
+    // Image compression function
+    async function compressImage(file) {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        quality: 0.8,
+      };
+
+      try {
+        const compressedFile = await compress(file, options);
+        console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+        console.log('Compressed file size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
+        return compressedFile;
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        throw new Error('Failed to compress image');
+      }
+    }
+
+    // Handle image change
+    document.getElementById('image').addEventListener('change', async (event) => {
+      const file = event.target.files?.[0];
+      const compressionStatus = document.getElementById('compression-status');
+      const fileInfo = document.getElementById('file-info');
+      const imagePreview = document.getElementById('image-preview');
+      const previewImg = document.getElementById('preview-img');
+      
+      if (file) {
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+          showToast('Error', 'Please select a valid image file.', 'error');
+          event.target.value = '';
+          return;
+        }
+
+        // Check original file size
+        const maxOriginalSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxOriginalSize) {
+          showToast('Error', 'Original image size must be less than 10MB.', 'error');
+          event.target.value = '';
+          return;
+        }
+
+        originalImageFile = file;
+        isCompressing = true;
+        compressionStatus.classList.remove('hidden');
+        
+        try {
+          const compressedFile = await compressImage(file);
+          imageFile = compressedFile;
+          
+          // Show file info
+          fileInfo.innerHTML = `
+            <div>Original: ${originalImageFile.name} (${(originalImageFile.size / 1024 / 1024).toFixed(2)} MB)</div>
+            <div class="text-green-600">Compressed: ${(imageFile.size / 1024 / 1024).toFixed(2)} MB 
+              (${(((originalImageFile.size - imageFile.size) / originalImageFile.size) * 100).toFixed(1)}% smaller)
+            </div>
+          `;
+          fileInfo.classList.remove('hidden');
+          
+          // Create preview
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            imagePreview.classList.remove('hidden');
+          };
+          reader.readAsDataURL(compressedFile);
+
+          showToast('Image Compressed', `Reduced from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
+        } catch (error) {
+          showToast('Compression Error', 'Failed to compress image. Please try a different image.', 'error');
+          event.target.value = '';
+        } finally {
+          isCompressing = false;
+          compressionStatus.classList.add('hidden');
+        }
+      } else {
+        imageFile = null;
+        originalImageFile = null;
+        fileInfo.classList.add('hidden');
+        imagePreview.classList.add('hidden');
+      }
+    });
+
+    // Handle form submission
+    document.getElementById('gem-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      
+      if (isCompressing || isUploading) return;
+      
+      const formData = new FormData(event.target);
+      const subject = formData.get('subject');
+      const location = formData.get('location');
+      const category = formData.get('category');
+      const content = formData.get('content');
+      
+      if (!subject || !imageFile || !content || !location || !category) {
+        showToast('Error', 'Please fill in all fields and select an image.', 'error');
+        return;
+      }
+
+      isUploading = true;
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.textContent = 'Creating Gem...';
+      submitBtn.disabled = true;
+      
+      try {
+        const submitFormData = new FormData();
+        
+        const gemData = {
+          title: subject,
+          description: content,
+          owner: localStorage.getItem('userId'),
+          category,
+          location,
+          featured: false
+        };
+        
+        submitFormData.append('gem', JSON.stringify(gemData));
+        submitFormData.append('image', imageFile);
+
+        const res = await fetch(`${API_BASE_URL}/gem/upload`, {
+          method: 'POST',
+          body: submitFormData,
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          showToast('Error', text || 'Failed to create gem.', 'error');
+          return;
+        }
+
+        const gem = await res.json();
+        showToast('Success', 'Gem created successfully!');
+        setTimeout(() => {
+          window.location.href = `/gem/${gem.slug}`;
+        }, 1500);
+      } catch (err) {
+        showToast('Error', err.message || 'Failed to create gem.', 'error');
+      } finally {
+        isUploading = false;
+        submitBtn.textContent = 'Create Gem';
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</Layout>

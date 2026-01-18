@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Authenticating... | GemVoyage"
+  description="Processing authentication callback for GemVoyage account access."
+  noIndex={true}
+>
+  <div>
+    <p>Authenticating...</p>
+  </div>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    
+    // Initialize Supabase client
+    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    
+    const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
+
+    const handleAuthCallback = async () => {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error('Error retrieving session:', error);
+        window.location.href = '/login';
+        return;
+      }
+
+      if (session) {
+        // ✅ Extract the correct values from the Supabase session
+        const accessToken = session.access_token;
+        const userId = session.user.id;
+
+        // ✅ Store them in localStorage (like your password login)
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('isLoggedIn', 'true');
+
+        const profileRes = await fetch(`${API_BASE_URL}/user_profiles/${encodeURIComponent(userId || '')}`);
+        if (profileRes.ok) {
+          window.location.href = '/';
+        } else {
+          window.location.href = '/complete-profile';
+        }
+      } else {
+        window.location.href = '/login';
+      }
+    };
+
+    // Run the authentication callback when the page loads
+    document.addEventListener('DOMContentLoaded', handleAuthCallback);
+  </script>
+</Layout>
