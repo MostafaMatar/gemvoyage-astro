@@ -7,49 +7,39 @@ import Layout from '../layouts/Layout.astro';
   description="Processing authentication callback for GemVoyage account access."
   noIndex={true}
 >
-  <div>
-    <p>Authenticating...</p>
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p class="text-lg text-gray-600">Authenticating...</p>
+    </div>
   </div>
 
-  <script>
-    import { createClient } from '@supabase/supabase-js';
-    
-    // Initialize Supabase client
-    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-    
+  <script is:inline>
     const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 
     const handleAuthCallback = async () => {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
+      try {
+        // Simple auth callback without Supabase client
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('access_token');
+        const userId = urlParams.get('user_id');
 
-      if (error) {
-        console.error('Error retrieving session:', error);
-        window.location.href = '/login';
-        return;
-      }
+        if (accessToken && userId) {
+          localStorage.setItem('access_token', accessToken);
+          localStorage.setItem('userId', userId);
+          localStorage.setItem('isLoggedIn', 'true');
 
-      if (session) {
-        // ✅ Extract the correct values from the Supabase session
-        const accessToken = session.access_token;
-        const userId = session.user.id;
-
-        // ✅ Store them in localStorage (like your password login)
-        localStorage.setItem('access_token', accessToken);
-        localStorage.setItem('userId', userId);
-        localStorage.setItem('isLoggedIn', 'true');
-
-        const profileRes = await fetch(`${API_BASE_URL}/user_profiles/${encodeURIComponent(userId || '')}`);
-        if (profileRes.ok) {
-          window.location.href = '/';
+          const profileRes = await fetch(`${API_BASE_URL}/user_profiles/${encodeURIComponent(userId)}`);
+          if (profileRes.ok) {
+            window.location.href = '/';
+          } else {
+            window.location.href = '/complete-profile';
+          }
         } else {
-          window.location.href = '/complete-profile';
+          window.location.href = '/login';
         }
-      } else {
+      } catch (error) {
+        console.error('Authentication callback error:', error);
         window.location.href = '/login';
       }
     };

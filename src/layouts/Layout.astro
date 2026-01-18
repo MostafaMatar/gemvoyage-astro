@@ -9,6 +9,7 @@ export interface Props {
   ogDescription?: string;
   ogImage?: string;
   ogUrl?: string;
+  noIndex?: boolean;
 }
 
 const {
@@ -18,7 +19,8 @@ const {
   ogTitle = title,
   ogDescription = description,
   ogImage = "https://gemvoyage.net/hero.jpg",
-  ogUrl = "https://gemvoyage.net/"
+  ogUrl = "https://gemvoyage.net/",
+  noIndex = false
 } = Astro.props;
 ---
 
@@ -72,6 +74,7 @@ const {
           "logo": "https://gemvoyage.net/images/icon.png"
       }
     </script>
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
   </head>
   
   <body>

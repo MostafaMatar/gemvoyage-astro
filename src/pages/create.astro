@@ -125,9 +125,7 @@ import Footer from '../components/Footer.astro';
   </div>
   <Footer />
 
-  <script>
-    import { compress } from 'browser-image-compression';
-    
+  <script is:inline>
     const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
     
     // Check authentication
@@ -137,8 +135,8 @@ import Footer from '../components/Footer.astro';
     const gemForm = document.getElementById('gem-form');
     
     if (!isLoggedIn) {
-      authCheck.classList.remove('hidden');
-      gemForm.classList.add('hidden');
+      if (authCheck) authCheck.classList.remove('hidden');
+      if (gemForm) gemForm.classList.add('hidden');
     }
 
     let imageFile = null;
@@ -149,6 +147,8 @@ import Footer from '../components/Footer.astro';
     // Toast notification function
     function showToast(title, message, type = 'success') {
       const toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) return;
+      
       const toast = document.createElement('div');
       const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
       
@@ -183,33 +183,48 @@ import Footer from '../components/Footer.astro';
     const contentTextarea = document.getElementById('content');
     const markdownPreview = document.getElementById('markdown-preview');
     
-    contentTextarea.addEventListener('input', () => {
-      const markdown = contentTextarea.value;
-      if (markdown.trim()) {
-        markdownPreview.innerHTML = markdownToHtml(markdown);
-      } else {
-        markdownPreview.innerHTML = '<p class="text-gray-400">Start typing to see preview...</p>';
-      }
-    });
+    if (contentTextarea && markdownPreview) {
+      contentTextarea.addEventListener('input', () => {
+        const textarea = contentTextarea;
+        const markdown = textarea.value;
+        if (markdown.trim()) {
+          markdownPreview.innerHTML = markdownToHtml(markdown);
+        } else {
+          markdownPreview.innerHTML = '<p class="text-gray-400">Start typing to see preview...</p>';
+        }
+      });
+    }
 
     // Markdown toolbar buttons
-    document.getElementById('bold-btn').addEventListener('click', () => {
-      insertMarkdown('**', '**');
-    });
+    const boldBtn = document.getElementById('bold-btn');
+    const italicBtn = document.getElementById('italic-btn');
+    const linkBtn = document.getElementById('link-btn');
 
-    document.getElementById('italic-btn').addEventListener('click', () => {
-      insertMarkdown('*', '*');
-    });
+    if (boldBtn) {
+      boldBtn.addEventListener('click', () => {
+        insertMarkdown('**', '**');
+      });
+    }
 
-    document.getElementById('link-btn').addEventListener('click', () => {
-      const url = prompt('Enter URL:');
-      if (url) {
-        insertMarkdown('[', `](${url})`);
-      }
-    });
+    if (italicBtn) {
+      italicBtn.addEventListener('click', () => {
+        insertMarkdown('*', '*');
+      });
+    }
+
+    if (linkBtn) {
+      linkBtn.addEventListener('click', () => {
+        const url = prompt('Enter URL:');
+        if (url) {
+          insertMarkdown('[', `](${url})`);
+        }
+      });
+    }
 
     function insertMarkdown(before, after) {
-      const textarea = contentTextarea;
+      const textarea = document.getElementById('content');
+      if (!textarea) return;
+      
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       const selectedText = textarea.value.substring(start, end);
@@ -223,151 +238,194 @@ import Footer from '../components/Footer.astro';
       textarea.dispatchEvent(new Event('input'));
     }
 
-    // Image compression function
+    // Simple image compression function (fallback without library)
     async function compressImage(file) {
-      const options = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true,
-        quality: 0.8,
-      };
-
-      try {
-        const compressedFile = await compress(file, options);
-        console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
-        console.log('Compressed file size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
-        return compressedFile;
-      } catch (error) {
-        console.error('Error compressing image:', error);
-        throw new Error('Failed to compress image');
-      }
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+          const maxWidth = 1920;
+          const maxHeight = 1080;
+          let { width, height } = img;
+          
+          if (width > height) {
+            if (width > maxWidth) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = (width * maxHeight) / height;
+              height = maxHeight;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob((blob) => {
+            const compressedFile = new File([blob], file.name, {
+              type: file.type,
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          }, file.type, 0.8);
+        };
+        
+        img.src = URL.createObjectURL(file);
+      });
     }
 
     // Handle image change
-    document.getElementById('image').addEventListener('change', async (event) => {
-      const file = event.target.files?.[0];
-      const compressionStatus = document.getElementById('compression-status');
-      const fileInfo = document.getElementById('file-info');
-      const imagePreview = document.getElementById('image-preview');
-      const previewImg = document.getElementById('preview-img');
-      
-      if (file) {
-        // Check file type
-        if (!file.type.startsWith('image/')) {
-          showToast('Error', 'Please select a valid image file.', 'error');
-          event.target.value = '';
-          return;
-        }
-
-        // Check original file size
-        const maxOriginalSize = 10 * 1024 * 1024; // 10MB
-        if (file.size > maxOriginalSize) {
-          showToast('Error', 'Original image size must be less than 10MB.', 'error');
-          event.target.value = '';
-          return;
-        }
-
-        originalImageFile = file;
-        isCompressing = true;
-        compressionStatus.classList.remove('hidden');
+    const imageInput = document.getElementById('image');
+    if (imageInput) {
+      imageInput.addEventListener('change', async (event) => {
+        const target = event.target;
+        if (!target || !target.files) return;
         
-        try {
-          const compressedFile = await compressImage(file);
-          imageFile = compressedFile;
-          
-          // Show file info
-          fileInfo.innerHTML = `
-            <div>Original: ${originalImageFile.name} (${(originalImageFile.size / 1024 / 1024).toFixed(2)} MB)</div>
-            <div class="text-green-600">Compressed: ${(imageFile.size / 1024 / 1024).toFixed(2)} MB 
-              (${(((originalImageFile.size - imageFile.size) / originalImageFile.size) * 100).toFixed(1)}% smaller)
-            </div>
-          `;
-          fileInfo.classList.remove('hidden');
-          
-          // Create preview
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            previewImg.src = e.target.result;
-            imagePreview.classList.remove('hidden');
-          };
-          reader.readAsDataURL(compressedFile);
+        const file = target.files[0];
+        const compressionStatus = document.getElementById('compression-status');
+        const fileInfo = document.getElementById('file-info');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        
+        if (file) {
+          // Check file type
+          if (!file.type.startsWith('image/')) {
+            showToast('Error', 'Please select a valid image file.', 'error');
+            target.value = '';
+            return;
+          }
 
-          showToast('Image Compressed', `Reduced from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
-        } catch (error) {
-          showToast('Compression Error', 'Failed to compress image. Please try a different image.', 'error');
-          event.target.value = '';
-        } finally {
-          isCompressing = false;
-          compressionStatus.classList.add('hidden');
+          // Check original file size
+          const maxOriginalSize = 10 * 1024 * 1024; // 10MB
+          if (file.size > maxOriginalSize) {
+            showToast('Error', 'Original image size must be less than 10MB.', 'error');
+            target.value = '';
+            return;
+          }
+
+          originalImageFile = file;
+          isCompressing = true;
+          if (compressionStatus) compressionStatus.classList.remove('hidden');
+          
+          try {
+            const compressedFile = await compressImage(file);
+            imageFile = compressedFile;
+            
+            // Show file info
+            if (fileInfo) {
+              fileInfo.innerHTML = `
+                <div>Original: ${originalImageFile.name} (${(originalImageFile.size / 1024 / 1024).toFixed(2)} MB)</div>
+                <div class="text-green-600">Compressed: ${(imageFile.size / 1024 / 1024).toFixed(2)} MB 
+                  (${(((originalImageFile.size - imageFile.size) / originalImageFile.size) * 100).toFixed(1)}% smaller)
+                </div>
+              `;
+              fileInfo.classList.remove('hidden');
+            }
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              if (previewImg && e.target) {
+                previewImg.src = e.target.result;
+                if (imagePreview) imagePreview.classList.remove('hidden');
+              }
+            };
+            reader.readAsDataURL(compressedFile);
+
+            showToast('Image Compressed', `Reduced from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
+          } catch (error) {
+            showToast('Compression Error', 'Failed to compress image. Please try a different image.', 'error');
+            target.value = '';
+          } finally {
+            isCompressing = false;
+            if (compressionStatus) compressionStatus.classList.add('hidden');
+          }
+        } else {
+          imageFile = null;
+          originalImageFile = null;
+          if (fileInfo) fileInfo.classList.add('hidden');
+          if (imagePreview) imagePreview.classList.add('hidden');
         }
-      } else {
-        imageFile = null;
-        originalImageFile = null;
-        fileInfo.classList.add('hidden');
-        imagePreview.classList.add('hidden');
-      }
-    });
+      });
+    }
 
     // Handle form submission
-    document.getElementById('gem-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      
-      if (isCompressing || isUploading) return;
-      
-      const formData = new FormData(event.target);
-      const subject = formData.get('subject');
-      const location = formData.get('location');
-      const category = formData.get('category');
-      const content = formData.get('content');
-      
-      if (!subject || !imageFile || !content || !location || !category) {
-        showToast('Error', 'Please fill in all fields and select an image.', 'error');
-        return;
-      }
-
-      isUploading = true;
-      const submitBtn = document.getElementById('submit-btn');
-      submitBtn.textContent = 'Creating Gem...';
-      submitBtn.disabled = true;
-      
-      try {
-        const submitFormData = new FormData();
+    const form = document.getElementById('gem-form');
+    if (form) {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
         
-        const gemData = {
-          title: subject,
-          description: content,
-          owner: localStorage.getItem('userId'),
-          category,
-          location,
-          featured: false
-        };
+        if (isCompressing || isUploading) return;
         
-        submitFormData.append('gem', JSON.stringify(gemData));
-        submitFormData.append('image', imageFile);
-
-        const res = await fetch(`${API_BASE_URL}/gem/upload`, {
-          method: 'POST',
-          body: submitFormData,
-        });
-
-        if (!res.ok) {
-          const text = await res.text();
-          showToast('Error', text || 'Failed to create gem.', 'error');
+        const target = event.target;
+        if (!target) return;
+        
+        const formData = new FormData(target);
+        const subject = formData.get('subject');
+        const location = formData.get('location');
+        const category = formData.get('category');
+        const content = formData.get('content');
+        
+        if (!subject || !imageFile || !content || !location || !category) {
+          showToast('Error', 'Please fill in all fields and select an image.', 'error');
           return;
         }
 
-        const gem = await res.json();
-        showToast('Success', 'Gem created successfully!');
-        setTimeout(() => {
-          window.location.href = `/gem/${gem.slug}`;
-        }, 1500);
-      } catch (err) {
-        showToast('Error', err.message || 'Failed to create gem.', 'error');
-      } finally {
-        isUploading = false;
-        submitBtn.textContent = 'Create Gem';
-        submitBtn.disabled = false;
-      }
-    });
+        isUploading = true;
+        const submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) {
+          submitBtn.textContent = 'Creating Gem...';
+          submitBtn.disabled = true;
+        }
+        
+        try {
+          const submitFormData = new FormData();
+          
+          const gemData = {
+            title: subject,
+            description: content,
+            owner: localStorage.getItem('userId'),
+            category,
+            location,
+            featured: false
+          };
+          
+          submitFormData.append('gem', JSON.stringify(gemData));
+          submitFormData.append('image', imageFile);
+
+          const res = await fetch(`${API_BASE_URL}/gem/upload`, {
+            method: 'POST',
+            body: submitFormData,
+          });
+
+          if (!res.ok) {
+            const text = await res.text();
+            showToast('Error', text || 'Failed to create gem.', 'error');
+            return;
+          }
+
+          const gem = await res.json();
+          showToast('Success', 'Gem created successfully!');
+          setTimeout(() => {
+            window.location.href = `/gem/${gem.slug}`;
+          }, 1500);
+        } catch (err) {
+          const errorMessage = err instanceof Error ? err.message : 'Failed to create gem.';
+          showToast('Error', errorMessage, 'error');
+        } finally {
+          isUploading = false;
+          if (submitBtn) {
+            submitBtn.textContent = 'Create Gem';
+            submitBtn.disabled = false;
+          }
+        }
+      });
+    }
   </script>
 </Layout>
