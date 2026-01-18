@@ -112,10 +112,38 @@ const generateKeywords = () => {
   
   return baseKeywords.join(', ');
 };
-
 const upvotes = votes.filter(v => v.positive === true).length;
 const downvotes = votes.filter(v => v.positive === false).length;
 const voteScore = upvotes - downvotes;
+// Generate canonical URL
+const canonicalUrl = `https://gemvoyage.net/gem/${gemSlug}`;
+
+// Generate structured data for SEO
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": gemTitle,
+  "description": getDescriptionForSEO(gemDescription),
+  "image": gemImage,
+  "author": {
+    "@type": "Person",
+    "name": "GemVoyage User"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "GemVoyage",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://gemvoyage.net/logo.png"
+    }
+  },
+  "datePublished": gem.createdAt,
+  "dateModified": gem.createdAt,
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": canonicalUrl
+  }
+};
 
 // Format date
 const formatDate = (dateString: string) => {
@@ -160,6 +188,58 @@ const markdownToHtml = (markdown: string) => {
   title={`${gemTitle} - ${gemLocation} | GemVoyage`}
   description={getDescriptionForSEO(gemDescription)}
 >
+  <!-- Enhanced SEO Meta Tags -->
+  <head slot="head">
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl} />
+    
+    <!-- Keywords -->
+    <meta name="keywords" content={generateKeywords()} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={`${gemTitle} in ${gemLocation}`} />
+    <meta property="og:description" content={getDescriptionForSEO(gemDescription)} />
+    <meta property="og:image" content={gemImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`Photo of ${gemTitle} in ${gemLocation}`} />
+    <meta property="og:site_name" content="GemVoyage" />
+    <meta property="article:published_time" content={gem.createdAt} />
+    <meta property="article:modified_time" content={gem.createdAt} />
+    <meta property="article:section" content={gemCategory} />
+    <meta property="article:tag" content="hidden gem" />
+    <meta property="article:tag" content="travel destination" />
+    <meta property="article:tag" content={gemLocation} />
+    <meta property="article:tag" content={gemCategory} />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={`${gemTitle} - Hidden Gem in ${gemLocation}`} />
+    <meta name="twitter:description" content={getDescriptionForSEO(gemDescription)} />
+    <meta name="twitter:image" content={gemImage} />
+    <meta name="twitter:image:alt" content={`Photo of ${gemTitle} in ${gemLocation}`} />
+    <meta name="twitter:site" content="@GemVoyage" />
+    <meta name="twitter:creator" content="@GemVoyage" />
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="author" content="GemVoyage Community" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    
+    <!-- Geo tags for location-based SEO -->
+    <meta name="geo.region" content={gemLocation} />
+    <meta name="geo.placename" content={gemLocation} />
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    
+    <!-- Preload critical image -->
+    <link rel="preload" as="image" href={gemImage} />
+  </head>
+
   <Navbar />
   <div class="py-8">
     <div class="container mx-auto px-4">
@@ -206,10 +286,13 @@ const markdownToHtml = (markdown: string) => {
       <div class="relative rounded-xl overflow-hidden mb-8">
         <img
           src={gemImage}
-          alt={gemTitle}
+          alt={`${gemTitle} - Hidden gem in ${gemLocation}, ${gemCategory} category`}
           class="w-full h-[400px] md:h-[500px] object-cover"
-          loading="lazy"
+          loading="eager"
+          decoding="async"
           style="background: #f3f3f3;"
+          width="1200"
+          height="500"
         />
       </div>
 
