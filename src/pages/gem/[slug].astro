@@ -482,7 +482,7 @@ const markdownToHtml = (markdown: string) => {
     async function fetchComments() {
       const commentsContainer = document.getElementById('comments-container');
       try {
-        const response = await fetch(`${API_BASE_URL}/comment/gem/${gemId}`);
+        const response = await fetch(`${API_BASE_URL}/gem_comment/gem/${gemId}`);
         if (response.ok) {
           const comments = await response.json();
           if (comments.length === 0) {
