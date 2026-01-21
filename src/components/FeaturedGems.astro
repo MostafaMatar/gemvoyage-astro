@@ -12,12 +12,9 @@ interface Gem {
   createdAt: string;
   slug: string;
   featured?: boolean;
-    author: {
-      id: string;
-      name: string;
-    };
-    upvotes: number;
-    downvotes: number;
+  owner: string;
+  upvotes: number;
+  downvotes: number;
 }
 
 // Fetch featured gems from API
