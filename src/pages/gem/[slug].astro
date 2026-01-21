@@ -376,36 +376,6 @@ const markdownToHtml = (markdown: string) => {
       }, 5000);
     }
 
-    // Fetch author info
-    async function fetchAuthorInfo() {
-      const authorElement = document.getElementById('author-info');
-      const ownerId = '{gem.owner || gem.ownerId || ""}';
-      
-      if (!ownerId) {
-        authorElement.textContent = 'Unknown author';
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/user_profiles/${ownerId}`);
-        if (response.ok) {
-          const author = await response.json();
-          authorElement.innerHTML = `
-            <span class="flex items-center">
-              <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs mr-2">
-                ${(author.firstName?.[0] || '?').toUpperCase()}
-              </div>
-              ${author.firstName || 'Unknown'} ${author.lastName || ''}
-            </span>
-          `;
-        } else {
-          authorElement.textContent = 'Unknown author';
-        }
-      } catch (error) {
-        authorElement.textContent = 'Unknown author';
-      }
-    }
-
     // Handle voting
     async function handleVote(positive) {
       const userId = localStorage.getItem('userId');
@@ -504,7 +474,6 @@ const markdownToHtml = (markdown: string) => {
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', () => {
-      fetchAuthorInfo();
       fetchVotes();
       fetchComments();
       
