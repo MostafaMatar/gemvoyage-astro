@@ -1,14 +1,10 @@
 ---
+import { API_BASE_URL } from '../lib/apiConfig';
 interface Props {
-  author: {
-    id: string;
-    name: string;
-  };
-  createdAt: string;
-  className: string;
+  authorId: string;
 }
 
-const { author, createdAt, className = '' } = Astro.props;
+const { authorId} = Astro.props;
 
 function cn(...classes: (string | undefined)[]) {
   return classes.filter(Boolean).join(' ');
@@ -25,13 +21,26 @@ function formatDate(dateString: string) {
     return 'Recently';
   }
 }
+
+// Fetch author information from the API
+let author = null;
+try {
+  const response = await fetch(`${API_BASE_URL}/user_profiles/${authorId}`);
+  if (response.ok) {
+    author = await response.json();
+  }
+} catch (error) {
+  console.error('Failed to fetch author information:', error);
+}
 ---
 
-<div class={cn("flex items-center space-x-2", className)}>
+<div class={cn("flex items-center space-x-2")}>
   <div class="flex items-center space-x-2">
-    <span class="text-sm text-muted-foreground">{author ? <p>{author.name}</p> : <p>Unknown author</p>}
-</span>
+    <span class="text-sm text-muted-foreground">
+      {author ? 
+        <p>{author.firstName} {author.lastName}{author.city ? ` • ${author.city}` : ''}</p> : 
+        <p>Unknown author</p>
+      }
+    </span>
   </div>
-  <span class="text-sm text-muted-foreground">•</span>
-  <span class="text-sm text-muted-foreground">{formatDate(createdAt)}</span>
 </div>

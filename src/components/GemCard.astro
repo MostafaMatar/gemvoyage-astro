@@ -12,10 +12,7 @@ interface Props {
     category: string;
     slug: string;
     featured?: boolean;
-    author: {
-      id: string;
-      name: string;
-    };
+    owner: string;
     createdAt: string;
     upvotes: number;
     downvotes: number;
@@ -96,7 +93,7 @@ function cn(...classes: (string | undefined)[]) {
         </p>
         
         <div class="pt-2 border-t">
-          <AuthorInfo author={gem.author} createdAt={gem.createdAt} className="" />
+          <AuthorInfo authorId={gem.owner} />
         </div>
       </div>
     </div>
