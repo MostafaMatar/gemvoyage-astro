@@ -26,7 +26,15 @@ try {
     Comments (<span id="comment-count">{comments.length}</span>)
   </h3>
   
-  <form id="comment-form" class="mb-8">
+  <!-- Login prompt for unauthenticated users -->
+  <div id="login-prompt" class="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg hidden">
+    <p class="text-blue-800 mb-2">Want to share your thoughts?</p>
+    <a href="/login" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white h-10 px-4 py-2">
+      Login to Comment
+    </a>
+  </div>
+  
+  <form id="comment-form" class="mb-8 hidden">
     <div class="flex gap-4">
       <div class="flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
         <img src="https://i.pravatar.cc/150" alt="Your avatar" class="aspect-square h-full w-full" />
@@ -77,16 +85,78 @@ try {
   </div>
 </div>
 
+<!-- Toast container -->
+<div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+
 <script define:vars={{ gemId, API_BASE_URL }}>
   const form = document.getElementById('comment-form');
   const textarea = document.getElementById('comment-textarea');
   const submitBtn = document.getElementById('submit-btn');
   const commentsContainer = document.getElementById('comments-container');
   const commentCount = document.getElementById('comment-count');
+  const loginPrompt = document.getElementById('login-prompt');
 
+  // Check authentication status
+  const isLoggedIn = (
+    localStorage.getItem('isLoggedIn') === 'true' && 
+    localStorage.getItem('access_token') !== null && 
+    localStorage.getItem('userId') !== null
+  );
+
+  // Show appropriate UI based on auth status
+  if (isLoggedIn) {
+    form.classList.remove('hidden');
+  } else {
+    loginPrompt.classList.remove('hidden');
+  }
+
+  // Modern toast notification function
   function showToast(title, description, variant = 'default') {
-    // Simple toast implementation - you can integrate with your toast system
-    console.log(`${title}: ${description}`);
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    const toast = document.createElement('div');
+    const bgColor = variant === 'destructive' ? 'bg-red-500' : 'bg-green-500';
+    const iconColor = variant === 'destructive' ? 'text-red-100' : 'text-green-100';
+    const icon = variant === 'destructive' ? '⚠️' : '✅';
+    
+    toast.className = `${bgColor} text-white p-4 rounded-lg shadow-lg mb-2 max-w-sm transform transition-all duration-300 translate-x-full`;
+    toast.innerHTML = `
+      <div class="flex items-center gap-3">
+        <span class="text-lg">${icon}</span>
+        <div class="flex-1">
+          <div class="font-semibold text-sm">${title}</div>
+          <div class="text-xs opacity-90">${description}</div>
+        </div>
+        <button class="text-white hover:text-gray-200 ml-2" onclick="this.parentElement.parentElement.remove()">
+          ×
+        </button>
+      </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => {
+      toast.classList.remove('translate-x-full');
+    }, 10);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.classList.add('translate-x-full');
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 300);
+      }
+    }, 5000);
+  }
+
+  // Show modern notification for unauthenticated users
+  function showLoginNotification() {
+    showToast('Authentication Required', 'Please login to post a comment', 'destructive');
   }
 
   function formatDistanceToNow(date) {
@@ -132,12 +202,18 @@ try {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    // Double-check authentication before submitting
+    if (!isLoggedIn) {
+      showLoginNotification();
+      return;
+    }
+    
     const commentText = textarea.value.trim();
     if (!commentText) return;
     
     const userId = localStorage.getItem('userId');
     if (!userId) {
-      showToast('Error', 'You must be logged in to comment.', 'destructive');
+      showLoginNotification();
       return;
     }
 

@@ -11,15 +11,6 @@ import Footer from '../components/Footer.astro';
 >
   <Navbar />
   <div class="p-4 max-w-4xl mx-auto">
-    <div id="auth-check" class="hidden">
-      <div class="text-center py-16">
-        <p class="text-lg mb-4">Please log in to create a gem.</p>
-        <a href="/login" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-          Login
-        </a>
-      </div>
-    </div>
-    
     <form id="gem-form" class="space-y-6">
       <div>
         <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -128,15 +119,11 @@ import Footer from '../components/Footer.astro';
   <script is:inline>
     const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
     
-    // Check authentication
+    // Check authentication and redirect if not logged in
     const isLoggedIn = (localStorage.getItem('isLoggedIn') === 'true' && localStorage.getItem('access_token') !== null && localStorage.getItem('userId') !== null);
     
-    const authCheck = document.getElementById('auth-check');
-    const gemForm = document.getElementById('gem-form');
-    
     if (!isLoggedIn) {
-      if (authCheck) authCheck.classList.remove('hidden');
-      if (gemForm) gemForm.classList.add('hidden');
+      window.location.href = '/login';
     }
 
     let imageFile = null;

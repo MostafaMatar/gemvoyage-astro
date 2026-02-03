@@ -69,6 +69,13 @@ const uniqueId = `vote-${Math.random().toString(36).substring(2, 9)}`;
         this.upvoteBtn = element.querySelector('.upvote-btn');
         this.downvoteBtn = element.querySelector('.downvote-btn');
         
+        // Check authentication status
+        this.isLoggedIn = (
+          localStorage.getItem('isLoggedIn') === 'true' && 
+          localStorage.getItem('access_token') !== null && 
+          localStorage.getItem('userId') !== null
+        );
+        
         if (this.scoreElement && this.upvoteBtn && this.downvoteBtn) {
           this.init();
         }
@@ -86,6 +93,12 @@ const uniqueId = `vote-${Math.random().toString(36).substring(2, 9)}`;
       }
       
       handleUpvote() {
+        // Check authentication first
+        if (!this.isLoggedIn) {
+          this.showLoginNotification();
+          return;
+        }
+        
         if (this.userVote === 'up') {
           this.upvotes--;
           this.userVote = null;
@@ -109,6 +122,12 @@ const uniqueId = `vote-${Math.random().toString(36).substring(2, 9)}`;
       }
       
       handleDownvote() {
+        // Check authentication first
+        if (!this.isLoggedIn) {
+          this.showLoginNotification();
+          return;
+        }
+        
         if (this.userVote === 'down') {
           this.downvotes--;
           this.userVote = null;
@@ -145,6 +164,10 @@ const uniqueId = `vote-${Math.random().toString(36).substring(2, 9)}`;
         }
       }
       
+      showLoginNotification() {
+        this.showToast('Authentication Required', 'Please login to vote on this content', true);
+      }
+      
       showToast(title, description, isDestructive = false) {
         // Remove existing toasts
         const existingToasts = document.querySelectorAll('.vote-toast');
@@ -152,26 +175,41 @@ const uniqueId = `vote-${Math.random().toString(36).substring(2, 9)}`;
         
         // Create toast element
         const toast = document.createElement('div');
-        toast.className = `vote-toast fixed bottom-4 right-4 p-4 rounded-md shadow-lg z-50 transition-all duration-300 ${
-          isDestructive ? 'bg-red-600 text-white' : 'bg-green-600 text-white'
-        }`;
+        const bgColor = isDestructive ? 'bg-red-500' : 'bg-green-500';
+        const icon = isDestructive ? '⚠️' : '✅';
+        
+        toast.className = `vote-toast fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 max-w-sm transform transition-all duration-300 translate-x-full ${bgColor} text-white`;
         toast.innerHTML = `
-          <div class="font-medium">${title}</div>
-          <div class="text-sm opacity-90">${description}</div>
+          <div class="flex items-center gap-3">
+            <span class="text-lg">${icon}</span>
+            <div class="flex-1">
+              <div class="font-semibold text-sm">${title}</div>
+              <div class="text-xs opacity-90">${description}</div>
+            </div>
+            <button class="text-white hover:text-gray-200 ml-2" onclick="this.parentElement.parentElement.remove()">
+              ×
+            </button>
+          </div>
         `;
         
         document.body.appendChild(toast);
         
-        // Auto remove after 3 seconds
+        // Animate in
         setTimeout(() => {
-          toast.style.opacity = '0';
-          toast.style.transform = 'translateY(100%)';
-          setTimeout(() => {
-            if (document.body.contains(toast)) {
-              document.body.removeChild(toast);
-            }
-          }, 300);
-        }, 3000);
+          toast.classList.remove('translate-x-full');
+        }, 10);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          if (document.body.contains(toast)) {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+              if (document.body.contains(toast)) {
+                document.body.removeChild(toast);
+              }
+            }, 300);
+          }
+        }, 5000);
       }
     }
     
