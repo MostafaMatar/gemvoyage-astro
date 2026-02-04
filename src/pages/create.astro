@@ -154,32 +154,64 @@ import Footer from '../components/Footer.astro';
       }, 5000);
     }
 
-    // Simple markdown to HTML conversion for preview
+    // Reliable markdown to HTML conversion for preview
     function markdownToHtml(markdown) {
-      return markdown
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-600 underline">$1</a>')
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/\n/g, '<br>')
-        .replace(/^(.+)/, '<p>$1')
-        .replace(/(.+)$/, '$1</p>');
+      const escapeHtml = (str) =>
+        str.replace(/&/g, '&amp;')
+           .replace(/</g, '&lt;')
+           .replace(/>/g, '&gt;')
+           .replace(/"/g, '&quot;')
+           .replace(/'/g, '&#039;');
+
+      const linkified = (str) =>
+        str.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">$1</a>');
+
+      const lines = markdown.split('\n');
+      const blocks = [];
+      let paragraph = [];
+
+      const flushParagraph = () => {
+        if (!paragraph.length) return;
+        const text = paragraph.join(' ');
+        blocks.push(`<p>${text}</p>`);
+        paragraph = [];
+      };
+
+      for (const line of lines) {
+        if (line.trim() === '') {
+          flushParagraph();
+          continue;
+        }
+        paragraph.push(line);
+      }
+      flushParagraph();
+
+      let html = blocks.join('');
+      html = escapeHtml(html)
+        .replace(/&lt;p&gt;/g, '<p>')
+        .replace(/&lt;\/p&gt;/g, '</p>');
+
+      html = linkified(html)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code>$1</code>');
+
+      return html || '<p class="text-gray-400">Start typing to see preview...</p>';
     }
 
     // Markdown preview functionality
     const contentTextarea = document.getElementById('content');
     const markdownPreview = document.getElementById('markdown-preview');
-    
+
+    function updateMarkdownPreview() {
+      if (!contentTextarea || !markdownPreview) return;
+      const markdown = contentTextarea.value || '';
+      markdownPreview.innerHTML = markdownToHtml(markdown);
+    }
+
     if (contentTextarea && markdownPreview) {
-      contentTextarea.addEventListener('input', () => {
-        const textarea = contentTextarea;
-        const markdown = textarea.value;
-        if (markdown.trim()) {
-          markdownPreview.innerHTML = markdownToHtml(markdown);
-        } else {
-          markdownPreview.innerHTML = '<p class="text-gray-400">Start typing to see preview...</p>';
-        }
-      });
+      contentTextarea.addEventListener('input', updateMarkdownPreview);
+      updateMarkdownPreview();
     }
 
     // Markdown toolbar buttons
