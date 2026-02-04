@@ -96,18 +96,32 @@ try {
   const commentCount = document.getElementById('comment-count');
   const loginPrompt = document.getElementById('login-prompt');
 
-  // Check authentication status
-  const isLoggedIn = (
-    localStorage.getItem('isLoggedIn') === 'true' && 
-    localStorage.getItem('access_token') !== null && 
-    localStorage.getItem('userId') !== null
-  );
+  function getIsLoggedIn() {
+    return (
+      localStorage.getItem('isLoggedIn') === 'true' &&
+      localStorage.getItem('access_token') !== null &&
+      localStorage.getItem('userId') !== null
+    );
+  }
 
-  // Show appropriate UI based on auth status
-  if (isLoggedIn) {
-    form.classList.remove('hidden');
-  } else {
-    loginPrompt.classList.remove('hidden');
+  function updateAuthUI() {
+    const isLoggedIn = getIsLoggedIn();
+    if (isLoggedIn) {
+      form?.classList.remove('hidden');
+      loginPrompt?.classList.add('hidden');
+    } else {
+      form?.classList.add('hidden');
+      loginPrompt?.classList.remove('hidden');
+    }
+    return isLoggedIn;
+  }
+
+  let isLoggedIn = updateAuthUI();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      isLoggedIn = updateAuthUI();
+    });
   }
 
   // Modern toast notification function
