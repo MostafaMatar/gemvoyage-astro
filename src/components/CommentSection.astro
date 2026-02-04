@@ -89,181 +89,198 @@ try {
 <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
 
 <script define:vars={{ gemId, API_BASE_URL }}>
-  const form = document.getElementById('comment-form');
-  const textarea = document.getElementById('comment-textarea');
-  const submitBtn = document.getElementById('submit-btn');
-  const commentsContainer = document.getElementById('comments-container');
-  const commentCount = document.getElementById('comment-count');
-  const loginPrompt = document.getElementById('login-prompt');
+  // Wait for DOM to be ready before accessing elements
+  function initializeCommentSection() {
+    const form = document.getElementById('comment-form');
+    const textarea = document.getElementById('comment-textarea');
+    const submitBtn = document.getElementById('submit-btn');
+    const commentsContainer = document.getElementById('comments-container');
+    const commentCount = document.getElementById('comment-count');
+    const loginPrompt = document.getElementById('login-prompt');
 
-  function getIsLoggedIn() {
-    return (
-      localStorage.getItem('isLoggedIn') === 'true' &&
-      localStorage.getItem('access_token') !== null &&
-      localStorage.getItem('userId') !== null
-    );
-  }
-
-  function updateAuthUI() {
-    const isLoggedIn = getIsLoggedIn();
-    if (isLoggedIn) {
-      form?.classList.remove('hidden');
-      loginPrompt?.classList.add('hidden');
-    } else {
-      form?.classList.add('hidden');
-      loginPrompt?.classList.remove('hidden');
+    function getIsLoggedIn() {
+      return (
+        localStorage.getItem('isLoggedIn') === 'true' &&
+        localStorage.getItem('access_token') !== null &&
+        localStorage.getItem('userId') !== null
+      );
     }
-    return isLoggedIn;
-  }
 
-  let isLoggedIn = updateAuthUI();
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      isLoggedIn = updateAuthUI();
-    });
-  }
-
-  // Modern toast notification function
-  function showToast(title, description, variant = 'default') {
-    const toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) return;
-    
-    const toast = document.createElement('div');
-    const bgColor = variant === 'destructive' ? 'bg-red-500' : 'bg-green-500';
-    const iconColor = variant === 'destructive' ? 'text-red-100' : 'text-green-100';
-    const icon = variant === 'destructive' ? '⚠️' : '✅';
-    
-    toast.className = `${bgColor} text-white p-4 rounded-lg shadow-lg mb-2 max-w-sm transform transition-all duration-300 translate-x-full`;
-    toast.innerHTML = `
-      <div class="flex items-center gap-3">
-        <span class="text-lg">${icon}</span>
-        <div class="flex-1">
-          <div class="font-semibold text-sm">${title}</div>
-          <div class="text-xs opacity-90">${description}</div>
-        </div>
-        <button class="text-white hover:text-gray-200 ml-2" onclick="this.parentElement.parentElement.remove()">
-          ×
-        </button>
-      </div>
-    `;
-    
-    toastContainer.appendChild(toast);
-    
-    // Animate in
-    setTimeout(() => {
-      toast.classList.remove('translate-x-full');
-    }, 10);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.classList.add('translate-x-full');
-        setTimeout(() => {
-          if (toast.parentNode) {
-            toast.parentNode.removeChild(toast);
-          }
-        }, 300);
-      }
-    }, 5000);
-  }
-
-  // Show modern notification for unauthenticated users
-  function showLoginNotification() {
-    showToast('Authentication Required', 'Please login to post a comment', 'destructive');
-  }
-
-  function formatDistanceToNow(date) {
-    const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
-    
-    if (diffInSeconds < 60) return 'just now';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-    return `${Math.floor(diffInSeconds / 86400)} days ago`;
-  }
-
-  async function loadComments() {
-    try {
-      const res = await fetch(`${API_BASE_URL}/gem_comment/gem/${gemId}`);
-      if (!res.ok) throw new Error('Failed to fetch comments');
-      const comments = await res.json();
+    function updateAuthUI() {
+      const isLoggedIn = getIsLoggedIn();
+      if (!form || !loginPrompt) return isLoggedIn;
       
-      commentsContainer.innerHTML = comments.map(comment => `
-        <div class="rounded-lg border p-4 animate-fade-in">
-          <div class="flex justify-between">
-            <div class="flex items-center gap-3">
-              <div>
-                <p class="font-medium text-sm">User ${comment.ownerId}</p>
-                <p class="text-xs text-muted-foreground">
-                  ${formatDistanceToNow(new Date(comment.createdAt))}
-                </p>
+      if (isLoggedIn) {
+        form.style.display = 'block';
+        loginPrompt.style.display = 'none';
+      } else {
+        form.style.display = 'none';
+        loginPrompt.style.display = 'block';
+      }
+      return isLoggedIn;
+    }
+
+    let isLoggedIn = updateAuthUI();
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        isLoggedIn = updateAuthUI();
+      });
+    }
+
+    // Modern toast notification function
+    function showToast(title, description, variant = 'default') {
+      const toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) return;
+      
+      const toast = document.createElement('div');
+      const bgColor = variant === 'destructive' ? 'bg-red-500' : 'bg-green-500';
+      const iconColor = variant === 'destructive' ? 'text-red-100' : 'text-green-100';
+      const icon = variant === 'destructive' ? '⚠️' : '✅';
+      
+      toast.className = `${bgColor} text-white p-4 rounded-lg shadow-lg mb-2 max-w-sm transform transition-all duration-300 translate-x-full`;
+      toast.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="text-lg">${icon}</span>
+          <div class="flex-1">
+            <div class="font-semibold text-sm">${title}</div>
+            <div class="text-xs opacity-90">${description}</div>
+          </div>
+          <button class="text-white hover:text-gray-200 ml-2" onclick="this.parentElement.parentElement.remove()">
+            ×
+          </button>
+        </div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      // Animate in
+      setTimeout(() => {
+        toast.classList.remove('translate-x-full');
+      }, 10);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.classList.add('translate-x-full');
+          setTimeout(() => {
+            if (toast.parentNode) {
+              toast.parentNode.removeChild(toast);
+            }
+          }, 300);
+        }
+      }, 5000);
+    }
+
+    // Show modern notification for unauthenticated users
+    function showLoginNotification() {
+      showToast('Authentication Required', 'Please login to post a comment', 'destructive');
+    }
+
+    function formatDistanceToNow(date) {
+      const now = new Date();
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      
+      if (diffInSeconds < 60) return 'just now';
+      if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+      if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+      return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    }
+
+    async function loadComments() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/gem_comment/gem/${gemId}`);
+        if (!res.ok) throw new Error('Failed to fetch comments');
+        const comments = await res.json();
+        
+        commentsContainer.innerHTML = comments.map(comment => `
+          <div class="rounded-lg border p-4 animate-fade-in">
+            <div class="flex justify-between">
+              <div class="flex items-center gap-3">
+                <div>
+                  <p class="font-medium text-sm">User ${comment.ownerId}</p>
+                  <p class="text-xs text-muted-foreground">
+                    ${formatDistanceToNow(new Date(comment.createdAt))}
+                  </p>
+                </div>
               </div>
             </div>
+            <div class="mt-3">
+              <p class="text-sm">${comment.comment}</p>
+            </div>
           </div>
-          <div class="mt-3">
-            <p class="text-sm">${comment.comment}</p>
-          </div>
-        </div>
-      `).join('');
-      
-      commentCount.textContent = comments.length;
-    } catch (error) {
-      showToast('Error', 'Failed to fetch comments.', 'destructive');
+        `).join('');
+        
+        commentCount.textContent = comments.length;
+      } catch (error) {
+        showToast('Error', 'Failed to fetch comments.', 'destructive');
+      }
+    }
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Re-check authentication before submitting
+        isLoggedIn = getIsLoggedIn();
+        if (!isLoggedIn) {
+          showLoginNotification();
+          return;
+        }
+        
+        const commentText = textarea.value.trim();
+        if (!commentText) return;
+        
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          showLoginNotification();
+          return;
+        }
+
+        const newComment = {
+          id: crypto.randomUUID(),
+          createdAt: new Date().toISOString(),
+          gemId,
+          ownerId: userId,
+          comment: commentText,
+        };
+
+        try {
+          submitBtn.disabled = true;
+          
+          const res = await fetch(`${API_BASE_URL}/gem_comment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newComment),
+          });
+          
+          if (!res.ok) {
+            showToast('Error', 'Failed to post comment.', 'destructive');
+            return;
+          }
+          
+          await loadComments();
+          textarea.value = '';
+          showToast('Success', 'Comment posted!', 'default');
+        } catch (error) {
+          showToast('Error', 'Failed to post comment.', 'destructive');
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    }
+
+    if (textarea && submitBtn) {
+      textarea.addEventListener('input', () => {
+        submitBtn.disabled = !textarea.value.trim();
+      });
     }
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Double-check authentication before submitting
-    if (!isLoggedIn) {
-      showLoginNotification();
-      return;
-    }
-    
-    const commentText = textarea.value.trim();
-    if (!commentText) return;
-    
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      showLoginNotification();
-      return;
-    }
-
-    const newComment = {
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-      gemId,
-      ownerId: userId,
-      comment: commentText,
-    };
-
-    try {
-      submitBtn.disabled = true;
-      
-      const res = await fetch(`${API_BASE_URL}/gem_comment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newComment),
-      });
-      
-      if (!res.ok) {
-        showToast('Error', 'Failed to post comment.', 'destructive');
-        return;
-      }
-      
-      await loadComments();
-      textarea.value = '';
-      showToast('Success', 'Comment posted!', 'default');
-    } catch (error) {
-      showToast('Error', 'Failed to post comment.', 'destructive');
-    } finally {
-      submitBtn.disabled = false;
-    }
-  });
-
-  textarea.addEventListener('input', () => {
-    submitBtn.disabled = !textarea.value.trim();
-  });
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeCommentSection);
+  } else {
+    initializeCommentSection();
+  }
 </script>
