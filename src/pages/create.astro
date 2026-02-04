@@ -10,7 +10,7 @@ import Footer from '../components/Footer.astro';
   noIndex={true}
 >
   <Navbar />
-  <div class="p-4 max-w-4xl mx-auto">
+  <div class="p-4 max-w-6xl w-full mx-auto">
     <form id="gem-form" class="space-y-6">
       <div>
         <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -154,7 +154,7 @@ import Footer from '../components/Footer.astro';
       }, 5000);
     }
 
-    // Reliable markdown to HTML conversion for preview
+    // Reliable markdown to HTML conversion for preview (with headings + lists)
     function markdownToHtml(markdown) {
       const escapeHtml = (str) =>
         str.replace(/&/g, '&amp;')
@@ -163,40 +163,76 @@ import Footer from '../components/Footer.astro';
            .replace(/"/g, '&quot;')
            .replace(/'/g, '&#039;');
 
-      const linkified = (str) =>
-        str.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">$1</a>');
+      const inlineFormat = (str) =>
+        str
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">$1</a>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .replace(/`(.+?)`/g, '<code>$1</code>');
 
-      const lines = markdown.split('\n');
+      const lines = (markdown || '').split('\n');
       const blocks = [];
       let paragraph = [];
+      let listType = null; // 'ul' | 'ol'
+      let listItems = [];
 
       const flushParagraph = () => {
         if (!paragraph.length) return;
-        const text = paragraph.join(' ');
+        const text = inlineFormat(paragraph.join(' '));
         blocks.push(`<p>${text}</p>`);
         paragraph = [];
       };
 
+      const flushList = () => {
+        if (!listItems.length) return;
+        const items = listItems.map((li) => `<li>${inlineFormat(li)}</li>`).join('');
+        blocks.push(`<${listType}>${items}</${listType}>`);
+        listItems = [];
+        listType = null;
+      };
+
       for (const line of lines) {
-        if (line.trim() === '') {
+        const trimmed = line.trim();
+        if (!trimmed) {
           flushParagraph();
+          flushList();
           continue;
         }
-        paragraph.push(line);
+
+        const headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+        if (headingMatch) {
+          flushParagraph();
+          flushList();
+          const level = headingMatch[1].length;
+          const content = inlineFormat(escapeHtml(headingMatch[2]));
+          blocks.push(`<h${level}>${content}</h${level}>`);
+          continue;
+        }
+
+        const ulMatch = trimmed.match(/^[-*]\s+(.*)$/);
+        if (ulMatch) {
+          flushParagraph();
+          if (listType && listType !== 'ul') flushList();
+          listType = 'ul';
+          listItems.push(escapeHtml(ulMatch[1]));
+          continue;
+        }
+
+        const olMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+        if (olMatch) {
+          flushParagraph();
+          if (listType && listType !== 'ol') flushList();
+          listType = 'ol';
+          listItems.push(escapeHtml(olMatch[1]));
+          continue;
+        }
+
+        paragraph.push(escapeHtml(line));
       }
+
       flushParagraph();
-
-      let html = blocks.join('');
-      html = escapeHtml(html)
-        .replace(/&lt;p&gt;/g, '<p>')
-        .replace(/&lt;\/p&gt;/g, '</p>');
-
-      html = linkified(html)
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        .replace(/`(.+?)`/g, '<code>$1</code>');
-
-      return html || '<p class="text-gray-400">Start typing to see preview...</p>';
+      flushList();
+      return blocks.length ? blocks.join('') : '<p class="text-gray-400">Start typing to see preview...</p>';
     }
 
     // Markdown preview functionality
