@@ -117,7 +117,7 @@ import Footer from '../components/Footer.astro';
   <Footer />
 
   <script is:inline>
-    const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
+    const API_BASE_URL = 'https://gemvoyage-backend.duckdns.org/api';
     
     // Check authentication and redirect if not logged in
     const isLoggedIn = (localStorage.getItem('isLoggedIn') === 'true' && localStorage.getItem('access_token') !== null && localStorage.getItem('userId') !== null);
