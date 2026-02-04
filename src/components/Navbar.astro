@@ -34,9 +34,9 @@ const currentPath = Astro.url.pathname;
       </nav>
     </div>
     <div class="flex items-center space-x-4">
-      <div id="logged-in-buttons" class="hidden">
+      <div id="logged-in-buttons" class="hidden flex items-center space-x-2">
         <button
-          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-gem-400 hover:bg-gem-500 text-white shadow-sm h-8 px-3 mr-2 hidden sm:flex"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-gem-400 hover:bg-gem-500 text-white shadow-sm h-8 px-3 hidden sm:inline-flex"
           id="create-gem-btn"
         >
           Create Gem
@@ -149,15 +149,15 @@ const currentPath = Astro.url.pathname;
       loggedInButtons.classList.add('hidden');
     } else {
       authButtons.innerHTML = `
-        <button id="logout-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 h-8 px-3">
+        <button id="logout-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-red-600 text-white shadow-sm hover:bg-red-700 h-8 px-3">
           Log Out
         </button>
       `;
       mobileAuthButtons.innerHTML = `
-        <button id="mobile-create-gem-btn" class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-gem-400 hover:bg-gem-500 text-white h-8 px-3">
+        <button id="mobile-create-gem-btn" class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-gem-400 hover:bg-gem-500 text-white shadow-sm h-8 px-3">
           Create Gem
         </button>
-        <button id="mobile-logout-btn" class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 h-8 px-3">
+        <button id="mobile-logout-btn" class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-red-600 text-white shadow-sm hover:bg-red-700 h-8 px-3">
           Log Out
         </button>
       `;
