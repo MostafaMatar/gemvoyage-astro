@@ -4,6 +4,7 @@ import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
 import { API_BASE_URL } from '../../lib/apiConfig';
 import AuthorInfo from '../../components/AuthorInfo.astro';
+import FlightWidget from '../../components/FlightWidget.astro';
 
 interface Gem {
   id: string;
@@ -292,6 +293,9 @@ const markdownToHtml = (markdown: string) => {
         />
       </div>
 
+      <section class="container mx-auto px-4 py-8">
+        <FlightWidget />
+      </section>
       <div class="flex flex-col md:flex-row gap-8">
         <div class="md:w-2/3">
           <div class="prose prose-lg max-w-none prose-headings:font-semibold prose-p:text-gray-700 prose-strong:font-semibold prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">

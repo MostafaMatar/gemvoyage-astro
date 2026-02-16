@@ -1,0 +1,40 @@
+---
+// Flight booking widget powered by Kiwi.com
+---
+
+<div class="flight-widget-container">
+  <h2 class="widget-title">Check flights to this location</h2>
+  <div id="kiwi-widget"></div>
+</div>
+
+<script is:inline>
+  // Load Kiwi.com widget script
+  (function() {
+    const script = document.createElement('script');
+    script.src = 'https://tpemd.com/content?currency=usd&trs=496767&shmarker=702371.GemVoyage&locale=en&stops=any&show_hotels=true&powered_by=false&border_radius=0&plain=true&color_button=%239333ea&color_button_text=%23ffffff&promo_id=3414&campaign_id=111';
+    script.async = true;
+    script.charset = 'utf-8';
+    document.getElementById('kiwi-widget').appendChild(script);
+  })();
+</script>
+
+<style>
+  .flight-widget-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .widget-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+
+  #kiwi-widget {
+    min-height: 400px;
+  }
+</style>
