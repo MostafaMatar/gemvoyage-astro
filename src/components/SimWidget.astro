@@ -1,0 +1,39 @@
+---
+// Flight booking widget powered by Kiwi.com
+---
+
+<div class="alo-widget-container">
+  <h2 class="alo-title">Get the best global eSIM for your destination</h2>
+  <div id="alo-widget"></div>
+</div>
+
+<script is:inline>
+  // Load airalo widget script
+  (function() {
+    const script = document.createElement('script');
+    script.src = 'https://tpemd.com/content?trs=496767&shmarker=702371.GemVoyage&locale=en&powered_by=true&color_button=%239333ea&color_focused=%239333ea&secondary=%23FFFFFF&dark=%2311100f&light=%23FFFFFF&special=%23C4C4C4&border_radius=5&plain=false&no_labels=true&promo_id=8588&campaign_id=541';
+    script.async = true;
+    script.charset = 'utf-8';
+    document.getElementById('alo-widget').appendChild(script);
+  })();
+</script>
+
+<style>
+  .alo-widget-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .alo-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+
+  #alo-widget {
+  }
+</style>

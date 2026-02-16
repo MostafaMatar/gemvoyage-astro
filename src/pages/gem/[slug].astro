@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import { API_BASE_URL } from '../../lib/apiConfig';
 import AuthorInfo from '../../components/AuthorInfo.astro';
 import FlightWidget from '../../components/FlightWidget.astro';
+import SimWidget from '../../components/SimWidget.astro';
 
 interface Gem {
   id: string;
@@ -338,6 +339,9 @@ const markdownToHtml = (markdown: string) => {
                 </button>
               </div>
             </div>
+            <section class="container mx-auto px-4 py-8">
+              <SimWidget />
+            </section>
           </div>
         </div>
       </div>
