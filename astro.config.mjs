@@ -7,6 +7,7 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   output: 'server',
   adapter: cloudflare(),
+  site: 'https://gemvoyage.net', // Update with your actual domain
   integrations: [
     tailwind({
       // Apply Tailwind's base styles
