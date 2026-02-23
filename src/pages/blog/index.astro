@@ -6,12 +6,46 @@ import Footer from '../../components/Footer.astro';
 
 const allBlogPosts = await getCollection('blog');
 
-const sortedPosts = allBlogPosts.sort(
+// Get URL parameters
+const url = Astro.url;
+const searchQuery = url.searchParams.get('search') || '';
+const selectedTag = url.searchParams.get('tag') || 'All';
+
+// Get all unique tags from posts
+const allTags = ['All', ...new Set(allBlogPosts.flatMap(post => post.data.tags))].sort();
+
+// Filter posts based on search and tag
+let filteredPosts = allBlogPosts.filter(post => {
+  const matchesTag = selectedTag === 'All' || post.data.tags.includes(selectedTag);
+  const matchesSearch = !searchQuery.trim() || 
+    post.data.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    post.data.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    post.data.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+  
+  return matchesTag && matchesSearch;
+});
+
+// Sort filtered posts by date
+const sortedPosts = filteredPosts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
 const title = 'Blog | GemVoyage';
 const description = 'Travel guides, tips, and stories from around the world.';
+
+// Helper function for building URLs
+function buildURL(params: Record<string, string | null>) {
+  const newURL = new URL(url);
+  newURL.search = '';
+  
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== null && value !== '' && !(key === 'tag' && value === 'All')) {
+      newURL.searchParams.set(key, value);
+    }
+  });
+  
+  return newURL.pathname + newURL.search;
+}
 ---
 
 <Layout title={title}>
@@ -26,10 +60,53 @@ const description = 'Travel guides, tips, and stories from around the world.';
           </p>
         </div>
         
+        <!-- Search and Filter Section -->
+        <div class="flex flex-col md:flex-row gap-6 mb-8">
+          <div class="md:w-2/3">
+            <form id="search-form" class="relative" method="GET">
+              <input 
+                id="search-input"
+                name="search"
+                type="text"
+                value={searchQuery}
+                placeholder="Search by title, description, or tags" 
+                class="pl-5 w-full text-lg border-2 rounded-xl p-3 shadow focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              />
+              <input type="hidden" name="tag" value={selectedTag} />
+            </form>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row gap-4 md:w-1/3">
+            <select 
+              id="tag-select"
+              name="tag"
+              class="w-full text-lg border-2 rounded-xl p-3 shadow focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            >
+              {allTags.map(tag => (
+                <option value={tag} selected={tag === selectedTag}>
+                  {tag}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
+        <!-- Results Info -->
+        {sortedPosts.length > 0 && (
+          <div class="mb-6 text-gray-600">
+            {(() => {
+              const hasFilters = searchQuery.trim() || selectedTag !== 'All';
+              return hasFilters 
+                ? `Found ${sortedPosts.length} ${sortedPosts.length === 1 ? 'post' : 'posts'}`
+                : `Showing ${sortedPosts.length} ${sortedPosts.length === 1 ? 'post' : 'posts'}`;
+            })()}
+          </div>
+        )}
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedPosts.map((post) => (
             <article class="border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
-              <a href={`/blog/${post.slug}/`} class="block">
+              <a href={`/blog/${post.id}/`} class="block">
                 {post.data.image && (
                   <img 
                     src={post.data.image} 
@@ -69,8 +146,20 @@ const description = 'Travel guides, tips, and stories from around the world.';
         
         {sortedPosts.length === 0 && (
           <div class="text-center py-16">
-            <h3 class="text-xl font-semibold mb-2">No blog posts yet</h3>
-            <p class="text-gray-600">Check back soon for exciting travel stories and guides!</p>
+            <h3 class="text-xl font-semibold mb-2">No blog posts found</h3>
+            <p class="text-gray-600 mb-6">
+              {searchQuery || selectedTag !== 'All' 
+                ? 'Try adjusting your filters or search query'
+                : 'Check back soon for exciting travel stories and guides!'}
+            </p>
+            {(searchQuery || selectedTag !== 'All') && (
+              <a 
+                href="/blog"
+                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-block"
+              >
+                Clear Filters
+              </a>
+            )}
           </div>
         )}
       </div>
@@ -87,3 +176,52 @@ const description = 'Travel guides, tips, and stories from around the world.';
     overflow: hidden;
   }
 </style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Handle search form submission
+    const searchForm = document.getElementById('search-form');
+    if (searchForm) {
+      searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const searchInput = document.getElementById('search-input');
+        const tagSelect = document.getElementById('tag-select');
+        
+        const params = new URLSearchParams();
+        
+        if (searchInput.value.trim()) {
+          params.set('search', searchInput.value.trim());
+        }
+        
+        if (tagSelect.value !== 'All') {
+          params.set('tag', tagSelect.value);
+        }
+        
+        const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+        window.location.href = newURL;
+      });
+    }
+
+    // Handle tag change
+    const tagSelect = document.getElementById('tag-select');
+    if (tagSelect) {
+      tagSelect.addEventListener('change', function() {
+        const searchInput = document.getElementById('search-input');
+        
+        const params = new URLSearchParams();
+        
+        if (searchInput.value.trim()) {
+          params.set('search', searchInput.value.trim());
+        }
+        
+        if (tagSelect.value !== 'All') {
+          params.set('tag', tagSelect.value);
+        }
+        
+        const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+        window.location.href = newURL;
+      });
+    }
+  });
+</script>
