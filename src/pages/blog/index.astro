@@ -10,6 +10,8 @@ const allBlogPosts = await getCollection('blog');
 const url = Astro.url;
 const searchQuery = url.searchParams.get('search') || '';
 const selectedTag = url.searchParams.get('tag') || 'All';
+const currentPage = parseInt(url.searchParams.get('page') || '1');
+const postsPerPage = 9;
 
 // Get all unique tags from posts
 const allTags = ['All', ...new Set(allBlogPosts.flatMap(post => post.data.tags))].sort();
@@ -30,22 +32,39 @@ const sortedPosts = filteredPosts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
+// Pagination calculations
+const totalPosts = sortedPosts.length;
+const totalPages = Math.ceil(totalPosts / postsPerPage);
+const startIndex = (currentPage - 1) * postsPerPage;
+const endIndex = startIndex + postsPerPage;
+const displayPosts = sortedPosts.slice(startIndex, endIndex);
+
 const title = 'Blog | GemVoyage';
 const description = 'Travel guides, itinieraries, rank lists, and more to help you make the best out of your travels.';
 
 // Helper function for building URLs
-function buildURL(params: Record<string, string | null>) {
+function buildURL(params: Record<string, string | number | null>) {
   const newURL = new URL(url);
   newURL.search = '';
   
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== null && value !== '' && !(key === 'tag' && value === 'All')) {
-      newURL.searchParams.set(key, value);
+    if (value !== null && value !== '' && !(key === 'tag' && value === 'All') && !(key === 'page' && value === 1)) {
+      newURL.searchParams.set(key, value.toString());
     }
   });
   
   return newURL.pathname + newURL.search;
 }
+
+// Pre-compute pagination data
+const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i) => {
+  const pageNum = i + 1;
+  return {
+    pageNum,
+    isActive: pageNum === currentPage,
+    href: buildURL({ search: searchQuery, tag: selectedTag, page: pageNum })
+  };
+}) : [];
 ---
 
 <Layout title={title}>
@@ -92,21 +111,24 @@ function buildURL(params: Record<string, string | null>) {
         </div>
         
         <!-- Results Info -->
-        {sortedPosts.length > 0 && (
+        {totalPosts > 0 && (
           <div class="mb-6 text-gray-600">
             {(() => {
               const hasFilters = searchQuery.trim() || selectedTag !== 'All';
+              const startPostIndex = startIndex + 1;
+              const endPostIndex = Math.min(endIndex, totalPosts);
+              
               return hasFilters 
-                ? `Found ${sortedPosts.length} ${sortedPosts.length === 1 ? 'post' : 'posts'}`
-                : `Showing ${sortedPosts.length} ${sortedPosts.length === 1 ? 'post' : 'posts'}`;
+                ? `Found ${totalPosts} ${totalPosts === 1 ? 'post' : 'posts'} • Page ${currentPage} of ${totalPages}`
+                : `Showing ${endPostIndex - startPostIndex + 1} posts • Page ${currentPage} of ${totalPages}`;
             })()}
           </div>
         )}
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedPosts.map((post) => (
+          {displayPosts.map((post) => (
             <article class="border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
-              <a href={`/blog/${post.id}/`} class="block">
+              <a href={`/blog/${post.slug}/`} class="block">
                 {post.data.image && (
                   <img 
                     src={post.data.image} 
@@ -162,6 +184,48 @@ function buildURL(params: Record<string, string | null>) {
             )}
           </div>
         )}
+
+        <!-- Pagination -->
+        {totalPages > 1 && (
+          <div class="flex justify-center items-center gap-2 mt-8">
+            {currentPage > 1 && (
+              <a 
+                href={buildURL({ search: searchQuery, tag: selectedTag, page: currentPage - 1 })}
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Prev
+              </a>
+            )}
+            
+            <div class="flex gap-1">
+              {totalPages <= 10 ? (
+                pageNumbers.map((page) => (
+                  <a 
+                    href={page.href}
+                    class={`px-3 py-1 text-sm rounded transition-colors ${page.isActive 
+                      ? 'bg-blue-600 text-white' 
+                      : 'border border-gray-300 hover:bg-gray-50'}`}
+                  >
+                    {page.pageNum}
+                  </a>
+                ))
+              ) : (
+                <span class="px-4 py-2 text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+              )}
+            </div>
+            
+            {currentPage < totalPages && (
+              <a 
+                href={buildURL({ search: searchQuery, tag: selectedTag, page: currentPage + 1 })}
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Next
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </div>
   </section>
@@ -198,6 +262,7 @@ function buildURL(params: Record<string, string | null>) {
           params.set('tag', tagSelect.value);
         }
         
+        // Reset to page 1 when searching
         const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
         window.location.href = newURL;
       });
@@ -219,6 +284,7 @@ function buildURL(params: Record<string, string | null>) {
           params.set('tag', tagSelect.value);
         }
         
+        // Reset to page 1 when changing tag
         const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
         window.location.href = newURL;
       });
