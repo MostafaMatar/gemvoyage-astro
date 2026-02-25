@@ -1,21 +1,53 @@
-import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 
-export async function GET(context) {
-  const blog = await getCollection('blog', ({ data }) => {
-    return data.draft !== true;
+function escapeXml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function toRfc1123(date) {
+  return new Date(date).toUTCString();
+}
+
+export async function GET({ site, request }) {
+  const base = site ? String(site).replace(/\/$/, '') : new URL(request.url).origin;
+  const posts = await getCollection('blog');
+
+  const sorted = posts.sort((a, b) => {
+    const da = new Date(a.data.pubDate).valueOf();
+    const db = new Date(b.data.pubDate).valueOf();
+    return db - da;
   });
-  
-  return rss({
-    title: 'GemVoyage Blog',
-    description: 'Travel guides, tips, and stories from around the world.',
-    site: context.site,
-    items: blog.map((post) => ({
-      title: post.data.title,
-      description: post.data.description,
-      pubDate: post.data.pubDate,
-      link: `/blog/${post.slug}/`,
-    })),
-    customData: `<language>en-us</language>`,
+
+  const items = sorted.map(post => {
+    const loc = `${base}/blog/${post.slug}/`;
+    const title = escapeXml(post.data.title || '');
+    const description = escapeXml(post.data.description || '');
+    const pubDate = post.data.pubDate ? toRfc1123(post.data.pubDate) : '';
+    return `<item>
+  <title>${title}</title>
+  <link>${loc}</link>
+  <guid isPermaLink="true">${loc}</guid>
+  <description>${description}</description>
+  ${pubDate ? `<pubDate>${pubDate}</pubDate>` : ''}
+</item>`;
+  }).join('\n');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>GemVoyage Blog</title>
+  <link>${base}/</link>
+  <description>Travel guides, itineraries, rank lists, and more.</description>
+  ${items}
+</channel>
+</rss>`;
+
+  return new Response(xml, {
+    headers: { 'Content-Type': 'application/rss+xml; charset=utf-8' }
   });
 }
