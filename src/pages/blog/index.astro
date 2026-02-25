@@ -9,22 +9,17 @@ const allBlogPosts = await getCollection('blog');
 // Get URL parameters
 const url = Astro.url;
 const searchQuery = url.searchParams.get('search') || '';
-const selectedTag = url.searchParams.get('tag') || 'All';
 const currentPage = parseInt(url.searchParams.get('page') || '1');
 const postsPerPage = 9;
 
-// Get all unique tags from posts
-const allTags = ['All', ...new Set(allBlogPosts.flatMap(post => post.data.tags))].sort();
-
-// Filter posts based on search and tag
+// Filter posts based on search only (tags filter removed)
 let filteredPosts = allBlogPosts.filter(post => {
-  const matchesTag = selectedTag === 'All' || post.data.tags.includes(selectedTag);
   const matchesSearch = !searchQuery.trim() || 
     post.data.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.data.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.data.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
   
-  return matchesTag && matchesSearch;
+  return matchesSearch;
 });
 
 // Sort filtered posts by date
@@ -42,14 +37,16 @@ const displayPosts = sortedPosts.slice(startIndex, endIndex);
 const title = 'Blog | GemVoyage';
 const description = 'Travel guides, itinieraries, rank lists, and more to help you make the best out of your travels.';
 
-// Helper function for building URLs
+// Helper function for building URLs (no tag handling)
 function buildURL(params: Record<string, string | number | null>) {
   const newURL = new URL(url);
   newURL.search = '';
   
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== null && value !== '' && !(key === 'tag' && value === 'All') && !(key === 'page' && value === 1)) {
-      newURL.searchParams.set(key, value.toString());
+    if (value !== null && value !== '') {
+      if (!(key === 'page' && value === 1)) {
+        newURL.searchParams.set(key, value.toString());
+      }
     }
   });
   
@@ -62,11 +59,10 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
   return {
     pageNum,
     isActive: pageNum === currentPage,
-    href: buildURL({ search: searchQuery, tag: selectedTag, page: pageNum })
+    href: buildURL({ search: searchQuery, page: pageNum })
   };
 }) : [];
 ---
-
 <Layout title={title}>
   <Navbar />
   <section>
@@ -79,9 +75,9 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
           </p>
         </div>
         
-        <!-- Search and Filter Section -->
+        <!-- Search Section (tag filter removed) -->
         <div class="flex flex-col md:flex-row gap-6 mb-8">
-          <div class="md:w-2/3">
+          <div class="md:w-full">
             <form id="search-form" class="relative" method="GET">
               <input 
                 id="search-input"
@@ -91,22 +87,8 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
                 placeholder="Search by title, description, or tags" 
                 class="pl-5 w-full text-lg border-2 rounded-xl p-3 shadow focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
-              <input type="hidden" name="tag" value={selectedTag} />
+              <!-- removed hidden tag input -->
             </form>
-          </div>
-          
-          <div class="flex flex-col sm:flex-row gap-4 md:w-1/3">
-            <select 
-              id="tag-select"
-              name="tag"
-              class="w-full text-lg border-2 rounded-xl p-3 shadow focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            >
-              {allTags.map(tag => (
-                <option value={tag} selected={tag === selectedTag}>
-                  {tag}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
         
@@ -114,7 +96,7 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
         {totalPosts > 0 && (
           <div class="mb-6 text-gray-600">
             {(() => {
-              const hasFilters = searchQuery.trim() || selectedTag !== 'All';
+              const hasFilters = searchQuery.trim();
               const startPostIndex = startIndex + 1;
               const endPostIndex = Math.min(endIndex, totalPosts);
               
@@ -170,11 +152,11 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
           <div class="text-center py-16">
             <h3 class="text-xl font-semibold mb-2">No blog posts found</h3>
             <p class="text-gray-600 mb-6">
-              {searchQuery || selectedTag !== 'All' 
-                ? 'Try adjusting your filters or search query'
+              {searchQuery 
+                ? 'Try adjusting your search query'
                 : 'Check back soon for exciting travel stories and guides!'}
             </p>
-            {(searchQuery || selectedTag !== 'All') && (
+            {searchQuery && (
               <a 
                 href="/blog"
                 class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-block"
@@ -190,7 +172,7 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
           <div class="flex justify-center items-center gap-2 mt-8">
             {currentPage > 1 && (
               <a 
-                href={buildURL({ search: searchQuery, tag: selectedTag, page: currentPage - 1 })}
+                href={buildURL({ search: searchQuery, page: currentPage - 1 })}
                 class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Prev
@@ -218,7 +200,7 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
             
             {currentPage < totalPages && (
               <a 
-                href={buildURL({ search: searchQuery, tag: selectedTag, page: currentPage + 1 })}
+                href={buildURL({ search: searchQuery, page: currentPage + 1 })}
                 class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Next
@@ -250,16 +232,11 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
         e.preventDefault();
         
         const searchInput = document.getElementById('search-input');
-        const tagSelect = document.getElementById('tag-select');
         
         const params = new URLSearchParams();
         
         if (searchInput.value.trim()) {
           params.set('search', searchInput.value.trim());
-        }
-        
-        if (tagSelect.value !== 'All') {
-          params.set('tag', tagSelect.value);
         }
         
         // Reset to page 1 when searching
@@ -268,26 +245,6 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
       });
     }
 
-    // Handle tag change
-    const tagSelect = document.getElementById('tag-select');
-    if (tagSelect) {
-      tagSelect.addEventListener('change', function() {
-        const searchInput = document.getElementById('search-input');
-        
-        const params = new URLSearchParams();
-        
-        if (searchInput.value.trim()) {
-          params.set('search', searchInput.value.trim());
-        }
-        
-        if (tagSelect.value !== 'All') {
-          params.set('tag', tagSelect.value);
-        }
-        
-        // Reset to page 1 when changing tag
-        const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-        window.location.href = newURL;
-      });
-    }
+    // Tag select and its change handler removed (filtering by tag disabled)
   });
 </script>
