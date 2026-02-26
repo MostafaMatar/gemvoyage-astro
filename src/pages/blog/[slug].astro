@@ -20,14 +20,19 @@ if (!entry) {
 }
 
 const { Content } = await entry.render();
-const canonicalURL = new URL(`blog/${entry.id}/`, Astro.site || 'http://localhost:4321');
+const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site || 'http://localhost:4321');
+const postKeywords = entry.data.tags ? entry.data.tags.join(', ') : '';
 ---
 
-<Layout title={`${entry.data.title} | GemVoyage Blog`}>
+<Layout
+  title={`${entry.data.title} | GemVoyage Blog`}
+  description={entry.data.description}
+  keywords={postKeywords}
+  ogUrl={canonicalURL}
+>
   <Navbar />
   
-  <Fragment slot="head">
-    <meta name="description" content={entry.data.description} />
+  <div slot="head">
     <meta name="author" content={entry.data.author} />
     
     <meta property="og:title" content={entry.data.title} />
@@ -61,7 +66,7 @@ const canonicalURL = new URL(`blog/${entry.id}/`, Astro.site || 'http://localhos
         "name": entry.data.author
       }
     })} />
-  </Fragment>
+  </div>
 
   <section>
     <div class="py-8">

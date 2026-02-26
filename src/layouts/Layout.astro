@@ -2,7 +2,7 @@
 import '../styles/global.css';
 
 export interface Props {
-  title?: string;
+  title: string;
   description?: string;
   keywords?: string;
   ogTitle?: string;
@@ -34,7 +34,7 @@ const {
     <!-- Primary meta tags -->
     <title>{title}</title>
     <meta name="description" content={description}>
-    <meta name="keywords" content={keywords}>
+    {keywords && <meta name="keywords" content={keywords} />}
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">

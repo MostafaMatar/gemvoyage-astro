@@ -185,6 +185,8 @@ const markdownToHtml = (markdown: string) => {
 <Layout 
   title={`${gemTitle} - ${gemLocation} | GemVoyage`}
   description={getDescriptionForSEO(gemDescription)}
+  keywords={generateKeywords()}
+  ogUrl={canonicalUrl}
 >
   <!-- Enhanced SEO Meta Tags -->
   <head slot="head">
