@@ -1,0 +1,38 @@
+---
+// Activity booking widget powered by Klook
+---
+
+<div class="activity-widget-container">
+  <h2 class="activity-title">Book activities in your destination with Klook</h2>
+  <div id="activity-widget"></div>
+</div>
+
+<script is:inline>
+  (function() {
+    const script = document.createElement('script');
+    script.src = 'https://tpemd.com/content?currency=USD&trs=496767&shmarker=702371.GemVoyage&locale=en&category=1&amount=3&powered_by=true&campaign_id=137&promo_id=4497';
+    script.async = true;
+    script.charset = 'utf-8';
+    document.getElementById('activity-widget').appendChild(script);
+  })();
+</script>
+
+<style>
+  .activity-widget-container {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .activity-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+  }
+
+  #activity-widget {
+  }
+</style>

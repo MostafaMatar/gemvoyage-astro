@@ -6,6 +6,7 @@ import { API_BASE_URL } from '../../lib/apiConfig';
 import AuthorInfo from '../../components/AuthorInfo.astro';
 import FlightWidget from '../../components/FlightWidget.astro';
 import SimWidget from '../../components/SimWidget.astro';
+import HotelWidget from '../../components/HotelWidget.astro';
 
 interface Gem {
   id: string;
@@ -348,6 +349,9 @@ const markdownToHtml = (markdown: string) => {
         </div>
       </div>
 
+      <section class="container mx-auto px-4 py-8">
+        <HotelWidget />
+      </section>
       <!-- Comments Section -->
       <div id="comments-section" class="mt-8">
         <h2 class="text-xl font-semibold mb-4">Comments</h2>

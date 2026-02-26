@@ -1,0 +1,38 @@
+---
+// Hotel booking widget powered by trip.com
+---
+
+<div class="trip-widget-container">
+  <h2 class="trip-title">Find the best acoommodation for your trip now</h2>
+  <div id="trip-widget"></div>
+</div>
+
+<script is:inline>
+  (function() {
+    const script = document.createElement('script');
+    script.src = 'https://tpemd.com/content?trs=496767&shmarker=702371.GemVoyage&lang=www&layout=S10391&powered_by=true&campaign_id=121&promo_id=4038';
+    script.async = true;
+    script.charset = 'utf-8';
+    document.getElementById('trip-widget').appendChild(script);
+  })();
+</script>
+
+<style>
+  .trip-widget-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .trip-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+
+  #trip-widget {
+  }
+</style>

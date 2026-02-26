@@ -4,6 +4,7 @@ import GemCard from '../components/GemCard.astro';
 import { API_BASE_URL } from '../lib/apiConfig';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import ActivityWidget from '../components/ActivityWidget.astro';
 
 const categories = [
   'All',
@@ -193,6 +194,10 @@ const pageNumbers = totalPages <= 10 ? Array.from({ length: totalPages }, (_, i)
             ))
           )}
         </div>
+
+        <section class="container mx-auto px-4 py-4">
+          <ActivityWidget />
+        </section>
 
         <!-- Pagination -->
         {totalPages > 1 && (
