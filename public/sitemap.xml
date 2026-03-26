@@ -2,97 +2,91 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gemvoyage.net</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Culture</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=History</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Nature</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Shopping</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Food</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Entertainment</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/login</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/register</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/create</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/terms</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/privacy</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/sitemap</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/gem/wat-xieng-thong-laos</loc>
     <lastmod>2025-06-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/meteora-greece-mountain</loc>
-    <lastmod>2025-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -115,32 +109,14 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/malahat-spiral-tower</loc>
+    <loc>https://gemvoyage.net/gem/soviet-submarine-narodovolets-st-petersburg-museum</loc>
+    <lastmod>2025-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/malahat-skywalk-spiral-tower-vancouver-island</loc>
     <lastmod>2025-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/al-mina-mosque-egypt</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/narodovolets-submarine-russia</loc>
-    <lastmod>2025-06-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/diablo-lake-usa-nature-scenic</loc>
-    <lastmod>2025-06-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/whale-valley-egypt-fossils</loc>
-    <lastmod>2025-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -169,8 +145,8 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/Mercado-del-Puerto</loc>
-    <lastmod>2025-07-02</lastmod>
+    <loc>https://gemvoyage.net/gem/meteora-greece-mountain</loc>
+    <lastmod>2025-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -199,13 +175,37 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gemvoyage.net/gem/whale-valley-egypt-fossils</loc>
+    <lastmod>2025-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/al-mina-mosque-hurghada-seafront-mosque</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/Mercado-del-Puerto-montevideo-steakhouse-market</loc>
+    <lastmod>2025-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/diablo-lake-washington-north-cascades</loc>
+    <lastmod>2025-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gemvoyage.net/gem/mezquita-de-crdoba-discovering-the-mosque-cathedrals-timeless-arches-and-heritage</loc>
     <lastmod>2026-02-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/romanian-athenaeum-bucharest-theatre</loc>
+    <loc>https://gemvoyage.net/gem/romanian-athenaeum-bucharest-concert-hall</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -217,32 +217,20 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gemvoyage.net/gem/karasumori-shrine-tokyo-good-luck</loc>
+    <lastmod>2025-12-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gemvoyage.net/gem/rathaus-gmunden-in-austria-a-lakeside-gem-of-history-and-craftsmanship</loc>
     <lastmod>2025-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/masoala-national-park-madagascar-nature</loc>
+    <loc>https://gemvoyage.net/gem/masoala-national-park-madagascar-rainforest</loc>
     <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/martinus-bookstore</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/tivoli-gardens-copenhagen-themepark</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/modrac-lake-in-bosnia-and-herzegovina-an-artificial-lake-with-a-local-soul</loc>
-    <lastmod>2025-12-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -253,13 +241,25 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/magic-water-circuit-fun-lima</loc>
+    <loc>https://gemvoyage.net/gem/caixaforum-barcelona-art-center</loc>
+    <lastmod>2025-12-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/modrac-lake-in-bosnia-and-herzegovina-an-artificial-lake-with-a-local-soul</loc>
+    <lastmod>2025-12-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/tivoli-gardens-copenhagen-themepark</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/duden-waterfall-turkey-nature</loc>
+    <loc>https://gemvoyage.net/gem/iguazu-falls-argentina-waterfalls-guide</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -271,19 +271,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/caixaforum-barcelona</loc>
-    <lastmod>2025-12-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://gemvoyage.net/gem/museu-alien-barcelona-science-fiction-at-its-finest</loc>
-    <lastmod>2025-12-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/karasumori-shrine-tokyos-lucky-shrine</loc>
     <lastmod>2025-12-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -295,8 +283,8 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/iguazo-falls-argentina-nature</loc>
-    <lastmod>2025-06-29</lastmod>
+    <loc>https://gemvoyage.net/gem/martinus-bookstore-bratislava-bookshop</loc>
+    <lastmod>2025-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -325,19 +313,19 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/praia-de-santa-mnica</loc>
-    <lastmod>2025-09-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/Nishiki-Market</loc>
+    <loc>https://gemvoyage.net/gem/duden-waterfalls-antalya-turkey-nature</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/mohatta-palace-karachi</loc>
+    <loc>https://gemvoyage.net/gem/magic-water-circuit-lima-fountain-show</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/nishiki-market-kyoto-food-street</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -349,13 +337,13 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/La-Merced-Market</loc>
+    <loc>https://gemvoyage.net/gem/la-merced-market-mexico-city-food-market</loc>
     <lastmod>2025-07-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/biff-street-shopping-food-busan</loc>
+    <loc>https://gemvoyage.net/gem/biff-square-busan-street-food-market</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -373,31 +361,25 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/amr-ibn-al-aas-mosque-cairo-oldest-mosque</loc>
-    <lastmod>2025-06-29</lastmod>
+    <loc>https://gemvoyage.net/gem/praia-de-santa-monica-boa-vista-cape-verde</loc>
+    <lastmod>2025-09-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/fil-museum-germany</loc>
-    <lastmod>2025-06-29</lastmod>
+    <loc>https://gemvoyage.net/gem/gol-stave-church-oslo-norway</loc>
+    <lastmod>2025-12-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/lennon-wall-art-prague</loc>
+    <loc>https://gemvoyage.net/gem/mohatta-palace-karachi-art-museum</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/gem/coule-verte-ren-dumont-in-paris-a-floating-garden-above-the-city</loc>
-    <lastmod>2025-12-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/banegaarden-in-copenhagen-a-creative-food-village-in-reclaimed-rail-yards</loc>
     <lastmod>2025-12-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -415,8 +397,8 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/gol-stave-church-a-unique-church-that-defies-time</loc>
-    <lastmod>2025-12-29</lastmod>
+    <loc>https://gemvoyage.net/gem/banegaarden-copenhagen-urban-farm-food</loc>
+    <lastmod>2025-12-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -451,56 +433,44 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/state-library-victoria-melbourne-architecture</loc>
+    <loc>https://gemvoyage.net/gem/amr-ibn-al-as-mosque-cairo-oldest-mosque</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/mount-catherine-egypt-christian</loc>
+    <loc>https://gemvoyage.net/gem/filmmuseum-dusseldorf-germany-cinema-museum</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/basilica-san-lorenzo</loc>
-    <lastmod>2025-06-26</lastmod>
+    <loc>https://gemvoyage.net/gem/lennon-wall-prague-street-art</loc>
+    <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/al-azbakiyya-wall-book-market-cairo-a-literary-treasure-in-the-heart-of-the-city</loc>
+    <loc>https://gemvoyage.net/gem/lago-trasimeno-umbria-italy-lake-guide</loc>
+    <lastmod>2025-12-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/plaza-de-la-corredera-cordoba-square-tapas</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/motsameta-monastery-kutaisi-cliffside-church</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/al-azbakiyya-book-market-cairo-hidden-gem</loc>
     <lastmod>2026-01-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/cascadas-del-ro-hermoso</loc>
-    <lastmod>2025-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/chinese-pavilion-stockholm</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/adventure-world-japan</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/motsameta-monastery-religious</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/plaza-de-la-corredera-spain-restaurants-cafes</loc>
-    <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -535,43 +505,73 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/arnes-de-lutce-roman-marvel-in-the-heart-of-paris</loc>
-    <lastmod>2025-12-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/aasleagh-falls-irelands-beautiful-nature</loc>
-    <lastmod>2025-12-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/lago-trasimeno-italys-underrated-lake</loc>
-    <lastmod>2025-12-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://gemvoyage.net/gem/mahale-mountains-national-park-in-tanzania-the-hidden-wilderness-of-chimpanzees-and-crystal-waters</loc>
     <lastmod>2025-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/strasbourg-covered-bridges-romantic-france</loc>
+    <loc>https://gemvoyage.net/gem/cascadas-del-rio-hermoso-neuquen-waterfalls</loc>
+    <lastmod>2025-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/aasleagh-falls-ireland-wild-atlantic-way</loc>
+    <lastmod>2025-12-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/arenes-de-lutece-paris-roman-arena</loc>
+    <lastmod>2025-12-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/adventure-world-shirahama-theme-park-japan</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/mesi-bridge-architecture</loc>
+    <loc>https://gemvoyage.net/gem/state-library-victoria-melbourne-visit-guide</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/monserrate-palace-portugal</loc>
+    <loc>https://gemvoyage.net/gem/chinese-pavilion-stockholm-royal-park</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/basilica-san-lorenzo-milan-roman-church</loc>
+    <lastmod>2025-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/mount-catherine-egypt-hiking-trail</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/valley-of-rocks</loc>
+    <lastmod>2025-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/mesi-bridge-shkoder-ottoman-stone-bridge</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/temple-of-venus-baalbek-roman-ruins</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -583,37 +583,25 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/valley-of-rocks</loc>
-    <lastmod>2025-09-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/Al-Sharbatly-House-saudi-arabia</loc>
-    <lastmod>2025-08-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/phou-si-laos</loc>
+    <loc>https://gemvoyage.net/gem/niesen-mountain-switzerland-funicular-views</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/temple-of-venus-lebanon</loc>
+    <loc>https://gemvoyage.net/gem/strasbourg-covered-bridges-france-landmark</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/agpalilik-copenhagen-meteor</loc>
-    <lastmod>2025-06-29</lastmod>
+    <loc>https://gemvoyage.net/gem/aisha-fahmy-palace-cairo-art-museum</loc>
+    <lastmod>2025-12-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/abdeen-palace-museum</loc>
+    <loc>https://gemvoyage.net/gem/aljaferia-palace-zaragoza-moorish-fortress</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -637,8 +625,8 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/palacio-de-la-aljafera</loc>
-    <lastmod>2025-10-04</lastmod>
+    <loc>https://gemvoyage.net/gem/monserrate-palace-sintra-portugal-gardens</loc>
+    <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -655,7 +643,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/niesen-mountain</loc>
+    <loc>https://gemvoyage.net/gem/phou-si-hill-laos-sunset-hike</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -673,12 +661,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/aisha-fahmy-palace-cairos-classiest-palace</loc>
-    <lastmod>2025-12-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://gemvoyage.net/gem/breiterhof-passage-a-culuturally-significant-piece-of-munich</loc>
     <lastmod>2025-12-29</lastmod>
     <changefreq>weekly</changefreq>
@@ -691,25 +673,25 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/zaytouna-mosque-tunis-university</loc>
-    <lastmod>2025-06-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/nuernberg-zoo-and-dolphinarium</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/lake-tamblingan-bali-lake</loc>
+    <loc>https://gemvoyage.net/gem/agpalilik-meteorite-copenhagen-greenland-rock</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/minnewater-lake-bruges-romantic</loc>
+    <loc>https://gemvoyage.net/gem/abdeen-palace-museum-cairo-royal-residence</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/al-sharbatly-house-jeddah-coral-house</loc>
+    <lastmod>2025-08-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/minnewater-lake-bruges-lake-of-love</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -723,6 +705,12 @@
   <url>
     <loc>https://gemvoyage.net/gem/erin-ijesha-waterfall-in-nigeria-a-multi-level-natural-wonder-in-osun-state</loc>
     <lastmod>2025-12-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/nuernberg-zoo-and-dolphinarium-germany</loc>
+    <lastmod>2025-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -757,13 +745,25 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/isle-of-skye-swimming</loc>
+    <loc>https://gemvoyage.net/gem/al-zaytuna-mosque-tunis-medina</loc>
     <lastmod>2025-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/chicago-chinatown</loc>
+    <loc>https://gemvoyage.net/gem/lake-tamblingan-bali-temple-lake</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/grenen-denmark-two-seas-meet</loc>
+    <lastmod>2025-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/sumida-park-tokyo-cherry-blossoms</loc>
     <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -771,12 +771,6 @@
   <url>
     <loc>https://gemvoyage.net/gem/sky-bistro-banff-gondola</loc>
     <lastmod>2025-10-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/sumida-park-japan-scenic</loc>
-    <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -805,12 +799,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/grenen-northern-tip-of-denmark</loc>
-    <lastmod>2025-08-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://gemvoyage.net/gem/pirate-village-theme-park-taiwan-a-family-friendly-adventure-inspired-by-the-high-seas</loc>
     <lastmod>2025-12-29</lastmod>
     <changefreq>weekly</changefreq>
@@ -823,8 +811,14 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/kredenca-unique-gift-shop-zagreb</loc>
-    <lastmod>2025-08-24</lastmod>
+    <loc>https://gemvoyage.net/gem/chicago-chinatown-restaurants-and-culture</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/fairy-pools-isle-of-skye-waterfalls</loc>
+    <lastmod>2025-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -835,44 +829,20 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/Kad-Luang-Warorot-Market</loc>
-    <lastmod>2025-07-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://gemvoyage.net/gem/georges-street-arcade</loc>
     <lastmod>2025-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/Kaimon-Foothills-Nature-Park</loc>
-    <lastmod>2025-08-11</lastmod>
+    <loc>https://gemvoyage.net/gem/jiefangbei-shopping-street-chongqing-china</loc>
+    <lastmod>2025-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/usain-bolt-tower</loc>
-    <lastmod>2025-08-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/Hlemmur-Matholl</loc>
+    <loc>https://gemvoyage.net/gem/warorot-market-kad-luang-chiang-mai</loc>
     <lastmod>2025-07-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/unique-store-paris-shopping</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/istanbul-railway-museum-orient-express</loc>
-    <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -885,12 +855,6 @@
   <url>
     <loc>https://gemvoyage.net/gem/lansheng-tower-in-taiwan-a-scenic-pavilion-framing-nature-and-tradition</loc>
     <lastmod>2025-12-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/Jiefangbei-Shopping-Street-china</loc>
-    <lastmod>2025-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -913,14 +877,50 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gemvoyage.net/gem/kaimon-foothills-nature-park-kagoshima</loc>
+    <lastmod>2025-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/bolt-tower-ostrava-viewpoint</loc>
+    <lastmod>2025-08-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/hlemmur-matholl-reykjavik-food-hall</loc>
+    <lastmod>2025-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/kredenca-gift-shop-zagreb-local-products</loc>
+    <lastmod>2025-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/istanbul-railway-museum-orient-express-history</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/lobjet-qui-parle-paris-antique-shop</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gemvoyage.net/gem/chinatown-in-milan-a-cultural-mosaic-in-the-heart-of-italy</loc>
     <lastmod>2025-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/marina-faro-portugal</loc>
-    <lastmod>2025-07-27</lastmod>
+    <loc>https://gemvoyage.net/gem/sinda-island-zanzibar-snorkeling-beach</loc>
+    <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -943,36 +943,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/fargegaten-norway-colourful-street</loc>
-    <lastmod>2025-08-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/porto-cathedral</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/izmir-wildlife-park</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/sinda-island-zanzibar-beautiful-beaches</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/sao-tome-island</loc>
-    <lastmod>2025-06-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://gemvoyage.net/gem/the-quays-manchester-a-modern-waterfront-destination-for-culture-and-entertainment</loc>
     <lastmod>2025-12-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -991,20 +961,38 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/eggenburg-palace</loc>
-    <lastmod>2025-08-26</lastmod>
+    <loc>https://gemvoyage.net/gem/fargegaten-stavanger-colorful-street</loc>
+    <lastmod>2025-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/zerostrasse-underground</loc>
-    <lastmod>2025-08-04</lastmod>
+    <loc>https://gemvoyage.net/gem/faro-marina-portugal-harbor-promenade</loc>
+    <lastmod>2025-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/royal-library-of-denmark-black-diamond</loc>
-    <lastmod>2025-08-03</lastmod>
+    <loc>https://gemvoyage.net/gem/izmir-wildlife-park-turkey-zoo</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/porto-cathedral-portugal-hilltop-church</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/sao-tome-island-africa-tropical-paradise</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/old-town-wroclaw-poland-guide</loc>
+    <lastmod>2025-08-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1033,26 +1021,14 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/wroclaw-old-city</loc>
-    <lastmod>2025-08-02</lastmod>
+    <loc>https://gemvoyage.net/gem/royal-library-denmark-copenhagen-black-diamond</loc>
+    <lastmod>2025-08-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/konya-themepark-around-the-world</loc>
-    <lastmod>2025-08-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/amarcord-retro-store-madrid</loc>
-    <lastmod>2025-07-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/food-hall-st-paul-london</loc>
-    <lastmod>2025-07-27</lastmod>
+    <loc>https://gemvoyage.net/gem/zerostrasse-underground</loc>
+    <lastmod>2025-08-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1075,32 +1051,38 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gemvoyage.net/gem/amarcord-retro-store-madrid-vintage-shopping</loc>
+    <lastmod>2025-07-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/around-the-world-park-konya-miniature-landmarks</loc>
+    <lastmod>2025-08-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/eggenberg-palace-graz-baroque-residence</loc>
+    <lastmod>2025-08-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/food-hall-st-paul-london</loc>
+    <lastmod>2025-07-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gemvoyage.net/gem/jangsaengpo-whale-museum-ulsan-exploring-koreas-whaling-heritage</loc>
     <lastmod>2025-12-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/Staten-Island-Boat-Graveyard</loc>
-    <lastmod>2025-08-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/vorres-museum-athens</loc>
-    <lastmod>2025-08-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/chihuly-garden-glass-art-usa</loc>
-    <lastmod>2025-06-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/Lindt-Home-Of-Chocolate-zurich</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://gemvoyage.net/gem/prater-amusement-park-vienna-giant-ferris-wheel</loc>
+    <lastmod>2025-08-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1111,32 +1093,14 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/old-town-berat-albania-cultural</loc>
+    <loc>https://gemvoyage.net/gem/schwerin-castle-germany-lakeside-palace</loc>
     <lastmod>2025-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/schwerin-castle-germany</loc>
+    <loc>https://gemvoyage.net/gem/chihuly-garden-and-glass-seattle-art-exhibit</loc>
     <lastmod>2025-06-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/Prater-Fun-Park-Vienna</loc>
-    <lastmod>2025-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/the-stone-house-of-yemen</loc>
-    <lastmod>2025-08-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/crocopark-agadir-morocco</loc>
-    <lastmod>2025-08-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1149,6 +1113,12 @@
   <url>
     <loc>https://gemvoyage.net/gem/canada-aviation-and-space-museum-in-ottawa-where-innovation-takes-flight</loc>
     <lastmod>2025-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/staten-island-boat-graveyard-new-york</loc>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1171,6 +1141,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gemvoyage.net/gem/the-stone-house-of-yemen</loc>
+    <lastmod>2025-08-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/crocopark-agadir-morocco-crocodile-park</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/vorres-museum-athens</loc>
+    <lastmod>2025-08-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/Lindt-Home-Of-Chocolate-zurich-museum</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/old-town-berat-albania-city-of-windows</loc>
+    <lastmod>2025-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gemvoyage.net/gem/caretta-shiodome-in-tokyo-a-modern-haven-of-culture-dining-and-light</loc>
     <lastmod>2025-10-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -1183,26 +1183,20 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/souk-el-fustat-cairo</loc>
-    <lastmod>2025-08-12</lastmod>
+    <loc>https://gemvoyage.net/gem/liyutan-lake-taiwan-reservoir</loc>
+    <lastmod>2025-08-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/fara-church</loc>
-    <lastmod>2025-07-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/matepani-gumba-nepal</loc>
-    <lastmod>2025-08-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/masjid-al-akbar</loc>
+    <loc>https://gemvoyage.net/gem/masjid-al-akbar-surabaya-grand-mosque</loc>
     <lastmod>2025-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/matepani-gumba-pokhara-hilltop-monastery</loc>
+    <lastmod>2025-08-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1213,14 +1207,8 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/cawdor-castle</loc>
-    <lastmod>2025-08-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/liyutan-lake-taiwan</loc>
-    <lastmod>2025-08-27</lastmod>
+    <loc>https://gemvoyage.net/gem/souk-el-fustat-cairo-handicraft-market</loc>
+    <lastmod>2025-08-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1255,38 +1243,26 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gemvoyage.net/gem/cawdor-castle-scotland-macbeth</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/fara-church-poznan-baroque-basilica</loc>
+    <lastmod>2025-07-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gemvoyage.net/gem/gefion-fountain-in-copenhagen-the-mythical-heart-of-denmarks-capital</loc>
     <lastmod>2025-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gemvoyage.net/gem/melaka-street-art-the-well</loc>
-    <lastmod>2025-08-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/comedy-square-montpllier</loc>
-    <lastmod>2025-07-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/Smorgasburg-Food-Market</loc>
-    <lastmod>2025-07-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://gemvoyage.net/gem/chteau-de-vincennes-in-paris-a-fortress-of-french-royal-power</loc>
     <lastmod>2025-10-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/gem/castle-of-the-devil-turkey</loc>
-    <lastmod>2025-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1315,57 +1291,75 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gemvoyage.net/gem/place-de-la-comedie-montpellier-main-square</loc>
+    <lastmod>2025-07-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/melaka-street-art-the-well-hidden-murals</loc>
+    <lastmod>2025-08-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/smorgasburg-los-angeles-food-market</loc>
+    <lastmod>2025-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/castle-of-the-devil-giresun-turkey</loc>
+    <lastmod>2025-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gemvoyage.net/city/barcelona</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/berlin</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/cairo</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/copenhagen</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/milan</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/paris</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/taiwan</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/tokyo</loc>
-    <lastmod>2026-02-28</lastmod>
+    <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://gemvoyage.net/blog</loc>
-    <lastmod>2026-02-20</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
   </url>
 </urlset>
