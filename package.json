@@ -7,7 +7,9 @@
     "start": "astro dev",
     "build": "astro check && astro build && echo _worker.js > dist/.assetsignore",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "indexer": "npx tsx scripts/indexer.ts",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "@astrojs/check": "^0.3.1",
