@@ -11,7 +11,10 @@ interface Gem {
   category: string;
   createdAt: string;
   slug: string;
+  featured?: boolean;
   owner: string;
+  upvotes: number;
+  downvotes: number;
 }
 
 export async function GET() {
@@ -19,13 +22,16 @@ export async function GET() {
 
   try {
     const response = await fetch(`${API_BASE_URL}/gem/latest`);
+    console.log('[RSS] API response status:', response.status);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch gems: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
+    console.log('[RSS] Raw data:', JSON.stringify(data).slice(0, 200));
     gems = data.gems || data || [];
+    console.log('[RSS] Gems count:', gems.length);
   } catch (err) {
     console.error('Error fetching latest gems for RSS:', err);
     gems = [];
