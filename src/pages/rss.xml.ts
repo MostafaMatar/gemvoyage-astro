@@ -19,42 +19,64 @@ interface Gem {
   downvotes: number;
 }
 
+function extractGems(payload: unknown): Gem[] {
+  if (Array.isArray(payload)) return payload as Gem[];
+  if (!payload || typeof payload !== 'object') return [];
+
+  const record = payload as Record<string, unknown>;
+  const candidates = [
+    record.gems,
+    record.items,
+    record.results,
+    record.data,
+    (record.data as Record<string, unknown> | undefined)?.gems,
+    (record.data as Record<string, unknown> | undefined)?.items,
+    (record.data as Record<string, unknown> | undefined)?.results,
+  ];
+
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate)) return candidate as Gem[];
+  }
+
+  return [];
+}
+
+function escapeXml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
+}
+
+function toAbsoluteUrl(url?: string) {
+  if (!url) return '';
+  try {
+    return new URL(url, SITE_URL).toString();
+  } catch {
+    return '';
+  }
+}
+
 export async function GET() {
   let gems: Gem[] = [];
 
   try {
-    const response = await fetch(`${API_BASE_URL}/gem/latest`);
-    console.log('[RSS] API response status:', response.status);
+    const response = await fetch(`${API_BASE_URL}/gem/latest`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch gems: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    console.log('[RSS] Raw data sample:', JSON.stringify(data).slice(0, 1000));
-
-    // Extract an items array from various possible response shapes.
-    const extractArray = (obj: any): any[] => {
-      if (Array.isArray(obj)) return obj;
-      if (!obj || typeof obj !== 'object') return [];
-      const keys = ['gems', 'data', 'items', 'results', 'rows'];
-      for (const k of keys) {
-        if (Array.isArray(obj[k])) return obj[k];
-      }
-      // shallow search for first array value (covers nested shapes like { data: { items: [...] } })
-      for (const v of Object.values(obj)) {
-        if (Array.isArray(v)) return v;
-        if (v && typeof v === 'object') {
-          for (const vv of Object.values(v)) {
-            if (Array.isArray(vv)) return vv;
-          }
-        }
-      }
-      return [];
-    };
-
-    gems = extractArray(data);
-    console.log('[RSS] Gems count:', gems.length);
+    gems = extractGems(data).filter(
+      (gem): gem is Gem => Boolean(gem?.slug && gem?.title && gem?.createdAt)
+    );
   } catch (err) {
     console.error('Error fetching latest gems for RSS:', err);
     gems = [];
@@ -62,23 +84,19 @@ export async function GET() {
 
   const items = gems
     .map((gem) => {
-      // safe fallbacks for common field names
-      const title = gem.title || gem.name || 'Untitled';
-      const slug = gem.slug || gem.id || String(gem._id || '');
-      const description = gem.description || gem.excerpt || '';
-      const category = gem.category || gem.tags?.[0] || '';
-      const created = gem.createdAt || gem.created_at || gem.created || new Date().toISOString();
-      const image = gem.image || gem.thumbnail || '';
+      const imageUrl = toAbsoluteUrl(gem.image);
+      const pubDate = new Date(gem.createdAt);
+      const link = `${SITE_URL}/gems/${gem.slug}`;
 
       return `
     <item>
-      <title><![CDATA[${title}]]></title>
-      <link>${SITE_URL}/gems/${slug}</link>
-      <guid>${SITE_URL}/gems/${slug}</guid>
-      <description><![CDATA[${description}]]></description>
-      <category><![CDATA[${category}]]></category>
-      <pubDate>${new Date(created).toUTCString()}</pubDate>
-      ${image ? `<enclosure url="${image}" type="image/jpeg" />` : ''}
+      <title>${escapeXml(gem.title)}</title>
+      <link>${link}</link>
+      <guid>${link}</guid>
+      <description>${escapeXml(gem.description || '')}</description>
+      <category>${escapeXml(gem.category || '')}</category>
+      <pubDate>${Number.isNaN(pubDate.getTime()) ? new Date().toUTCString() : pubDate.toUTCString()}</pubDate>
+      ${imageUrl ? `<enclosure url="${escapeXml(imageUrl)}" type="image/jpeg" />` : ''}
     </item>`;
     })
     .join('');
@@ -98,6 +116,7 @@ export async function GET() {
   return new Response(xml, {
     headers: {
       'Content-Type': 'application/rss+xml; charset=utf-8',
+      'Cache-Control': 'public, s-maxage=900, stale-while-revalidate=3600',
     },
   });
 }
