@@ -69,7 +69,6 @@ function generateRSS(gems: Gem[]): string {
     <item>
       <title>${gem.title}</title>
       <link>${baseURL}/gem/${gem.slug}</link>
-      <description>${gem.description}</description>
       <category>${gem.category}</category>
       <author>${gem.owner}</author>
       <pubDate>${new Date(gem.createdAt).toUTCString()}</pubDate>
