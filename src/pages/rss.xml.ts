@@ -1,5 +1,7 @@
 import { API_BASE_URL } from '../lib/apiConfig';
 
+export const prerender = false; // ensure this runs server-side
+
 const SITE_URL = 'https://gemvoyage.net';
 
 interface Gem {
