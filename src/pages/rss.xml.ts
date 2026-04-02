@@ -1,9 +1,5 @@
 import { API_BASE_URL } from '../lib/apiConfig';
 
-export const prerender = false; // ensure this runs server-side
-
-const SITE_URL = 'https://gemvoyage.net';
-
 interface Gem {
   id: string;
   title: string;
@@ -19,104 +15,91 @@ interface Gem {
   downvotes: number;
 }
 
-function extractGems(payload: unknown): Gem[] {
-  if (Array.isArray(payload)) return payload as Gem[];
-  if (!payload || typeof payload !== 'object') return [];
-
-  const record = payload as Record<string, unknown>;
-  const candidates = [
-    record.gems,
-    record.items,
-    record.results,
-    record.data,
-    (record.data as Record<string, unknown> | undefined)?.gems,
-    (record.data as Record<string, unknown> | undefined)?.items,
-    (record.data as Record<string, unknown> | undefined)?.results,
-  ];
-
-  for (const candidate of candidates) {
-    if (Array.isArray(candidate)) return candidate as Gem[];
-  }
-
-  return [];
-}
-
-function escapeXml(value: string) {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&apos;');
-}
-
-function toAbsoluteUrl(url?: string) {
-  if (!url) return '';
-  try {
-    return new URL(url, SITE_URL).toString();
-  } catch {
-    return '';
-  }
-}
-
 export async function GET() {
-  let gems: Gem[] = [];
-
   try {
-    const response = await fetch(`${API_BASE_URL}/gem/latest`, {
+    const response = await fetch(`${API_BASE_URL}/gem`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch gems: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const gems: Gem[] = data.gems || data || [];
+    
+    // Sort gems by creation date (newest first)
+    const sortedGems = gems.sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    
+    // Generate RSS feed
+    const rssContent = generateRSS(sortedGems);
+    
+    return new Response(rssContent, {
       headers: {
-        Accept: 'application/json',
+        'Content-Type': 'application/rss+xml; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600',
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch gems: ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    gems = extractGems(data).filter(
-      (gem): gem is Gem => Boolean(gem?.slug && gem?.title && gem?.createdAt)
-    );
-  } catch (err) {
-    console.error('Error fetching latest gems for RSS:', err);
-    gems = [];
-  }
-
-  const items = gems
-    .map((gem) => {
-      const imageUrl = toAbsoluteUrl(gem.image);
-      const pubDate = new Date(gem.createdAt);
-      const link = `${SITE_URL}/gems/${gem.slug}`;
-
-      return `
-    <item>
-      <title>${escapeXml(gem.title)}</title>
-      <link>${link}</link>
-      <guid>${link}</guid>
-      <description>${escapeXml(gem.description || '')}</description>
-      <category>${escapeXml(gem.category || '')}</category>
-      <pubDate>${Number.isNaN(pubDate.getTime()) ? new Date().toUTCString() : pubDate.toUTCString()}</pubDate>
-      ${imageUrl ? `<enclosure url="${escapeXml(imageUrl)}" type="image/jpeg" />` : ''}
-    </item>`;
-    })
-    .join('');
-
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  } catch (error) {
+    console.error('Error generating RSS feed:', error);
+    
+    const errorFeed = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
   <channel>
-    <title>GemVoyage - Latest Discoveries</title>
-    <link>${SITE_URL}</link>
-    <description>Discover hidden treasures around the world, shared by real travelers.</description>
-    <language>en-us</language>
-    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
-    ${items}
+    <title>GemVoyage - Error</title>
+    <link>https://gemvoyage.com</link>
+    <description>Unable to load gems at the moment</description>
   </channel>
 </rss>`;
+    
+    return new Response(errorFeed, {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/rss+xml; charset=utf-8',
+      },
+    });
+  }
+}
 
-  return new Response(xml, {
-    headers: {
-      'Content-Type': 'application/rss+xml; charset=utf-8',
-      'Cache-Control': 'public, s-maxage=900, stale-while-revalidate=3600',
-    },
-  });
+function generateRSS(gems: Gem[]): string {
+  const baseURL = 'https://gemvoyage.com';
+  
+  const itemsXML = gems
+    .map(gem => escapeXml(`
+    <item>
+      <title>${gem.title}</title>
+      <link>${baseURL}/gem/${gem.slug}</link>
+      <description>${gem.description}</description>
+      <category>${gem.category}</category>
+      <author>${gem.owner}</author>
+      <pubDate>${new Date(gem.createdAt).toUTCString()}</pubDate>
+      <guid isPermaLink="false">${gem.id}</guid>
+      <location>${gem.location}</location>
+      ${gem.image ? `<image>${gem.image}</image>` : ''}
+      <upvotes>${gem.upvotes}</upvotes>
+      <downvotes>${gem.downvotes}</downvotes>
+    </item>`))
+    .join('');
+  
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>GemVoyage - Hidden Gems &amp; Secret Destinations</title>
+    <link>${baseURL}</link>
+    <description>Discover extraordinary places shared by our community of travelers</description>
+    <language>en-us</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <ttl>3600</ttl>
+    ${itemsXML}
+  </channel>
+</rss>`;
+}
+
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/[<]/g, '&lt;')
+    .replace(/[>]/g, '&gt;')
+    .replace(/["]/g, '&quot;')
+    .replace(/[']/g, '&apos;')
+    .replace(/[&]/g, '&amp;');
 }
