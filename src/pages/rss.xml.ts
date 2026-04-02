@@ -31,8 +31,29 @@ export async function GET() {
     }
 
     const data = await response.json();
-    console.log('[RSS] Raw data:', JSON.stringify(data).slice(0, 200));
-    gems = data.gems || data || [];
+    console.log('[RSS] Raw data sample:', JSON.stringify(data).slice(0, 1000));
+
+    // Extract an items array from various possible response shapes.
+    const extractArray = (obj: any): any[] => {
+      if (Array.isArray(obj)) return obj;
+      if (!obj || typeof obj !== 'object') return [];
+      const keys = ['gems', 'data', 'items', 'results', 'rows'];
+      for (const k of keys) {
+        if (Array.isArray(obj[k])) return obj[k];
+      }
+      // shallow search for first array value (covers nested shapes like { data: { items: [...] } })
+      for (const v of Object.values(obj)) {
+        if (Array.isArray(v)) return v;
+        if (v && typeof v === 'object') {
+          for (const vv of Object.values(v)) {
+            if (Array.isArray(vv)) return vv;
+          }
+        }
+      }
+      return [];
+    };
+
+    gems = extractArray(data);
     console.log('[RSS] Gems count:', gems.length);
   } catch (err) {
     console.error('Error fetching latest gems for RSS:', err);
@@ -40,18 +61,26 @@ export async function GET() {
   }
 
   const items = gems
-    .map(
-      (gem) => `
+    .map((gem) => {
+      // safe fallbacks for common field names
+      const title = gem.title || gem.name || 'Untitled';
+      const slug = gem.slug || gem.id || String(gem._id || '');
+      const description = gem.description || gem.excerpt || '';
+      const category = gem.category || gem.tags?.[0] || '';
+      const created = gem.createdAt || gem.created_at || gem.created || new Date().toISOString();
+      const image = gem.image || gem.thumbnail || '';
+
+      return `
     <item>
-      <title><![CDATA[${gem.title}]]></title>
-      <link>${SITE_URL}/gems/${gem.slug}</link>
-      <guid>${SITE_URL}/gems/${gem.slug}</guid>
-      <description><![CDATA[${gem.description}]]></description>
-      <category><![CDATA[${gem.category}]]></category>
-      <pubDate>${new Date(gem.createdAt).toUTCString()}</pubDate>
-      ${gem.image ? `<enclosure url="${gem.image}" type="image/jpeg" />` : ''}
-    </item>`
-    )
+      <title><![CDATA[${title}]]></title>
+      <link>${SITE_URL}/gems/${slug}</link>
+      <guid>${SITE_URL}/gems/${slug}</guid>
+      <description><![CDATA[${description}]]></description>
+      <category><![CDATA[${category}]]></category>
+      <pubDate>${new Date(created).toUTCString()}</pubDate>
+      ${image ? `<enclosure url="${image}" type="image/jpeg" />` : ''}
+    </item>`;
+    })
     .join('');
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
