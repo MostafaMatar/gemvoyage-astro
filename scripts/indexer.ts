@@ -164,14 +164,16 @@ async function main() {
   console.log(`  Time elapsed:      ${elapsed}s`);
   console.log("=".repeat(60));
 
-  // Per-page breakdown
-  console.log("\n📄 Per-page breakdown:");
-  for (const sitemapUrl of sitemapUrls) {
-    const pageResults = results.filter((r) => r.sitemapUrl === sitemapUrl);
-    const ok = pageResults.filter((r) => r.ok).length;
-    const fail = pageResults.filter((r) => !r.ok).length;
-    console.log(`  ${sitemapUrl}`);
-    console.log(`    ✅ ${ok}  ❌ ${fail}`);
+  // Per-indexer breakdown with failure rates
+  console.log("\n🔗 Per-indexer breakdown:");
+  for (const template of templates) {
+    const indexerResults = results.filter((r) => r.indexerUrl.includes(encodeURIComponent(template.split('{URL}')[0])));
+    const ok = indexerResults.filter((r) => r.ok).length;
+    const fail = indexerResults.filter((r) => !r.ok).length;
+    const total = indexerResults.length;
+    const failureRate = total > 0 ? ((fail / total) * 100).toFixed(1) : "0.0";
+    console.log(`  ${template.substring(0, 60)}...`);
+    console.log(`    Total: ${total}  ✅ ${ok}  ❌ ${fail}  Failure Rate: ${failureRate}%`);
   }
 }
 
