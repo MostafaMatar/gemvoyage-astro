@@ -1,0 +1,884 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+
+const pageTitle = 'Free Visa Checker - Check Visa Requirements Instantly | GemVoyage';
+const pageDescription =
+  'Check visa requirements for 190+ countries instantly with our free visa checker. Find out if you need a visa, can get one on arrival, or travel visa-free.';
+const pageUrl = 'https://gemvoyage.net/tools/free-visa-checker';
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  keywords="visa checker, visa requirements, free visa checker, do I need a visa, visa on arrival, visa free travel, travel requirements"
+  ogTitle={pageTitle}
+  ogDescription={pageDescription}
+  ogUrl={pageUrl}
+>
+  <Navbar />
+
+  <main class="min-h-screen bg-background">
+    <!-- Hero -->
+    <section class="bg-gradient-to-br from-purple-700 via-purple-600 to-indigo-700 text-white py-16 px-4">
+      <div class="container mx-auto max-w-4xl text-center">
+        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+          Free Tool · No Sign-up Required
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4 leading-tight">
+          Free Visa Checker
+        </h1>
+        <p class="text-lg sm:text-xl text-purple-100 max-w-2xl mx-auto leading-relaxed">
+          Instantly check if you need a visa, can get one on arrival, or can travel
+          visa-free — for 190+ countries around the world.
+        </p>
+      </div>
+    </section>
+
+    <!-- Tool card -->
+    <section class="px-4 pb-16">
+      <div class="container mx-auto max-w-3xl">
+        <div class="bg-card border rounded-2xl shadow-lg p-6 sm:p-8 -mt-8 relative z-10">
+          <h2 class="text-xl font-semibold mb-6 text-center text-foreground">
+            Select your nationality and destination
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+            <!-- Nationality -->
+            <div class="flex flex-col gap-2">
+              <label for="from-filter" class="text-sm font-medium text-foreground">
+                Your Nationality (Passport)
+              </label>
+              <div class="relative">
+                <input
+                  id="from-filter"
+                  type="text"
+                  placeholder="Search country..."
+                  autocomplete="off"
+                  class="w-full px-3 py-2 border border-input rounded-md text-sm bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+              <select
+                id="from-select"
+                size="5"
+                class="w-full border border-input rounded-md text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                aria-label="Select nationality"
+              >
+                <!-- Populated by JavaScript -->
+              </select>
+              <p id="from-error" class="text-xs text-red-500 hidden">Please select a nationality.</p>
+            </div>
+
+            <!-- Destination -->
+            <div class="flex flex-col gap-2">
+              <label for="to-filter" class="text-sm font-medium text-foreground">
+                Destination Country
+              </label>
+              <div class="relative">
+                <input
+                  id="to-filter"
+                  type="text"
+                  placeholder="Search country..."
+                  autocomplete="off"
+                  class="w-full px-3 py-2 border border-input rounded-md text-sm bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+              <select
+                id="to-select"
+                size="5"
+                class="w-full border border-input rounded-md text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                aria-label="Select destination"
+              >
+                <!-- Populated by JavaScript -->
+              </select>
+              <p id="to-error" class="text-xs text-red-500 hidden">Please select a destination.</p>
+            </div>
+          </div>
+
+          <!-- Selected display -->
+          <div id="selection-summary" class="hidden flex flex-wrap gap-2 justify-center mb-6">
+            <span class="inline-flex items-center gap-1.5 bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              <span id="from-selected-label">—</span>
+            </span>
+            <svg class="w-5 h-5 text-muted-foreground self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+            <span class="inline-flex items-center gap-1.5 bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              <span id="to-selected-label">—</span>
+            </span>
+          </div>
+
+          <!-- Check button -->
+          <button
+            id="check-btn"
+            class="w-full inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            Check Visa Requirements
+          </button>
+
+          <!-- Loading state -->
+          <div id="loading-state" class="hidden mt-6 flex items-center justify-center gap-3 text-muted-foreground">
+            <svg class="animate-spin w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span class="text-sm">Checking visa requirements…</span>
+          </div>
+
+          <!-- Result section -->
+          <div id="result-section" class="hidden mt-6">
+            <div id="result-card" class="rounded-xl border p-5 sm:p-6">
+              <!-- Populated by JavaScript -->
+            </div>
+            <p class="text-xs text-muted-foreground mt-3 text-center leading-relaxed">
+              ⚠️ Data sourced from the open-source
+              <a
+                href="https://github.com/ilyankou/passport-index-dataset"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline hover:text-foreground transition-colors"
+              >Passport Index dataset</a>.
+              Always verify current requirements with the official embassy or consulate before traveling.
+            </p>
+          </div>
+
+          <!-- Error banner -->
+          <div id="error-banner" class="hidden mt-6 bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
+            <span id="error-message"></span>
+          </div>
+        </div>
+
+        <!-- Information cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
+          <div class="bg-green-50 border border-green-200 rounded-xl p-5 text-center">
+            <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">✓</div>
+            <h3 class="font-semibold text-green-800 mb-1">Visa Free</h3>
+            <p class="text-xs text-green-700">No visa required. Enter with your valid passport for the allowed duration.</p>
+          </div>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-5 text-center">
+            <div class="w-10 h-10 bg-yellow-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg">⏱</div>
+            <h3 class="font-semibold text-yellow-800 mb-1">Visa on Arrival</h3>
+            <p class="text-xs text-yellow-700">Obtain a visa at the airport or border upon arriving at the destination.</p>
+          </div>
+          <div class="bg-red-50 border border-red-200 rounded-xl p-5 text-center">
+            <div class="w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">✗</div>
+            <h3 class="font-semibold text-red-800 mb-1">Visa Required</h3>
+            <p class="text-xs text-red-700">Apply at the embassy or consulate before your trip — plan ahead.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ section -->
+    <section class="bg-muted/40 border-t px-4 py-14">
+      <div class="container mx-auto max-w-3xl">
+        <h2 class="text-2xl font-bold text-center mb-8 text-foreground">Frequently Asked Questions</h2>
+        <div class="space-y-4" id="faq-list">
+          <details class="bg-card border rounded-xl group">
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-medium text-foreground list-none">
+              How accurate is this visa checker?
+              <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <p class="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+              Our data comes from the open-source Passport Index dataset, which is regularly updated by a community of contributors.
+              While we aim for accuracy, visa regulations change frequently. Always verify requirements with the official
+              embassy or consulate of your destination country before booking travel.
+            </p>
+          </details>
+
+          <details class="bg-card border rounded-xl group">
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-medium text-foreground list-none">
+              What does "Visa on Arrival" mean?
+              <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <p class="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+              A Visa on Arrival (VOA) means you don't need to apply for a visa in advance. Instead, you can purchase or
+              obtain a visa at the airport or border crossing when you arrive. Typically you'll need a valid passport,
+              return ticket, proof of funds, and a fee (often in USD or EUR).
+            </p>
+          </details>
+
+          <details class="bg-card border rounded-xl group">
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-medium text-foreground list-none">
+              What is an E-Visa or ETA?
+              <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <p class="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+              An Electronic Travel Authorization (ETA) or e-visa is a travel permit linked electronically to your passport
+              that you apply for online — no embassy visit required. The application is typically completed in minutes and
+              approval arrives by email within hours to a few days. Always apply through official government portals.
+            </p>
+          </details>
+
+          <details class="bg-card border rounded-xl group">
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-medium text-foreground list-none">
+              What documents do I typically need for a visa?
+              <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <p class="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+              Requirements vary by country, but commonly include: a valid passport (6+ months validity), completed application form,
+              recent passport-sized photos, proof of accommodation and onward travel, bank statements, and the visa fee.
+              Some countries also require travel insurance. Always check the specific requirements for your destination.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  // ─── CSV state ─────────────────────────────────────────────────────────────
+  /** @type {string[] | null} destination country codes (column headers, index 0 = first dest) */
+  let csvHeaders = null;
+  /** @type {Map<string, string[]> | null} passportCode → array of visa values */
+  let csvRows = null;
+
+  async function loadCSV() {
+    if (csvRows) return; // already loaded
+    const res = await fetch('/visa-check.csv');
+    if (!res.ok) throw new Error('Failed to load visa data');
+    const text = await res.text();
+    const lines = text.split(/\r?\n/).filter((l) => l.trim());
+
+    // Header row: Passport,AL,DZ,AD,...
+    const headerParts = lines[0].split(',');
+    csvHeaders = headerParts.slice(1).map((c) => c.trim()); // skip "Passport"
+
+    csvRows = new Map();
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(',');
+      const passport = parts[0].trim();
+      if (passport) csvRows.set(passport, parts.slice(1));
+    }
+  }
+
+  function lookupVisa(fromCode, toCode) {
+    const row = csvRows.get(fromCode);
+    if (!row) return null;
+    const colIdx = csvHeaders.indexOf(toCode);
+    if (colIdx === -1) return null;
+    const val = row[colIdx];
+    return val ? val.trim() : null;
+  }
+
+  function interpretRequirement(req) {
+    const r = req.toLowerCase().trim().replace(/[\r\n]/g, '');
+
+    if (r === '-1' || r === 'admission refused' || r === 'no admission') {
+      return {
+        status: 'admission_refused',
+        label: 'Admission Refused',
+        daysAllowed: null,
+        description: 'Entry to this destination is not permitted for holders of your passport.',
+      };
+    }
+
+    if (r === 'cb') {
+      return {
+        status: 'visa_free',
+        label: 'Visa Free (CARICOM)',
+        daysAllowed: null,
+        description: 'As a CARICOM member state citizen, you can enter this destination visa-free.',
+      };
+    }
+
+    if (r === 'voa' || r.startsWith('visa on arrival')) {
+      const match = r.match(/(\d+)/);
+      const days = match ? parseInt(match[1], 10) : null;
+      return {
+        status: 'visa_on_arrival',
+        label: 'Visa on Arrival',
+        daysAllowed: days,
+        description: days
+          ? `You can obtain a visa upon arrival at the airport or border crossing. Valid for up to ${days} days.`
+          : 'You can obtain a visa upon arrival at the airport or border crossing.',
+      };
+    }
+
+    if (r === 'eta' || r.includes('e-visa') || r.includes('evisa') || r.includes('electronic travel')) {
+      return {
+        status: 'e_visa',
+        label: 'E-Visa / ETA Required',
+        daysAllowed: null,
+        description: 'You need an Electronic Travel Authorization (ETA) or e-visa, which you can apply for online before traveling. The process is typically fast and paperless.',
+      };
+    }
+
+    if (r === 'vr' || r === 'visa required') {
+      return {
+        status: 'visa_required',
+        label: 'Visa Required',
+        daysAllowed: null,
+        description: "You must apply for a visa from the destination country's embassy or consulate before traveling.",
+      };
+    }
+
+    const numMatch = r.match(/^(\d+)$/);
+    if (numMatch) {
+      const days = parseInt(numMatch[1], 10);
+      if (days > 0) {
+        return {
+          status: 'visa_free',
+          label: 'Visa Free',
+          daysAllowed: days,
+          description: `Your passport allows visa-free entry for up to ${days} days. No visa application is required for tourism or short visits.`,
+        };
+      }
+      return {
+        status: 'visa_required',
+        label: 'Visa Required',
+        daysAllowed: null,
+        description: 'You must apply for a visa before traveling to this destination.',
+      };
+    }
+
+    if (r === 'vf' || r.startsWith('visa free') || r.startsWith('visa-free')) {
+      const match = r.match(/(\d+)/);
+      const days = match ? parseInt(match[1], 10) : null;
+      return {
+        status: 'visa_free',
+        label: 'Visa Free',
+        daysAllowed: days,
+        description: days
+          ? `Your passport allows visa-free entry for up to ${days} days. No visa application is required.`
+          : 'Your passport allows visa-free entry. No visa application is required for tourism or short visits.',
+      };
+    }
+
+    if (r.includes('passport not required') || r.includes('not required')) {
+      return {
+        status: 'visa_free',
+        label: 'No Documents Required',
+        daysAllowed: null,
+        description: 'No visa or passport is required to enter this destination.',
+      };
+    }
+
+    return {
+      status: 'unknown',
+      label: 'Data Unavailable',
+      daysAllowed: null,
+      description: 'Visa requirement information could not be determined for this combination. Please consult the official embassy or consulate of the destination country.',
+    };
+  }
+
+  // ─── Country master list ───────────────────────────────────────────────────
+  const COUNTRIES = [
+    { code: 'AD', name: 'Andorra' },
+    { code: 'AE', name: 'United Arab Emirates' },
+    { code: 'AF', name: 'Afghanistan' },
+    { code: 'AG', name: 'Antigua and Barbuda' },
+    { code: 'AL', name: 'Albania' },
+    { code: 'AM', name: 'Armenia' },
+    { code: 'AO', name: 'Angola' },
+    { code: 'AR', name: 'Argentina' },
+    { code: 'AT', name: 'Austria' },
+    { code: 'AU', name: 'Australia' },
+    { code: 'AZ', name: 'Azerbaijan' },
+    { code: 'BA', name: 'Bosnia and Herzegovina' },
+    { code: 'BB', name: 'Barbados' },
+    { code: 'BD', name: 'Bangladesh' },
+    { code: 'BE', name: 'Belgium' },
+    { code: 'BF', name: 'Burkina Faso' },
+    { code: 'BG', name: 'Bulgaria' },
+    { code: 'BH', name: 'Bahrain' },
+    { code: 'BI', name: 'Burundi' },
+    { code: 'BJ', name: 'Benin' },
+    { code: 'BN', name: 'Brunei' },
+    { code: 'BO', name: 'Bolivia' },
+    { code: 'BR', name: 'Brazil' },
+    { code: 'BS', name: 'Bahamas' },
+    { code: 'BT', name: 'Bhutan' },
+    { code: 'BW', name: 'Botswana' },
+    { code: 'BY', name: 'Belarus' },
+    { code: 'BZ', name: 'Belize' },
+    { code: 'CA', name: 'Canada' },
+    { code: 'CD', name: 'DR Congo' },
+    { code: 'CF', name: 'Central African Republic' },
+    { code: 'CG', name: 'Republic of the Congo' },
+    { code: 'CH', name: 'Switzerland' },
+    { code: 'CI', name: "Côte d'Ivoire" },
+    { code: 'CL', name: 'Chile' },
+    { code: 'CM', name: 'Cameroon' },
+    { code: 'CN', name: 'China' },
+    { code: 'CO', name: 'Colombia' },
+    { code: 'CR', name: 'Costa Rica' },
+    { code: 'CU', name: 'Cuba' },
+    { code: 'CV', name: 'Cape Verde' },
+    { code: 'CY', name: 'Cyprus' },
+    { code: 'CZ', name: 'Czech Republic' },
+    { code: 'DE', name: 'Germany' },
+    { code: 'DJ', name: 'Djibouti' },
+    { code: 'DK', name: 'Denmark' },
+    { code: 'DM', name: 'Dominica' },
+    { code: 'DO', name: 'Dominican Republic' },
+    { code: 'DZ', name: 'Algeria' },
+    { code: 'EC', name: 'Ecuador' },
+    { code: 'EE', name: 'Estonia' },
+    { code: 'EG', name: 'Egypt' },
+    { code: 'ER', name: 'Eritrea' },
+    { code: 'ES', name: 'Spain' },
+    { code: 'ET', name: 'Ethiopia' },
+    { code: 'FI', name: 'Finland' },
+    { code: 'FJ', name: 'Fiji' },
+    { code: 'FM', name: 'Micronesia' },
+    { code: 'FR', name: 'France' },
+    { code: 'GA', name: 'Gabon' },
+    { code: 'GB', name: 'United Kingdom' },
+    { code: 'GD', name: 'Grenada' },
+    { code: 'GE', name: 'Georgia' },
+    { code: 'GH', name: 'Ghana' },
+    { code: 'GM', name: 'Gambia' },
+    { code: 'GN', name: 'Guinea' },
+    { code: 'GQ', name: 'Equatorial Guinea' },
+    { code: 'GR', name: 'Greece' },
+    { code: 'GT', name: 'Guatemala' },
+    { code: 'GW', name: 'Guinea-Bissau' },
+    { code: 'GY', name: 'Guyana' },
+    { code: 'HN', name: 'Honduras' },
+    { code: 'HR', name: 'Croatia' },
+    { code: 'HT', name: 'Haiti' },
+    { code: 'HU', name: 'Hungary' },
+    { code: 'ID', name: 'Indonesia' },
+    { code: 'IE', name: 'Ireland' },
+    { code: 'IL', name: 'Israel' },
+    { code: 'IN', name: 'India' },
+    { code: 'IQ', name: 'Iraq' },
+    { code: 'IR', name: 'Iran' },
+    { code: 'IS', name: 'Iceland' },
+    { code: 'IT', name: 'Italy' },
+    { code: 'JM', name: 'Jamaica' },
+    { code: 'JO', name: 'Jordan' },
+    { code: 'JP', name: 'Japan' },
+    { code: 'KE', name: 'Kenya' },
+    { code: 'KG', name: 'Kyrgyzstan' },
+    { code: 'KH', name: 'Cambodia' },
+    { code: 'KI', name: 'Kiribati' },
+    { code: 'KM', name: 'Comoros' },
+    { code: 'KN', name: 'Saint Kitts and Nevis' },
+    { code: 'KP', name: 'North Korea' },
+    { code: 'KR', name: 'South Korea' },
+    { code: 'KW', name: 'Kuwait' },
+    { code: 'KZ', name: 'Kazakhstan' },
+    { code: 'LA', name: 'Laos' },
+    { code: 'LB', name: 'Lebanon' },
+    { code: 'LC', name: 'Saint Lucia' },
+    { code: 'LI', name: 'Liechtenstein' },
+    { code: 'LK', name: 'Sri Lanka' },
+    { code: 'LR', name: 'Liberia' },
+    { code: 'LS', name: 'Lesotho' },
+    { code: 'LT', name: 'Lithuania' },
+    { code: 'LU', name: 'Luxembourg' },
+    { code: 'LV', name: 'Latvia' },
+    { code: 'LY', name: 'Libya' },
+    { code: 'MA', name: 'Morocco' },
+    { code: 'MC', name: 'Monaco' },
+    { code: 'MD', name: 'Moldova' },
+    { code: 'ME', name: 'Montenegro' },
+    { code: 'MG', name: 'Madagascar' },
+    { code: 'MH', name: 'Marshall Islands' },
+    { code: 'MK', name: 'North Macedonia' },
+    { code: 'ML', name: 'Mali' },
+    { code: 'MM', name: 'Myanmar' },
+    { code: 'MN', name: 'Mongolia' },
+    { code: 'MR', name: 'Mauritania' },
+    { code: 'MT', name: 'Malta' },
+    { code: 'MU', name: 'Mauritius' },
+    { code: 'MV', name: 'Maldives' },
+    { code: 'MW', name: 'Malawi' },
+    { code: 'MX', name: 'Mexico' },
+    { code: 'MY', name: 'Malaysia' },
+    { code: 'MZ', name: 'Mozambique' },
+    { code: 'NA', name: 'Namibia' },
+    { code: 'NE', name: 'Niger' },
+    { code: 'NG', name: 'Nigeria' },
+    { code: 'NI', name: 'Nicaragua' },
+    { code: 'NL', name: 'Netherlands' },
+    { code: 'NO', name: 'Norway' },
+    { code: 'NP', name: 'Nepal' },
+    { code: 'NR', name: 'Nauru' },
+    { code: 'NZ', name: 'New Zealand' },
+    { code: 'OM', name: 'Oman' },
+    { code: 'PA', name: 'Panama' },
+    { code: 'PE', name: 'Peru' },
+    { code: 'PG', name: 'Papua New Guinea' },
+    { code: 'PH', name: 'Philippines' },
+    { code: 'PK', name: 'Pakistan' },
+    { code: 'PL', name: 'Poland' },
+    { code: 'PT', name: 'Portugal' },
+    { code: 'PW', name: 'Palau' },
+    { code: 'PY', name: 'Paraguay' },
+    { code: 'QA', name: 'Qatar' },
+    { code: 'RO', name: 'Romania' },
+    { code: 'RS', name: 'Serbia' },
+    { code: 'RU', name: 'Russia' },
+    { code: 'RW', name: 'Rwanda' },
+    { code: 'SA', name: 'Saudi Arabia' },
+    { code: 'SB', name: 'Solomon Islands' },
+    { code: 'SC', name: 'Seychelles' },
+    { code: 'SD', name: 'Sudan' },
+    { code: 'SE', name: 'Sweden' },
+    { code: 'SG', name: 'Singapore' },
+    { code: 'SI', name: 'Slovenia' },
+    { code: 'SK', name: 'Slovakia' },
+    { code: 'SL', name: 'Sierra Leone' },
+    { code: 'SM', name: 'San Marino' },
+    { code: 'SN', name: 'Senegal' },
+    { code: 'SO', name: 'Somalia' },
+    { code: 'SR', name: 'Suriname' },
+    { code: 'SS', name: 'South Sudan' },
+    { code: 'ST', name: 'São Tomé and Príncipe' },
+    { code: 'SV', name: 'El Salvador' },
+    { code: 'SY', name: 'Syria' },
+    { code: 'SZ', name: 'Eswatini' },
+    { code: 'TD', name: 'Chad' },
+    { code: 'TG', name: 'Togo' },
+    { code: 'TH', name: 'Thailand' },
+    { code: 'TJ', name: 'Tajikistan' },
+    { code: 'TL', name: 'Timor-Leste' },
+    { code: 'TM', name: 'Turkmenistan' },
+    { code: 'TN', name: 'Tunisia' },
+    { code: 'TO', name: 'Tonga' },
+    { code: 'TR', name: 'Turkey' },
+    { code: 'TT', name: 'Trinidad and Tobago' },
+    { code: 'TV', name: 'Tuvalu' },
+    { code: 'TZ', name: 'Tanzania' },
+    { code: 'UA', name: 'Ukraine' },
+    { code: 'UG', name: 'Uganda' },
+    { code: 'US', name: 'United States' },
+    { code: 'UY', name: 'Uruguay' },
+    { code: 'UZ', name: 'Uzbekistan' },
+    { code: 'VA', name: 'Vatican City' },
+    { code: 'VC', name: 'Saint Vincent and the Grenadines' },
+    { code: 'VE', name: 'Venezuela' },
+    { code: 'VN', name: 'Vietnam' },
+    { code: 'VU', name: 'Vanuatu' },
+    { code: 'WS', name: 'Samoa' },
+    { code: 'YE', name: 'Yemen' },
+    { code: 'ZA', name: 'South Africa' },
+    { code: 'ZM', name: 'Zambia' },
+    { code: 'ZW', name: 'Zimbabwe' },
+  ];
+
+  // ─── DOM references ────────────────────────────────────────────────────────
+  const fromFilter = document.getElementById('from-filter');
+  const toFilter = document.getElementById('to-filter');
+  const fromSelect = document.getElementById('from-select');
+  const toSelect = document.getElementById('to-select');
+  const fromError = document.getElementById('from-error');
+  const toError = document.getElementById('to-error');
+  const checkBtn = document.getElementById('check-btn');
+  const loadingState = document.getElementById('loading-state');
+  const resultSection = document.getElementById('result-section');
+  const resultCard = document.getElementById('result-card');
+  const errorBanner = document.getElementById('error-banner');
+  const errorMessage = document.getElementById('error-message');
+  const selectionSummary = document.getElementById('selection-summary');
+  const fromSelectedLabel = document.getElementById('from-selected-label');
+  const toSelectedLabel = document.getElementById('to-selected-label');
+
+  // ─── Populate selects ──────────────────────────────────────────────────────
+  function buildOptions(selectEl, countries) {
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '— Select a country —';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    selectEl.appendChild(placeholder);
+
+    countries.forEach(({ code, name }) => {
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = name;
+      selectEl.appendChild(opt);
+    });
+  }
+
+  buildOptions(fromSelect, COUNTRIES);
+  buildOptions(toSelect, COUNTRIES);
+
+  // ─── Filter logic ──────────────────────────────────────────────────────────
+  function filterSelect(filterInput, selectEl) {
+    const query = filterInput.value.toLowerCase().trim();
+    let firstVisible = null;
+    Array.from(selectEl.options).forEach((opt) => {
+      if (opt.disabled) return; // skip placeholder
+      const visible = !query || opt.textContent.toLowerCase().includes(query);
+      opt.hidden = !visible;
+      if (visible && !firstVisible) firstVisible = opt;
+    });
+    // Auto-select if exactly one match
+    if (firstVisible && query) {
+      const visibleOpts = Array.from(selectEl.options).filter(
+        (o) => !o.hidden && !o.disabled
+      );
+      if (visibleOpts.length === 1) {
+        selectEl.value = visibleOpts[0].value;
+        selectEl.dispatchEvent(new Event('change'));
+      }
+    }
+  }
+
+  fromFilter.addEventListener('input', () => filterSelect(fromFilter, fromSelect));
+  toFilter.addEventListener('input', () => filterSelect(toFilter, toSelect));
+
+  // ─── Selection summary update ──────────────────────────────────────────────
+  function updateSummary() {
+    const fromVal = fromSelect.value;
+    const toVal = toSelect.value;
+    if (fromVal && toVal) {
+      const fromName = COUNTRIES.find((c) => c.code === fromVal)?.name ?? fromVal;
+      const toName = COUNTRIES.find((c) => c.code === toVal)?.name ?? toVal;
+      fromSelectedLabel.textContent = fromName;
+      toSelectedLabel.textContent = toName;
+      selectionSummary.classList.remove('hidden');
+    } else {
+      selectionSummary.classList.add('hidden');
+    }
+  }
+
+  fromSelect.addEventListener('change', () => {
+    fromError.classList.add('hidden');
+    // Sync filter input text with selection
+    const name = COUNTRIES.find((c) => c.code === fromSelect.value)?.name ?? '';
+    fromFilter.value = name;
+    updateSummary();
+  });
+
+  toSelect.addEventListener('change', () => {
+    toError.classList.add('hidden');
+    const name = COUNTRIES.find((c) => c.code === toSelect.value)?.name ?? '';
+    toFilter.value = name;
+    updateSummary();
+  });
+
+  // ─── Visa status config ────────────────────────────────────────────────────
+  const STATUS_CONFIG = {
+    visa_free: {
+      containerCls: 'bg-green-50 border-green-300',
+      iconCls: 'bg-green-600',
+      textCls: 'text-green-800',
+      badgeCls: 'bg-green-600 text-white',
+      icon: '✓',
+    },
+    visa_on_arrival: {
+      containerCls: 'bg-yellow-50 border-yellow-300',
+      iconCls: 'bg-yellow-500',
+      textCls: 'text-yellow-800',
+      badgeCls: 'bg-yellow-500 text-white',
+      icon: '⏱',
+    },
+    e_visa: {
+      containerCls: 'bg-blue-50 border-blue-300',
+      iconCls: 'bg-blue-600',
+      textCls: 'text-blue-800',
+      badgeCls: 'bg-blue-600 text-white',
+      icon: '💻',
+    },
+    visa_required: {
+      containerCls: 'bg-red-50 border-red-300',
+      iconCls: 'bg-red-600',
+      textCls: 'text-red-800',
+      badgeCls: 'bg-red-600 text-white',
+      icon: '✗',
+    },
+    admission_refused: {
+      containerCls: 'bg-gray-100 border-gray-400',
+      iconCls: 'bg-gray-700',
+      textCls: 'text-gray-800',
+      badgeCls: 'bg-gray-700 text-white',
+      icon: '⛔',
+    },
+    unknown: {
+      containerCls: 'bg-gray-50 border-gray-300',
+      iconCls: 'bg-gray-500',
+      textCls: 'text-gray-700',
+      badgeCls: 'bg-gray-500 text-white',
+      icon: '?',
+    },
+  };
+
+  // ─── Tips per status ───────────────────────────────────────────────────────
+  const STATUS_TIPS = {
+    visa_required: [
+      'Contact the destination country\'s embassy or consulate in your country',
+      'Prepare required documents (passport, photos, financial proof, accommodation)',
+      'Apply well in advance — processing times vary widely',
+      'Check if travel insurance is required',
+    ],
+    visa_on_arrival: [
+      'Bring a valid passport with at least 6 months of validity',
+      'Carry a return or onward ticket as proof of departure',
+      'Have sufficient funds in cash (fees often accepted in USD or EUR)',
+      'Double-check the maximum stay allowed',
+    ],
+    e_visa: [
+      'Apply only through the official government portal of the destination country',
+      'Have a digital copy of your passport photo page ready',
+      'Allow time for processing — usually 24–72 hours',
+      'Print or save the approval email to present at the border',
+    ],
+    admission_refused: [
+      'Check the official government sources for any exceptions or recent changes',
+      'Third-country passports or dual-nationality holders may have different rules',
+      'Consider contacting the destination country\'s embassy for official guidance',
+    ],
+  };
+
+  // ─── Display result ────────────────────────────────────────────────────────
+  function displayResult(data) {
+    const cfg = STATUS_CONFIG[data.status] || STATUS_CONFIG.unknown;
+    const tips = STATUS_TIPS[data.status];
+
+    const fromName = COUNTRIES.find((c) => c.code === data.from)?.name ?? data.from;
+    const toName = COUNTRIES.find((c) => c.code === data.to)?.name ?? data.to;
+
+    const tipsHTML = tips
+      ? `<div class="mt-4 p-4 bg-white/70 rounded-lg">
+           <p class="text-sm font-semibold mb-2 ${cfg.textCls}">What to know:</p>
+           <ul class="text-sm space-y-1 ${cfg.textCls} opacity-90">
+             ${tips.map((t) => `<li class="flex gap-2"><span>•</span><span>${t}</span></li>`).join('')}
+           </ul>
+         </div>`
+      : '';
+
+    const daysHTML = data.daysAllowed
+      ? `<span class="ml-2 text-sm font-medium px-2 py-0.5 rounded-full bg-white/60 ${cfg.textCls}">${data.daysAllowed} days</span>`
+      : '';
+
+    resultCard.className = `rounded-xl border p-5 sm:p-6 ${cfg.containerCls}`;
+    resultCard.innerHTML = `
+      <div class="flex items-start gap-4">
+        <div class="${cfg.iconCls} text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold flex-shrink-0 select-none">
+          ${cfg.icon}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span class="${cfg.badgeCls} text-sm font-semibold px-3 py-1 rounded-full">${data.label}</span>
+            ${daysHTML}
+          </div>
+          <p class="text-sm text-muted-foreground mb-1">
+            <span class="font-medium">${fromName}</span>
+            <span> → </span>
+            <span class="font-medium">${toName}</span>
+          </p>
+          <p class="${cfg.textCls} font-medium leading-relaxed">${data.description}</p>
+          ${tipsHTML}
+        </div>
+      </div>
+    `;
+
+    hideError();
+    resultSection.classList.remove('hidden');
+    resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ─── UI helpers ────────────────────────────────────────────────────────────
+  function setLoading(on) {
+    checkBtn.disabled = on;
+    loadingState.classList.toggle('hidden', !on);
+  }
+
+  function showError(msg) {
+    errorMessage.textContent = msg;
+    errorBanner.classList.remove('hidden');
+    resultSection.classList.add('hidden');
+  }
+
+  function hideError() {
+    errorBanner.classList.add('hidden');
+  }
+
+  // ─── Check handler ─────────────────────────────────────────────────────────
+  async function handleCheck() {
+    const fromCode = fromSelect.value;
+    const toCode = toSelect.value;
+
+    let valid = true;
+    if (!fromCode) {
+      fromError.classList.remove('hidden');
+      valid = false;
+    }
+    if (!toCode) {
+      toError.classList.remove('hidden');
+      valid = false;
+    }
+    if (!valid) return;
+
+    // Same-country shortcut
+    if (fromCode === toCode) {
+      displayResult({
+        from: fromCode,
+        to: toCode,
+        status: 'visa_free',
+        label: 'No Visa Required',
+        daysAllowed: null,
+        description: 'You are traveling to your home country. No visa is required.',
+      });
+      return;
+    }
+
+    setLoading(true);
+    resultSection.classList.add('hidden');
+    hideError();
+
+    try {
+      await loadCSV();
+      const raw = lookupVisa(fromCode, toCode);
+      if (!raw) {
+        showError('Visa information not found for this combination. Please consult the official embassy or consulate.');
+        return;
+      }
+      const interpreted = interpretRequirement(raw);
+      displayResult({ from: fromCode, to: toCode, ...interpreted });
+    } catch {
+      showError('Unable to load visa data. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  checkBtn.addEventListener('click', handleCheck);
+
+  // Allow pressing Enter in the filter inputs to trigger check
+  [fromFilter, toFilter].forEach((input) => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleCheck();
+    });
+  });
+</script>
+
+<style>
+  /* Smooth open/close for FAQ details */
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+  select option[hidden] {
+    display: none;
+  }
+</style>
