@@ -2,85 +2,85 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gemvoyage.net</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Culture</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=History</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Nature</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Shopping</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Food</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/browse?category=Entertainment</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/login</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/register</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/create</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/terms</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/privacy</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/sitemap</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1885,50 +1885,110 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gemvoyage.net/gem/zamalek-art-galleries-in-cairo-discover-the-capitals-creative-island-quarter</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/cannaregio-in-venice-a-trastevere-like-district-of-canals-charm-and-local-life</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/tempelhofer-feld-in-berlin-the-vast-park-on-a-former-airport-runway</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/shimokitazawa-neighborhood-in-tokyo-a-guide-to-indie-shops-cafes-and-creative-energy</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/nubian-village-in-aswan-color-culture-and-life-along-the-nile</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/sidi-bou-said-in-tunis-tunisias-blue-and-white-coastal-icon</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/anafiotika-in-athens-a-hidden-cycladic-village-beneath-the-acropolis</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/belgian-quarter-in-cologne-a-stylish-district-of-cafes-design-and-urban-life</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/coyoacn-market-in-mexico-city-a-vibrant-taste-of-neighborhood-life-and-mexican-flavors</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gemvoyage.net/gem/roosevelt-island-tram-in-new-york-a-scenic-cable-car-ride-over-the-east-river</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gemvoyage.net/city/barcelona</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/berlin</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/cairo</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/copenhagen</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/milan</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/paris</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/taiwan</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gemvoyage.net/city/tokyo</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
