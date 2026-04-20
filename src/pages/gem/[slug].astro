@@ -285,16 +285,47 @@ const markdownToHtml = (markdown: string) => {
       </div>
 
       <div class="relative rounded-xl overflow-hidden mb-8">
-        <img
-          src={gemImage}
-          alt={`${gemTitle} - Hidden gem in ${gemLocation}, ${gemCategory} category`}
-          class="w-full h-[400px] md:h-[500px] object-cover"
-          loading="eager"
-          decoding="async"
-          style="background: #f3f3f3;"
-          width="1200"
-          height="500"
-        />
+        <button
+          id="gem-image-trigger"
+          type="button"
+          class="block w-full cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          aria-label={`Open full image for ${gemTitle}`}
+        >
+          <img
+            src={gemImage}
+            alt={`${gemTitle} - Hidden gem in ${gemLocation}, ${gemCategory} category`}
+            class="w-full h-[400px] md:h-[500px] object-cover"
+            loading="eager"
+            decoding="async"
+            style="background: #f3f3f3;"
+            width="1200"
+            height="500"
+          />
+        </button>
+      </div>
+
+      <div
+        id="image-modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 px-4 py-6"
+        aria-hidden="true"
+      >
+        <div class="relative w-full max-w-6xl">
+          <button
+            id="image-modal-close"
+            type="button"
+            class="absolute right-3 top-3 z-10 rounded-full bg-white/90 px-3 py-2 text-sm font-medium text-gray-800 shadow-md transition hover:bg-white"
+            aria-label="Close image modal"
+          >
+            Close
+          </button>
+          <img
+            src={gemImage}
+            alt={`${gemTitle} - Full image`}
+            class="max-h-[85vh] w-full rounded-xl object-contain shadow-2xl"
+            width="1200"
+            height="800"
+          />
+        </div>
       </div>
 
       <section class="container mx-auto px-4 py-8">
@@ -368,6 +399,31 @@ const markdownToHtml = (markdown: string) => {
 
   <script is:inline define:vars={{ gemId, API_BASE_URL }}>
     let currentVotes = [];
+    let imageModal = null;
+    let imageModalClose = null;
+    let gemImageTrigger = null;
+
+    function openImageModal() {
+      if (!imageModal) {
+        return;
+      }
+
+      imageModal.classList.remove('hidden');
+      imageModal.classList.add('flex');
+      imageModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+      if (!imageModal) {
+        return;
+      }
+
+      imageModal.classList.add('hidden');
+      imageModal.classList.remove('flex');
+      imageModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
 
     // Toast notification function
     function showToast(title, message, type = 'success') {
@@ -488,6 +544,25 @@ const markdownToHtml = (markdown: string) => {
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', () => {
+      imageModal = document.getElementById('image-modal');
+      imageModalClose = document.getElementById('image-modal-close');
+      gemImageTrigger = document.getElementById('gem-image-trigger');
+
+      gemImageTrigger?.addEventListener('click', openImageModal);
+      imageModalClose?.addEventListener('click', closeImageModal);
+
+      imageModal?.addEventListener('click', (event) => {
+        if (event.target === imageModal) {
+          closeImageModal();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeImageModal();
+        }
+      });
+
       fetchVotes();
       fetchComments();
       
