@@ -7,6 +7,7 @@ import AuthorInfo from '../../components/AuthorInfo.astro';
 import FlightWidget from '../../components/FlightWidget.astro';
 import SimWidget from '../../components/SimWidget.astro';
 import HotelWidget from '../../components/HotelWidget.astro';
+import RecommendedGems from '../../components/RecommendedGems.astro';
 
 interface Gem {
   id: string;
@@ -395,6 +396,7 @@ const markdownToHtml = (markdown: string) => {
       <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
     </div>
   </div>
+  <RecommendedGems />
   <Footer />
 
   <script is:inline define:vars={{ gemId, API_BASE_URL }}>
