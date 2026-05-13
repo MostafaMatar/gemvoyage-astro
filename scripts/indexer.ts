@@ -44,14 +44,22 @@ async function submitUrl(
 ): Promise<{ status: number | null; ok: boolean; error?: string }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  // Determine if this endpoint requires POST
+  const needsPost =
+    fullUrl.includes("pubsubhubbub") ||
+    fullUrl.includes("superfeedr") ||
+    fullUrl.includes("web.archive.org/save");
+
   try {
     const res = await fetch(fullUrl, {
-      method: "GET",
+      method: needsPost ? "POST" : "GET",
       redirect: "follow",
       signal: controller.signal,
       headers: {
         "User-Agent":
           "Mozilla/5.0 (compatible; SiteIndexer/1.0; +https://gemvoyage.net)",
+        ...(needsPost ? { "Content-Type": "application/x-www-form-urlencoded" } : {}),
       },
     });
     clearTimeout(timer);
@@ -167,7 +175,10 @@ async function main() {
   // Per-indexer breakdown with failure rates
   console.log("\n🔗 Per-indexer breakdown:");
   for (const template of templates) {
-    const indexerResults = results.filter((r) => r.indexerUrl.includes(encodeURIComponent(template.split('{URL}')[0])));
+    const prefix = template.split("{URL}")[0];
+    const indexerResults = results.filter((r) =>
+      r.indexerUrl.startsWith(prefix.replace(/\{URL\}/g, ""))
+    );
     const ok = indexerResults.filter((r) => r.ok).length;
     const fail = indexerResults.filter((r) => !r.ok).length;
     const total = indexerResults.length;
