@@ -18,6 +18,7 @@ interface Gem {
   location: string;
   category: string;
   createdAt: string;
+  updatedAt?: string;
   slug: string;
   featured?: boolean;
   owner: string;
@@ -40,8 +41,6 @@ if (!slug) {
 
 let gem: Gem | null = null;
 let votes: Vote[] = [];
-let error: string | null = null;
-let loading = false;
 
 try {
   // Fetch gem data using slug
@@ -64,7 +63,6 @@ try {
   }
 } catch (err) {
   console.error('Error fetching gem:', err);
-  error = err instanceof Error ? err.message : 'Failed to fetch gem details.';
   return Astro.redirect('/browse');
 }
 
@@ -72,7 +70,30 @@ if (!gem) {
   return Astro.redirect('/browse');
 }
 
-// Helper function to extract plain text from markdown and limit to 100 characters
+// Fetch author information for structured data
+interface AuthorProfile {
+  firstName?: string;
+  lastName?: string;
+  city?: string;
+}
+
+let authorProfile: AuthorProfile | null = null;
+if (gem.owner) {
+  try {
+    const authorRes = await fetch(`${API_BASE_URL}/user_profiles/${gem.owner}`);
+    if (authorRes.ok) {
+      authorProfile = await authorRes.json();
+    }
+  } catch {
+    authorProfile = null;
+  }
+}
+
+const authorFullName = authorProfile
+  ? [authorProfile.firstName, authorProfile.lastName].filter(Boolean).join(' ')
+  : null;
+
+// Helper function to extract plain text from markdown and limit to ~155 characters
 const getDescriptionForSEO = (markdownText: string): string => {
   if (!markdownText || typeof markdownText !== 'string') {
     return 'Discover this hidden gem on GemVoyage.';
@@ -80,18 +101,23 @@ const getDescriptionForSEO = (markdownText: string): string => {
   
   // Remove markdown syntax and get plain text
   const plainText = markdownText
-    .replace(/#{1,6}\s/g, '') // Remove headers
-    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
-    .replace(/\*(.*?)\*/g, '$1') // Remove italic
-    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links, keep text
-    .replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
-    .replace(/`(.*?)`/g, '$1') // Remove code blocks
-    .replace(/\n/g, ' ') // Replace newlines with spaces
-    .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+    .replace(/#{1,6}\s/g, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/`(.*?)`/g, '$1')
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
   
-  // Limit to 100 characters and add ellipsis if truncated
-  return plainText.length > 100 ? plainText.substring(0, 100) + '...' : plainText;
+  const seoLimit = 155;
+  if (plainText.length > seoLimit) {
+    const truncated = plainText.substring(0, seoLimit);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return (lastSpace > seoLimit - 20 ? truncated.substring(0, lastSpace) : truncated) + '...';
+  }
+  return plainText;
 };
 
 // Add safety checks for gem properties
@@ -127,22 +153,36 @@ const structuredData = {
   "image": gemImage,
   "author": {
     "@type": "Person",
-    "name": "GemVoyage User"
+    "name": authorFullName || "GemVoyage User",
+    "url": authorFullName ? `https://gemvoyage.net/profile/${gem.owner}` : undefined,
   },
   "publisher": {
     "@type": "Organization",
     "name": "GemVoyage",
+    "url": "https://gemvoyage.net",
     "logo": {
       "@type": "ImageObject",
       "url": "https://gemvoyage.net/logo.png"
     }
   },
   "datePublished": gem.createdAt,
-  "dateModified": gem.createdAt,
+  "dateModified": gem.updatedAt || gem.createdAt,
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": canonicalUrl
   }
+};
+
+// Breadcrumb structured data
+const breadcrumbData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://gemvoyage.net/" },
+    { "@type": "ListItem", "position": 2, "name": "Browse", "item": "https://gemvoyage.net/browse" },
+    { "@type": "ListItem", "position": 3, "name": gemCategory, "item": `https://gemvoyage.net/browse?category=${encodeURIComponent(gemCategory)}` },
+    { "@type": "ListItem", "position": 4, "name": gemTitle, "item": canonicalUrl },
+  ],
 };
 
 // Format date
@@ -189,47 +229,21 @@ const markdownToHtml = (markdown: string) => {
   description={getDescriptionForSEO(gemDescription)}
   keywords={generateKeywords()}
   ogUrl={canonicalUrl}
+  ogTitle={`${gemTitle} in ${gemLocation}`}
+  ogDescription={getDescriptionForSEO(gemDescription)}
+  ogImage={gemImage}
+  ogImageAlt={`Photo of ${gemTitle} in ${gemLocation}`}
+  ogType="article"
+  articlePublishedTime={gem.createdAt}
+  articleModifiedTime={gem.updatedAt || gem.createdAt}
+  articleSection={gemCategory}
+  articleTags={['hidden gem', 'travel destination', gemLocation, gemCategory]}
+  authorName={authorFullName || "GemVoyage Community"}
 >
-  <!-- Enhanced SEO Meta Tags -->
   <head slot="head">
-    <!-- Canonical URL -->
-    <link rel="canonical" href={canonicalUrl} />
-    
-    <!-- Keywords -->
-    <meta name="keywords" content={generateKeywords()} />
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:title" content={`${gemTitle} in ${gemLocation}`} />
-    <meta property="og:description" content={getDescriptionForSEO(gemDescription)} />
-    <meta property="og:image" content={gemImage} />
+    <!-- Social preview image dimensions -->
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`Photo of ${gemTitle} in ${gemLocation}`} />
-    <meta property="og:site_name" content="GemVoyage" />
-    <meta property="article:published_time" content={gem.createdAt} />
-    <meta property="article:modified_time" content={gem.createdAt} />
-    <meta property="article:section" content={gemCategory} />
-    <meta property="article:tag" content="hidden gem" />
-    <meta property="article:tag" content="travel destination" />
-    <meta property="article:tag" content={gemLocation} />
-    <meta property="article:tag" content={gemCategory} />
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={canonicalUrl} />
-    <meta name="twitter:title" content={`${gemTitle} - Hidden Gem in ${gemLocation}`} />
-    <meta name="twitter:description" content={getDescriptionForSEO(gemDescription)} />
-    <meta name="twitter:image" content={gemImage} />
-    <meta name="twitter:image:alt" content={`Photo of ${gemTitle} in ${gemLocation}`} />
-    <meta name="twitter:site" content="@GemVoyage" />
-    <meta name="twitter:creator" content="@GemVoyage" />
-    
-    <!-- Additional SEO Meta Tags -->
-    <meta name="author" content="GemVoyage Community" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow" />
     
     <!-- Geo tags for location-based SEO -->
     <meta name="geo.region" content={gemLocation} />
@@ -237,13 +251,14 @@ const markdownToHtml = (markdown: string) => {
     
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbData)} />
     
     <!-- Preload critical image -->
-    <link rel="preload" as="image" href={gemImage} />
+    <link rel="preload" as="image" href={gemImage} fetchpriority="high" />
   </head>
 
   <Navbar />
-  <div class="py-8">
+  <main class="py-8">
     <div class="container mx-auto px-4">
       <button
         onclick="history.back()"
@@ -256,10 +271,10 @@ const markdownToHtml = (markdown: string) => {
       </button>
 
       <div class="mb-6">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 mb-3">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 mb-3" itemprop="articleSection">
           {gemCategory}
         </span>
-        <h1 class="text-3xl md:text-4xl font-bold mb-3">{gemTitle}</h1>
+        <h1 class="text-3xl md:text-4xl font-bold mb-3" itemprop="headline">{gemTitle}</h1>
 
         <div class="flex items-center flex-wrap gap-4">
           <div class="flex items-center text-gray-600">
@@ -298,9 +313,11 @@ const markdownToHtml = (markdown: string) => {
             class="w-full h-[400px] md:h-[500px] object-cover"
             loading="eager"
             decoding="async"
+            fetchpriority="high"
             style="background: #f3f3f3;"
             width="1200"
             height="500"
+            itemprop="image"
           />
         </button>
       </div>
@@ -333,18 +350,19 @@ const markdownToHtml = (markdown: string) => {
         <FlightWidget />
       </section>
       <div class="flex flex-col md:flex-row gap-8">
-        <div class="md:w-2/3">
+        <article class="md:w-2/3" itemScope itemType="https://schema.org/Article">
           <div class="prose prose-lg max-w-none prose-headings:font-semibold prose-p:text-gray-700 prose-strong:font-semibold prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">
             <div 
               class="text-lg leading-relaxed mb-8 formatted-content"
               set:html={markdownToHtml(gemDescription)}
+              itemprop="description"
             />
           </div>
           <hr class="my-8 border-gray-200" />
           
-        </div>
+        </article>
 
-        <div class="md:w-1/3">
+        <aside class="md:w-1/3">
           <div class="bg-gray-50 p-4 rounded-lg shadow-md">
             <h2 class="text-lg font-semibold mb-2">Votes</h2>
             <div class="flex items-center space-x-4 mb-4">
@@ -380,7 +398,7 @@ const markdownToHtml = (markdown: string) => {
             </section>
             <div class="ml-embedded" data-form="kxhzxw"></div>
           </div>
-        </div>
+        </aside>
       </div>
 
       <section class="container mx-auto px-4 py-8">
@@ -397,7 +415,7 @@ const markdownToHtml = (markdown: string) => {
       <!-- Toast notifications -->
       <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
     </div>
-  </div>
+  </main>
   <RecommendedGems />
   <Footer />
 
