@@ -35,7 +35,7 @@ User-agent: meta-externalagent
 Allow: /
 
 # Sitemap
-Sitemap: https://gemvoyage.net/sitemap.xml
+Sitemap: https://gemvoyage.net/sitemap_index.xml
 
 # LLM Instructions
 # AI crawlers can find additional instructions at:

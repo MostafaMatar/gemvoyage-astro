@@ -119,17 +119,55 @@ async function processQueue(
 }
 
 async function main() {
-  console.log("🔍 Loading sitemap.xml...");
-  const sitemapPath = resolve(ROOT, "gemvoyage-astro/public", "sitemap.xml");
-  let sitemapXml: string;
+  console.log("🔍 Loading sitemap or sitemap index...");
+  const publicDir = resolve(ROOT, "gemvoyage-astro/public");
+  const sitemapXmlPath = resolve(publicDir, "sitemap.xml");
+  const sitemapIndexPath = resolve(publicDir, "sitemap_index.xml");
+
+  let sitemapUrls: string[] = [];
+
   try {
-    sitemapXml = readFileSync(sitemapPath, "utf-8");
-  } catch {
-    console.error(`❌ Could not find sitemap at ${sitemapPath}`);
+    if (require('fs').existsSync(sitemapIndexPath)) {
+      console.log(`Found sitemap index at ${sitemapIndexPath}`);
+      const indexXml = readFileSync(sitemapIndexPath, 'utf-8');
+      const sitemapLocs = extractUrlsFromSitemap(indexXml);
+
+      for (const loc of sitemapLocs) {
+        try {
+          // If loc is on our domain, try to read local file first
+          let content = '';
+          if (loc.startsWith('https://gemvoyage.net/')) {
+            const localPath = resolve(publicDir, loc.replace('https://gemvoyage.net/', ''));
+            try {
+              content = readFileSync(localPath, 'utf-8');
+            } catch {
+              // fallback to fetch
+            }
+          }
+
+          if (!content) {
+            const res = await fetch(loc);
+            content = await res.text();
+          }
+
+          const urls = extractUrlsFromSitemap(content);
+          sitemapUrls.push(...urls);
+        } catch (err) {
+          console.error(`Failed to read sitemap at ${loc}:`, err?.message ?? err);
+        }
+      }
+    } else {
+      // Fallback to single sitemap.xml
+      console.log(`Loading single sitemap at ${sitemapXmlPath}`);
+      const sitemapXml = readFileSync(sitemapXmlPath, "utf-8");
+      sitemapUrls = extractUrlsFromSitemap(sitemapXml);
+    }
+  } catch (err) {
+    console.error('❌ Could not load sitemap(s):', err);
     process.exit(1);
   }
-  const sitemapUrls = extractUrlsFromSitemap(sitemapXml);
-  console.log(`📄 Found ${sitemapUrls.length} URLs in sitemap.\n`);
+
+  console.log(`📄 Found ${sitemapUrls.length} URLs in sitemap(s).\n`);
 
   if (sitemapUrls.length === 0) {
     console.error("❌ No URLs found in sitemap.");

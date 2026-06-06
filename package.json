@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build && echo _worker.js > dist/.assetsignore",
+    "build": "astro check && astro build && echo _worker.js > dist/.assetsignore && node scripts/generate-sitemap.js",
     "preview": "astro preview",
     "astro": "astro",
     "indexer": "npx tsx scripts/indexer.ts",

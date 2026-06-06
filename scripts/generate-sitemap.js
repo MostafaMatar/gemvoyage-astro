@@ -122,6 +122,38 @@ function generateSitemap(gems, cities) {
   return sitemap;
 }
 
+function generateImageSitemap(gems) {
+  const baseUrl = 'https://gemvoyage.net';
+  const currentDate = new Date().toISOString().split('T')[0];
+
+  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+  sitemap += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`;
+
+  gems.forEach((gem) => {
+    const gemId = gem.slug || gem.id;
+    const imageUrl = gem.image || gem.imageUrl;
+    if (!gemId || !imageUrl) return;
+
+    sitemap += `\n  <url>\n    <loc>${baseUrl}/gem/${gemId}</loc>\n    <lastmod>${gem.updatedAt ? gem.updatedAt.split('T')[0] : (gem.createdAt ? gem.createdAt.split('T')[0] : currentDate)}</lastmod>\n    <image:image>\n      <image:loc>${imageUrl.startsWith('http') ? imageUrl : baseUrl + imageUrl}</image:loc>\n      <image:caption>${(gem.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:caption>\n    </image:image>\n  </url>`;
+  });
+
+  sitemap += `\n</urlset>`;
+  return sitemap;
+}
+
+function generateSitemapIndex(paths) {
+  const currentDate = new Date().toISOString().split('T')[0];
+  let index = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+  index += `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+  paths.forEach((p) => {
+    index += `\n  <sitemap>\n    <loc>${p}</loc>\n    <lastmod>${currentDate}</lastmod>\n  </sitemap>`;
+  });
+
+  index += `\n</sitemapindex>`;
+  return index;
+}
+
 async function main() {
   console.log('Generating sitemap...');
   
@@ -135,9 +167,23 @@ async function main() {
   // Write sitemap to public directory
   const sitemapPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
   fs.writeFileSync(sitemapPath, sitemap, 'utf8');
+  // Generate image sitemap
+  const imageSitemap = generateImageSitemap(gems);
+  const imageSitemapPath = path.join(__dirname, '..', 'public', 'sitemap-images.xml');
+  fs.writeFileSync(imageSitemapPath, imageSitemap, 'utf8');
+
+  // Generate sitemap index
+  const sitemapIndexContents = generateSitemapIndex([
+    'https://gemvoyage.net/sitemap.xml',
+    'https://gemvoyage.net/sitemap-images.xml'
+  ]);
+  const sitemapIndexPath = path.join(__dirname, '..', 'public', 'sitemap_index.xml');
+  fs.writeFileSync(sitemapIndexPath, sitemapIndexContents, 'utf8');
   
   console.log(`Sitemap generated with ${gems.length} gem pages and ${cities.length} city pages`);
   console.log(`Sitemap saved to: ${sitemapPath}`);
+  console.log(`Image sitemap saved to: ${imageSitemapPath}`);
+  console.log(`Sitemap index saved to: ${sitemapIndexPath}`);
 }
 
 // Enable fetch for Node.js
