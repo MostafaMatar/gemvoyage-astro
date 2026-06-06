@@ -72,12 +72,12 @@ if (!gem) {
   return Astro.redirect('/browse');
 }
 
-// Helper function to extract plain text from markdown and limit to 100 characters
-const getDescriptionForSEO = (markdownText: string): string => {
+// Helper function to extract plain text from markdown and limit to a sensible length for SEO
+const getDescriptionForSEO = (markdownText: string, maxLen = 155): string => {
   if (!markdownText || typeof markdownText !== 'string') {
     return 'Discover this hidden gem on GemVoyage.';
   }
-  
+
   // Remove markdown syntax and get plain text
   const plainText = markdownText
     .replace(/#{1,6}\s/g, '') // Remove headers
@@ -89,9 +89,9 @@ const getDescriptionForSEO = (markdownText: string): string => {
     .replace(/\n/g, ' ') // Replace newlines with spaces
     .replace(/\s+/g, ' ') // Replace multiple spaces with single space
     .trim();
-  
-  // Limit to 100 characters and add ellipsis if truncated
-  return plainText.length > 100 ? plainText.substring(0, 100) + '...' : plainText;
+
+  // Limit to `maxLen` characters and add ellipsis if truncated
+  return plainText.length > maxLen ? plainText.substring(0, maxLen).trim() + '...' : plainText;
 };
 
 // Add safety checks for gem properties
@@ -102,6 +102,9 @@ const gemDescription = gem.description || 'No description available';
 const gemImage = gem.image || gem.imageUrl || 'https://gemvoyage.net/hero.jpg';
 const gemId = gem.id;
 const gemSlug = gem.slug || slug;
+
+// SEO-ready description (use sensible length for meta description / social cards)
+const seoDescription = getDescriptionForSEO(gemDescription, 155);
 
 // Generate better keywords
 const generateKeywords = () => {
@@ -123,7 +126,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": gemTitle,
-  "description": getDescriptionForSEO(gemDescription),
+  "description": seoDescription,
   "image": gemImage,
   "author": {
     "@type": "Person",
@@ -186,7 +189,7 @@ const markdownToHtml = (markdown: string) => {
 
 <Layout 
   title={`${gemTitle} - ${gemLocation} | GemVoyage`}
-  description={getDescriptionForSEO(gemDescription)}
+  description={seoDescription}
   keywords={generateKeywords()}
   ogUrl={canonicalUrl}
 >
@@ -202,7 +205,7 @@ const markdownToHtml = (markdown: string) => {
     <meta property="og:type" content="article" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={`${gemTitle} in ${gemLocation}`} />
-    <meta property="og:description" content={getDescriptionForSEO(gemDescription)} />
+    <meta property="og:description" content={seoDescription} />
     <meta property="og:image" content={gemImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -215,12 +218,13 @@ const markdownToHtml = (markdown: string) => {
     <meta property="article:tag" content="travel destination" />
     <meta property="article:tag" content={gemLocation} />
     <meta property="article:tag" content={gemCategory} />
+    <meta property="og:locale" content="en_US" />
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={canonicalUrl} />
     <meta name="twitter:title" content={`${gemTitle} - Hidden Gem in ${gemLocation}`} />
-    <meta name="twitter:description" content={getDescriptionForSEO(gemDescription)} />
+    <meta name="twitter:description" content={seoDescription} />
     <meta name="twitter:image" content={gemImage} />
     <meta name="twitter:image:alt" content={`Photo of ${gemTitle} in ${gemLocation}`} />
     <meta name="twitter:site" content="@GemVoyage" />
@@ -231,12 +235,11 @@ const markdownToHtml = (markdown: string) => {
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
     
-    <!-- Geo tags for location-based SEO -->
-    <meta name="geo.region" content={gemLocation} />
+    <!-- Geo tags for location-based SEO (keep placename, remove region which expects a region code) -->
     <meta name="geo.placename" content={gemLocation} />
     
     <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>
     
     <!-- Preload critical image -->
     <link rel="preload" as="image" href={gemImage} />
